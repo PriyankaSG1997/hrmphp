@@ -1,0 +1,26 @@
+CRITICAL - 2025-08-01 06:40:39 --> CodeIgniter\Database\Exceptions\DatabaseException: You must set the database table to be used with your query.
+[Method: POST, Route: getSalaryDetails]
+in SYSTEMPATH\Database\BaseConnection.php on line 941.
+ 1 SYSTEMPATH\Model.php(714): CodeIgniter\Database\BaseConnection->table(null)
+ 2 SYSTEMPATH\Model.php(920): CodeIgniter\Model->builder()
+ 3 APPPATH\Controllers\SalaryController.php(194): CodeIgniter\Model->__call('getSalaryDetailsByUserCode', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\SalaryController->getSalaryDetails()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SalaryController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-08-01 08:43:13 --> mysqli_sql_exception: Unknown column 'tc.company_address' in 'field list' in C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `ted`.*,...', 0)
+#1 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `ted`.*,...')
+#2 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `ted`.*,...')
+#3 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `ted`.*,...', Array, false)
+#4 C:\xampp\htdocs\SDKCPL_PHP\app\Controllers\EmployeeController.php(502): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(933): App\Controllers\EmployeeController->getAllEmployeeDetails()
+#6 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\EmployeeController))
+#7 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\SDKCPL_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}

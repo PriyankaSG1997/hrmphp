@@ -1,0 +1,231 @@
+ERROR - 2025-10-29 07:23:13 --> mysqli_sql_exception: Table 'mitecherp.tbl_payments' doesn't exist in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *\nFROM `...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(1720): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->updatePaymentStatus()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-29 07:23:13 --> CodeIgniter\Database\Exceptions\DatabaseException: Table 'mitecherp.tbl_payments' doesn't exist
+[Method: POST, Route: updatePaymentStatus]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = :payment_code:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(1720): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updatePaymentStatus()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-29 07:23:13 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Table 'mitecherp.tbl_payments' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = \'W2SQC8\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = \'W2SQC8\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = :payment_code:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(1720): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updatePaymentStatus()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-29 07:23:13 --> [Caused by] mysqli_sql_exception: Table 'mitecherp.tbl_payments' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = \'W2SQC8\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = \'W2SQC8\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = \'W2SQC8\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = :payment_code:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(1720): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updatePaymentStatus()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-29 07:24:32 --> mysqli_sql_exception: Table 'mitecherp.tbl_payments' doesn't exist in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *\nFROM `...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(1720): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->updatePaymentStatus()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-29 07:24:32 --> CodeIgniter\Database\Exceptions\DatabaseException: Table 'mitecherp.tbl_payments' doesn't exist
+[Method: POST, Route: updatePaymentStatus]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = :payment_code:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(1720): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updatePaymentStatus()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-29 07:24:32 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Table 'mitecherp.tbl_payments' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = \'W2SQC8\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = \'W2SQC8\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = :payment_code:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(1720): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updatePaymentStatus()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-29 07:24:32 --> [Caused by] mysqli_sql_exception: Table 'mitecherp.tbl_payments' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = \'W2SQC8\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = \'W2SQC8\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = \'W2SQC8\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `tbl_payments`
+WHERE `payment_code` = :payment_code:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(1720): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updatePaymentStatus()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-10-29 10:53:29 --> [DEPRECATED] strtoupper(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH\Controllers\MultiuseController.php on line 171.
+ 1 APPPATH\Controllers\MultiuseController.php(171): strtoupper(null)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MultiuseController->update_accesslevel()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MultiuseController))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-10-29 10:53:29 --> [DEPRECATED] strtoupper(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH\Controllers\MultiuseController.php on line 171.
+ 1 APPPATH\Controllers\MultiuseController.php(171): strtoupper(null)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MultiuseController->update_accesslevel()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MultiuseController))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-10-29 10:53:29 --> [DEPRECATED] strtoupper(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH\Controllers\MultiuseController.php on line 171.
+ 1 APPPATH\Controllers\MultiuseController.php(171): strtoupper(null)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MultiuseController->update_accesslevel()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MultiuseController))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-10-29 10:53:29 --> [DEPRECATED] strtoupper(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH\Controllers\MultiuseController.php on line 171.
+ 1 APPPATH\Controllers\MultiuseController.php(171): strtoupper(null)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MultiuseController->update_accesslevel()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MultiuseController))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-10-29 10:53:29 --> [DEPRECATED] strtoupper(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH\Controllers\MultiuseController.php on line 171.
+ 1 APPPATH\Controllers\MultiuseController.php(171): strtoupper(null)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MultiuseController->update_accesslevel()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MultiuseController))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-10-29 10:53:29 --> [DEPRECATED] strtoupper(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH\Controllers\MultiuseController.php on line 171.
+ 1 APPPATH\Controllers\MultiuseController.php(171): strtoupper(null)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MultiuseController->update_accesslevel()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MultiuseController))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-29 12:02:04 --> mysqli_sql_exception: Unknown column 'r.middle_name' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `tel`.*,...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `tel`.*,...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `tel`.*,...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `tel`.*,...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\LettarsController.php(618): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\LettarsController->getAllExperienceLetters()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-10-29 12:02:43 --> mysqli_sql_exception: Unknown column 'r.middle_name' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `tel`.*,...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `tel`.*,...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `tel`.*,...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `tel`.*,...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\LettarsController.php(618): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\LettarsController->getAllExperienceLetters()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-29 12:15:09 --> Error: Object of class stdClass could not be converted to string
+[Method: POST, Route: getAllexperienceletters]
+in APPPATH\Controllers\LettarsController.php on line 625.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\LettarsController->getAllExperienceLetters()
+ 2 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+ 3 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-29 12:29:12 --> mysqli_sql_exception: Unknown column 'tc.companyname' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `tel`.*,...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `tel`.*,...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `tel`.*,...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `tel`.*,...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\LettarsController.php(618): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\LettarsController->getAllExperienceLetters()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}

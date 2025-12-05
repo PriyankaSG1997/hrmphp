@@ -1,0 +1,28 @@
+ERROR - 2025-07-23 08:59:07 --> mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `tb...', 0)
+#1 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `tb...')
+#2 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `tb...')
+#3 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tb...', Array, false)
+#4 C:\xampp\htdocs\SDKCPL_PHP\app\Controllers\HolidayController.php(85): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(933): App\Controllers\HolidayController->addHoliday()
+#6 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HolidayController))
+#7 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\SDKCPL_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-07-23 09:10:26 --> mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `tb...', 0)
+#1 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `tb...')
+#2 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `tb...')
+#3 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tb...', Array, false)
+#4 C:\xampp\htdocs\SDKCPL_PHP\app\Controllers\HolidayController.php(85): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(933): App\Controllers\HolidayController->addHoliday()
+#6 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HolidayController))
+#7 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\SDKCPL_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}

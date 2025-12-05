@@ -1,0 +1,31 @@
+CRITICAL - 2025-07-22 06:42:14 --> CodeIgniter\HTTP\Exceptions\HTTPException: Failed to parse JSON string. Error: Syntax error
+[Method: POST, Route: project/update]
+in SYSTEMPATH\HTTP\IncomingRequest.php on line 537.
+ 1 SYSTEMPATH\HTTP\IncomingRequest.php(537): CodeIgniter\HTTP\Exceptions\HTTPException::forInvalidJSON('Syntax error')
+ 2 APPPATH\Controllers\ProjectController.php(154): CodeIgniter\HTTP\IncomingRequest->getJSON(true)
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\ProjectController->updateProject()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ProjectController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-07-22 06:44:48 --> ErrorException: Undefined array key "project_code"
+[Method: POST, Route: task/add]
+in APPPATH\Controllers\ProjectController.php on line 370.
+ 1 APPPATH\Controllers\ProjectController.php(370): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "project_code"', 'C:\\xampp\\htdocs\\SDKCPL_PHP\\app\\Controllers\\ProjectController.php', 370)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\ProjectController->addTask()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ProjectController))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-07-22 06:45:12 --> ErrorException: Undefined array key "project_code"
+[Method: POST, Route: task/add]
+in APPPATH\Controllers\ProjectController.php on line 370.
+ 1 APPPATH\Controllers\ProjectController.php(370): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "project_code"', 'C:\\xampp\\htdocs\\SDKCPL_PHP\\app\\Controllers\\ProjectController.php', 370)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\ProjectController->addTask()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ProjectController))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))

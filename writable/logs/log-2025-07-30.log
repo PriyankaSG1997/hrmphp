@@ -1,0 +1,225 @@
+ERROR - 2025-07-30 05:22:35 --> mysqli_sql_exception: Unknown column 'r.id' in 'field list' in C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `r`.`id`...', 0)
+#1 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `r`.`id`...')
+#2 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `r`.`id`...')
+#3 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `r`.`id`...', Array, false)
+#4 C:\xampp\htdocs\SDKCPL_PHP\app\Controllers\EmployeeController.php(1211): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(933): App\Controllers\EmployeeController->getteamleader()
+#6 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\EmployeeController))
+#7 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\SDKCPL_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-07-30 05:22:35 --> DatabaseException in getteamleader: Unknown column 'r.id' in 'field list'
+ERROR - 2025-07-30 09:32:47 --> mysqli_sql_exception: Unknown column 'user_code_ref' in 'field list' in C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `tb...', 0)
+#1 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `tb...')
+#2 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `tb...')
+#3 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tb...', Array, false)
+#4 C:\xampp\htdocs\SDKCPL_PHP\app\Controllers\SalaryController.php(92): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(933): App\Controllers\SalaryController->addSalary()
+#6 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SalaryController))
+#7 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\SDKCPL_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-07-30 10:03:53 --> mysqli_sql_exception: Unknown column 'r.designation_code' in 'on clause' in C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `r`.`joi...', 0)
+#1 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `r`.`joi...')
+#2 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `r`.`joi...')
+#3 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `r`.`joi...', Array, false)
+#4 C:\xampp\htdocs\SDKCPL_PHP\app\Controllers\LettarsController.php(65): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(933): App\Controllers\LettarsController->offerlettar()
+#6 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+#7 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\SDKCPL_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-07-30 10:03:53 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'r.designation_code' in 'on clause'
+[Method: POST, Route: offerlettar]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`designation_code` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = :r.user_code:', [...], false)
+ 2 APPPATH\Controllers\LettarsController.php(65): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\LettarsController->offerlettar()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-07-30 10:03:53 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'r.designation_code' in 'on clause'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`designation_code` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = \'SKDCPL007\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`designation_code` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = \'SKDCPL007\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`designation_code` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = :r.user_code:', [...], false)
+ 4 APPPATH\Controllers\LettarsController.php(65): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\LettarsController->offerlettar()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-07-30 10:03:53 --> [Caused by] mysqli_sql_exception: Unknown column 'r.designation_code' in 'on clause'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`designation_code` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = \'SKDCPL007\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`designation_code` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = \'SKDCPL007\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`designation_code` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = \'SKDCPL007\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`designation_code` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = :r.user_code:', [...], false)
+ 5 APPPATH\Controllers\LettarsController.php(65): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\LettarsController->offerlettar()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-07-30 10:05:07 --> mysqli_sql_exception: Unknown column 'e.user_ref_code' in 'on clause' in C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `r`.`joi...', 0)
+#1 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `r`.`joi...')
+#2 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `r`.`joi...')
+#3 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `r`.`joi...', Array, false)
+#4 C:\xampp\htdocs\SDKCPL_PHP\app\Controllers\LettarsController.php(65): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(933): App\Controllers\LettarsController->offerlettar()
+#6 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+#7 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\SDKCPL_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-07-30 10:05:07 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'e.user_ref_code' in 'on clause'
+[Method: POST, Route: offerlettar]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`Designations` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = :r.user_code:', [...], false)
+ 2 APPPATH\Controllers\LettarsController.php(65): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\LettarsController->offerlettar()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-07-30 10:05:07 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'e.user_ref_code' in 'on clause'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`Designations` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = \'SKDCPL007\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`Designations` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = \'SKDCPL007\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`Designations` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = :r.user_code:', [...], false)
+ 4 APPPATH\Controllers\LettarsController.php(65): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\LettarsController->offerlettar()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-07-30 10:05:07 --> [Caused by] mysqli_sql_exception: Unknown column 'e.user_ref_code' in 'on clause'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`Designations` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = \'SKDCPL007\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`Designations` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = \'SKDCPL007\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`Designations` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = \'SKDCPL007\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `r`.`joining_date`, `r`.`first_name`, `r`.`last_name`, `d`.`designation_name`, `c`.`company_name`, `e`.`permanent_address`, `s`.`basic_salary`, `s`.`hra`, `s`.`special_allowance`
+FROM `tbl_register` as `r`
+LEFT JOIN `tbl_designation_mst` as `d` ON `r`.`Designations` = `d`.`designation_code`
+LEFT JOIN `tbl_company` as `c` ON `r`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee_details` as `e` ON `r`.`user_code` = `e`.`user_ref_code`
+LEFT JOIN `tbl_salary_details` as `s` ON `r`.`user_code` = `s`.`user_ref_code`
+WHERE `r`.`user_code` = :r.user_code:', [...], false)
+ 5 APPPATH\Controllers\LettarsController.php(65): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\LettarsController->offerlettar()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))

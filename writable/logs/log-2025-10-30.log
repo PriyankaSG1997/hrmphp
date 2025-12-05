@@ -1,0 +1,78 @@
+ERROR - 2025-10-30 05:11:09 --> mysqli_sql_exception: Unknown column 'r.middle_name' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `tel`.*,...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `tel`.*,...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `tel`.*,...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `tel`.*,...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\LettarsController.php(707): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\LettarsController->getExperienceLetterById()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-10-30 05:11:18 --> mysqli_sql_exception: Unknown column 'r.middle_name' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `tel`.*,...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `tel`.*,...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `tel`.*,...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `tel`.*,...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\LettarsController.php(707): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\LettarsController->getExperienceLetterById()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LettarsController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-10-30 05:46:08 --> mysqli_sql_exception: Duplicate entry 'mitech@gmail.com' for key 'email' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `tb...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `tb...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `tb...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tb...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\CompanyController.php(74): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\CompanyController->add_company()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\CompanyController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-30 05:46:08 --> CodeIgniter\Database\Exceptions\DatabaseException: Duplicate entry 'mitech@gmail.com' for key 'email'
+[Method: POST, Route: add_company]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (:company_code:, :company_name:, :address:, :email:, :contact_number:, :website:, :pf_deduction:, :gst_number:, :gst:, :logo:, :is_active:, :created_by:)', [...], false)
+ 2 APPPATH\Controllers\CompanyController.php(74): CodeIgniter\Database\BaseBuilder->insert([...])
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\CompanyController->add_company()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\CompanyController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-30 05:46:08 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Duplicate entry 'mitech@gmail.com' for key 'email'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (\'pGBzc\', \'MI Tech Solutions\', \'Pune\', \'mitech@gmail.com\', \'9999999999\', \'https://marketingintelligence.tech\', \'N\', \'\', \'N\', \'pGBzc_1761803168_ca17c9e2b932a92a5915.png\', \'Y\', \'SKDCPL109\')')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (\'pGBzc\', \'MI Tech Solutions\', \'Pune\', \'mitech@gmail.com\', \'9999999999\', \'https://marketingintelligence.tech\', \'N\', \'\', \'N\', \'pGBzc_1761803168_ca17c9e2b932a92a5915.png\', \'Y\', \'SKDCPL109\')')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (:company_code:, :company_name:, :address:, :email:, :contact_number:, :website:, :pf_deduction:, :gst_number:, :gst:, :logo:, :is_active:, :created_by:)', [...], false)
+ 4 APPPATH\Controllers\CompanyController.php(74): CodeIgniter\Database\BaseBuilder->insert([...])
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\CompanyController->add_company()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\CompanyController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-30 05:46:08 --> [Caused by] mysqli_sql_exception: Duplicate entry 'mitech@gmail.com' for key 'email'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (\'pGBzc\', \'MI Tech Solutions\', \'Pune\', \'mitech@gmail.com\', \'9999999999\', \'https://marketingintelligence.tech\', \'N\', \'\', \'N\', \'pGBzc_1761803168_ca17c9e2b932a92a5915.png\', \'Y\', \'SKDCPL109\')', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (\'pGBzc\', \'MI Tech Solutions\', \'Pune\', \'mitech@gmail.com\', \'9999999999\', \'https://marketingintelligence.tech\', \'N\', \'\', \'N\', \'pGBzc_1761803168_ca17c9e2b932a92a5915.png\', \'Y\', \'SKDCPL109\')')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (\'pGBzc\', \'MI Tech Solutions\', \'Pune\', \'mitech@gmail.com\', \'9999999999\', \'https://marketingintelligence.tech\', \'N\', \'\', \'N\', \'pGBzc_1761803168_ca17c9e2b932a92a5915.png\', \'Y\', \'SKDCPL109\')')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (:company_code:, :company_name:, :address:, :email:, :contact_number:, :website:, :pf_deduction:, :gst_number:, :gst:, :logo:, :is_active:, :created_by:)', [...], false)
+ 5 APPPATH\Controllers\CompanyController.php(74): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\CompanyController->add_company()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\CompanyController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))

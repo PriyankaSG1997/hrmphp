@@ -1,0 +1,1100 @@
+ERROR - 2025-10-28 05:08:53 --> mysqli_sql_exception: Duplicate entry 'connect@marketingintelligence.tech' for key 'email' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `tb...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `tb...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `tb...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tb...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\CompanyController.php(74): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\CompanyController->add_company()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\CompanyController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 05:08:53 --> CodeIgniter\Database\Exceptions\DatabaseException: Duplicate entry 'connect@marketingintelligence.tech' for key 'email'
+[Method: POST, Route: add_company]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (:company_code:, :company_name:, :address:, :email:, :contact_number:, :website:, :pf_deduction:, :gst_number:, :gst:, :logo:, :is_active:, :created_by:)', [...], false)
+ 2 APPPATH\Controllers\CompanyController.php(74): CodeIgniter\Database\BaseBuilder->insert([...])
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\CompanyController->add_company()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\CompanyController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 05:08:53 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Duplicate entry 'connect@marketingintelligence.tech' for key 'email'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (\'RD4HX\', \'MI Tech Solutions\', \'Vision Plus, 21, Bhakti Shakti Chowk, Flyover, Shree Vihar, Transport Nagar, Nigdi, Pune, Pimpri-Chinchwad, Maharashtra 411044\', \'connect@marketingintelligence.tech\', \'9823055383\', \'https://marketingintelligence.tech\', \'Y\', \'\', \'Y\', \'RD4HX_1761628133_e27797e241595070777d.png\', \'Y\', \'SKDCPL109\')')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (\'RD4HX\', \'MI Tech Solutions\', \'Vision Plus, 21, Bhakti Shakti Chowk, Flyover, Shree Vihar, Transport Nagar, Nigdi, Pune, Pimpri-Chinchwad, Maharashtra 411044\', \'connect@marketingintelligence.tech\', \'9823055383\', \'https://marketingintelligence.tech\', \'Y\', \'\', \'Y\', \'RD4HX_1761628133_e27797e241595070777d.png\', \'Y\', \'SKDCPL109\')')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (:company_code:, :company_name:, :address:, :email:, :contact_number:, :website:, :pf_deduction:, :gst_number:, :gst:, :logo:, :is_active:, :created_by:)', [...], false)
+ 4 APPPATH\Controllers\CompanyController.php(74): CodeIgniter\Database\BaseBuilder->insert([...])
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\CompanyController->add_company()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\CompanyController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 05:08:53 --> [Caused by] mysqli_sql_exception: Duplicate entry 'connect@marketingintelligence.tech' for key 'email'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (\'RD4HX\', \'MI Tech Solutions\', \'Vision Plus, 21, Bhakti Shakti Chowk, Flyover, Shree Vihar, Transport Nagar, Nigdi, Pune, Pimpri-Chinchwad, Maharashtra 411044\', \'connect@marketingintelligence.tech\', \'9823055383\', \'https://marketingintelligence.tech\', \'Y\', \'\', \'Y\', \'RD4HX_1761628133_e27797e241595070777d.png\', \'Y\', \'SKDCPL109\')', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (\'RD4HX\', \'MI Tech Solutions\', \'Vision Plus, 21, Bhakti Shakti Chowk, Flyover, Shree Vihar, Transport Nagar, Nigdi, Pune, Pimpri-Chinchwad, Maharashtra 411044\', \'connect@marketingintelligence.tech\', \'9823055383\', \'https://marketingintelligence.tech\', \'Y\', \'\', \'Y\', \'RD4HX_1761628133_e27797e241595070777d.png\', \'Y\', \'SKDCPL109\')')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (\'RD4HX\', \'MI Tech Solutions\', \'Vision Plus, 21, Bhakti Shakti Chowk, Flyover, Shree Vihar, Transport Nagar, Nigdi, Pune, Pimpri-Chinchwad, Maharashtra 411044\', \'connect@marketingintelligence.tech\', \'9823055383\', \'https://marketingintelligence.tech\', \'Y\', \'\', \'Y\', \'RD4HX_1761628133_e27797e241595070777d.png\', \'Y\', \'SKDCPL109\')')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tbl_company` (`company_code`, `company_name`, `address`, `email`, `contact_number`, `website`, `pf_deduction`, `gst_number`, `gst`, `logo`, `is_active`, `created_by`) VALUES (:company_code:, :company_name:, :address:, :email:, :contact_number:, :website:, :pf_deduction:, :gst_number:, :gst:, :logo:, :is_active:, :created_by:)', [...], false)
+ 5 APPPATH\Controllers\CompanyController.php(74): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\CompanyController->add_company()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\CompanyController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 10:21:41 --> mysqli_sql_exception: Unknown column 'final_amount' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `total`,...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`,...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`,...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`,...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(1713): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 10:21:41 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'final_amount' in 'field list'
+[Method: POST, Route: updateutr_no]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(1713): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 10:21:41 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'final_amount' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(1713): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 10:21:41 --> [Caused by] mysqli_sql_exception: Unknown column 'final_amount' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(1713): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 10:21:42 --> mysqli_sql_exception: Unknown column 'final_amount' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `total`,...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`,...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`,...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`,...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(1713): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 10:21:42 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'final_amount' in 'field list'
+[Method: POST, Route: updateutr_no]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(1713): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 10:21:42 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'final_amount' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(1713): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 10:21:42 --> [Caused by] mysqli_sql_exception: Unknown column 'final_amount' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(1713): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 10:21:51 --> mysqli_sql_exception: Unknown column 'final_amount' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `total`,...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`,...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`,...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`,...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(1713): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 10:21:51 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'final_amount' in 'field list'
+[Method: POST, Route: updateutr_no]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(1713): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 10:21:51 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'final_amount' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(1713): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 10:21:51 --> [Caused by] mysqli_sql_exception: Unknown column 'final_amount' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(1713): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 10:22:37 --> mysqli_sql_exception: Unknown column 'final_amount' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `total`,...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`,...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`,...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`,...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(1708): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 10:22:37 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'final_amount' in 'field list'
+[Method: POST, Route: updateutr_no]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(1708): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 10:22:37 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'final_amount' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(1708): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 10:22:37 --> [Caused by] mysqli_sql_exception: Unknown column 'final_amount' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(1708): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 10:23:06 --> mysqli_sql_exception: Unknown column 'final_amount' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `total`,...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`,...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`,...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`,...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(1708): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 10:23:06 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'final_amount' in 'field list'
+[Method: POST, Route: updateutr_no]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(1708): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 10:23:06 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'final_amount' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(1708): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 10:23:06 --> [Caused by] mysqli_sql_exception: Unknown column 'final_amount' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = \'NBM-092025001\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `total`, `final_amount`, `paid_amount`, `remaining_amount`, `invoice_code`
+FROM `tbl_tax_invoice`
+WHERE `invoice_code` = :invoice_code:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(1708): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->updateutr_no()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 12:29:38 --> mysqli_sql_exception: Table 'mitecherp.tbl_employee' doesn't exist in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 12:29:38 --> CodeIgniter\Database\Exceptions\DatabaseException: Table 'mitecherp.tbl_employee' doesn't exist
+[Method: POST, Route: get_all_payments]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee` as `e` ON `p`.`paid_to` = `e`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:29:38 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Table 'mitecherp.tbl_employee' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee` as `e` ON `p`.`paid_to` = `e`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee` as `e` ON `p`.`paid_to` = `e`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee` as `e` ON `p`.`paid_to` = `e`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:29:38 --> [Caused by] mysqli_sql_exception: Table 'mitecherp.tbl_employee' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee` as `e` ON `p`.`paid_to` = `e`.`user_code`
+WHERE `p`.`is_active` = \'Y\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee` as `e` ON `p`.`paid_to` = `e`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee` as `e` ON `p`.`paid_to` = `e`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_employee` as `e` ON `p`.`paid_to` = `e`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 12:30:25 --> mysqli_sql_exception: Unknown column 'e.employee_name' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 12:30:25 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'e.employee_name' in 'field list'
+[Method: POST, Route: get_all_payments]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:30:25 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'e.employee_name' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:30:25 --> [Caused by] mysqli_sql_exception: Unknown column 'e.employee_name' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, `e`.`employee_name`, `e`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 12:31:40 --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as...' at line 1 in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 12:31:40 --> CodeIgniter\Database\Exceptions\DatabaseException: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as...' at line 1
+[Method: POST, Route: get_all_payments]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name` `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:31:40 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as...' at line 1
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name` `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name` `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name` `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:31:40 --> [Caused by] mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as...' at line 1
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name` `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name` `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name` `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name` `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 12:31:55 --> mysqli_sql_exception: Unknown column 'r.employee_code' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 12:31:55 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'r.employee_code' in 'field list'
+[Method: POST, Route: get_all_payments]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name`, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:31:55 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'r.employee_code' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name`, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name`, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name`, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:31:55 --> [Caused by] mysqli_sql_exception: Unknown column 'r.employee_code' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name`, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name`, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name`, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, `r`.`First_Name`, `r`.`Middle`, `r`.`Last_Name`, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(795): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 12:33:05 --> mysqli_sql_exception: Unknown column 'r.employee_code' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(801): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 12:33:05 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'r.employee_code' in 'field list'
+[Method: POST, Route: get_all_payments]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, TRIM(CONCAT_WS(" ", NULLIF(r.First_Name, ""), NULLIF(r.Middle, ""), NULLIF(r.Last_Name, "")
+                 )) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(801): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:33:05 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'r.employee_code' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, TRIM(CONCAT_WS(" ", NULLIF(r.First_Name, ""), NULLIF(r.Middle, ""), NULLIF(r.Last_Name, "")
+                 )) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, TRIM(CONCAT_WS(" ", NULLIF(r.First_Name, ""), NULLIF(r.Middle, ""), NULLIF(r.Last_Name, "")
+                 )) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, TRIM(CONCAT_WS(" ", NULLIF(r.First_Name, ""), NULLIF(r.Middle, ""), NULLIF(r.Last_Name, "")
+                 )) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(801): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:33:05 --> [Caused by] mysqli_sql_exception: Unknown column 'r.employee_code' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `c`.`company_name`, TRIM(CONCAT_WS(" ", NULLIF(r.First_Name, ""), NULLIF(r.Middle, ""), NULLIF(r.Last_Name, "")
+                 )) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, TRIM(CONCAT_WS(" ", NULLIF(r.First_Name, ""), NULLIF(r.Middle, ""), NULLIF(r.Last_Name, "")
+                 )) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, TRIM(CONCAT_WS(" ", NULLIF(r.First_Name, ""), NULLIF(r.Middle, ""), NULLIF(r.Last_Name, "")
+                 )) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, TRIM(CONCAT_WS(" ", NULLIF(r.First_Name, ""), NULLIF(r.Middle, ""), NULLIF(r.Last_Name, "")
+                 )) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(801): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 12:33:58 --> mysqli_sql_exception: Unknown column 'r.employee_code' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(803): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 12:33:58 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'r.employee_code' in 'field list'
+[Method: POST, Route: get_all_payments]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(803): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:33:58 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'r.employee_code' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(803): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:33:58 --> [Caused by] mysqli_sql_exception: Unknown column 'r.employee_code' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(803): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 12:34:53 --> mysqli_sql_exception: Unknown column 'r.employee_code' in 'field list' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(803): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 12:34:53 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'r.employee_code' in 'field list'
+[Method: POST, Route: get_all_payments]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(803): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:34:53 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'r.employee_code' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(803): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:34:53 --> [Caused by] mysqli_sql_exception: Unknown column 'r.employee_code' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`employee_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(803): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-10-28 12:35:22 --> mysqli_sql_exception: Unknown column 'p.paid_to' in 'on clause' in C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\MitechERP_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `...', 0)
+#1 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `...')
+#2 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `...')
+#3 C:\xampp\htdocs\MitechERP_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `...', Array, false)
+#4 C:\xampp\htdocs\MitechERP_PHP\app\Controllers\AccountController.php(803): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+#6 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+#7 C:\xampp\htdocs\MitechERP_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\MitechERP_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\MitechERP_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-10-28 12:35:22 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'p.paid_to' in 'on clause'
+[Method: POST, Route: get_all_payments]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`user_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 2 APPPATH\Controllers\AccountController.php(803): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:35:22 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'p.paid_to' in 'on clause'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`user_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`user_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`user_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 4 APPPATH\Controllers\AccountController.php(803): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 12:35:22 --> [Caused by] mysqli_sql_exception: Unknown column 'p.paid_to' in 'on clause'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`user_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`user_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`user_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = \'Y\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `p`.*, `c`.`company_name`, CONCAT(
+                     COALESCE(r.First_Name, ""), " ", COALESCE(r.Middle, ""), " ", COALESCE(r.Last_Name, "")
+                 ) as paid_by_name, `r`.`user_code`
+FROM `tbl_payment_records` as `p`
+LEFT JOIN `tbl_company` as `c` ON `p`.`company_code` = `c`.`company_code`
+LEFT JOIN `tbl_register` as `r` ON `p`.`paid_to` = `r`.`user_code`
+WHERE `p`.`is_active` = :p.is_active:', [...], false)
+ 5 APPPATH\Controllers\AccountController.php(803): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AccountController->get_all_payments()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AccountController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))

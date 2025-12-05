@@ -1,0 +1,58 @@
+ERROR - 2025-07-25 10:23:15 --> mysqli_sql_exception: Unknown column 'insurance_copy' in 'field list' in C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `tb...', 0)
+#1 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `tb...')
+#2 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `tb...')
+#3 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tb...', Array, false)
+#4 C:\xampp\htdocs\SDKCPL_PHP\app\Controllers\VehicleController.php(76): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(933): App\Controllers\VehicleController->add_vehicle()
+#6 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\VehicleController))
+#7 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\SDKCPL_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-07-25 10:44:40 --> mysqli_sql_exception: Unknown column 'deleted_by' in 'field list' in C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('UPDATE `tbl_veh...', 0)
+#1 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('UPDATE `tbl_veh...')
+#2 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('UPDATE `tbl_veh...')
+#3 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseBuilder.php(2521): CodeIgniter\Database\BaseConnection->query('UPDATE `tbl_veh...', Array, false)
+#4 C:\xampp\htdocs\SDKCPL_PHP\app\Controllers\VehicleController.php(217): CodeIgniter\Database\BaseBuilder->update(Array)
+#5 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(933): App\Controllers\VehicleController->delete_vehicle()
+#6 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\VehicleController))
+#7 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\SDKCPL_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-07-25 10:57:32 --> mysqli_sql_exception: Unknown column 'First_Name' in 'field list' in C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `user_co...', 0)
+#1 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `user_co...')
+#2 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `user_co...')
+#3 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `user_co...', Array, false)
+#4 C:\xampp\htdocs\SDKCPL_PHP\app\Controllers\EmployeeController.php(1167): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(933): App\Controllers\EmployeeController->gettodaybirthdayemployee()
+#6 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\EmployeeController))
+#7 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\SDKCPL_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-07-25 10:57:32 --> DatabaseException in gettodaybirthdayemployee: Unknown column 'First_Name' in 'field list'
+ERROR - 2025-07-25 10:59:42 --> mysqli_sql_exception: Unknown column 'e.First_Name' in 'field list' in C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\SDKCPL_PHP\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `e`.`use...', 0)
+#1 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `e`.`use...')
+#2 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `e`.`use...')
+#3 C:\xampp\htdocs\SDKCPL_PHP\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `e`.`use...', Array, false)
+#4 C:\xampp\htdocs\SDKCPL_PHP\app\Controllers\EmployeeController.php(1169): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(933): App\Controllers\EmployeeController->gettodaybirthdayemployee()
+#6 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\EmployeeController))
+#7 C:\xampp\htdocs\SDKCPL_PHP\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\SDKCPL_PHP\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\SDKCPL_PHP\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-07-25 10:59:42 --> DatabaseException in gettodaybirthdayemployee: Unknown column 'e.First_Name' in 'field list'
