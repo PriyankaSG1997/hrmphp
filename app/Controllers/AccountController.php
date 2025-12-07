@@ -1381,12 +1381,17 @@ class AccountController extends BaseController
             ], 404);
         }
 
+    // print_r(value: $invoice);
         // Fetch company data
         $company = $db->table('tbl_company')
             ->where('company_code', $invoice['company_code'])
             ->where('is_active', 'Y')
             ->get()
             ->getRowArray();
+// echo $invoice['company_code'];
+//             echo "<pre>";
+//             print_r($company);
+//             exit();
 
         if (!empty($company['logo'])) {
             $company['logo'] = base_url('companylogo/' . $company['logo']);
