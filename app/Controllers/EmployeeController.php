@@ -34,7 +34,7 @@ class EmployeeController extends ResourceController
     {
         $request = $this->request->getJSON(true);
         $headers = $this->request->getServer('HTTP_AUTHORIZATION');
-        // print_r($request);die;
+
         if (!validatejwt($headers)) {
             return $this->respond(['status' => false, 'message' => 'Unauthorized or Invalid Token'], 401);
         }
@@ -63,12 +63,50 @@ class EmployeeController extends ResourceController
         }
         $newUserCode = 'SKDCPL' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-        // Required fields validation
-        $required = ['First_Name', 'Last_Name', 'Email', 'Phone_no', 'company_Code', 'password'];
+        // Required fields validation - ADD MORE FIELDS
+        $required = [
+            'First_Name',
+            'Last_Name',
+            'Email',
+            'Phone_no',
+            'company_Code',
+            'password',
+            'department_code',  // Add this
+            'role_ref_code',    // Add this
+            'joining_date'      // Add this
+        ];
+
         foreach ($required as $field) {
             if (empty($request[$field])) {
                 return $this->respond(['status' => false, 'message' => "$field is required"], 400);
             }
+        }
+
+        // Validate email format
+        if (!filter_var($request['Email'], FILTER_VALIDATE_EMAIL)) {
+            return $this->respond(['status' => false, 'message' => 'Invalid email format'], 400);
+        }
+
+        // Check if email already exists
+        $existingEmail = $db->table('tbl_register')
+            ->where('Email', $request['Email'])
+            ->where('is_active', 'Y')
+            ->get()
+            ->getRow();
+
+        if ($existingEmail) {
+            return $this->respond(['status' => false, 'message' => 'Email already exists'], 400);
+        }
+
+        // Check if phone already exists
+        $existingPhone = $db->table('tbl_register')
+            ->where('Phone_no', $request['Phone_no'])
+            ->where('is_active', 'Y')
+            ->get()
+            ->getRow();
+
+        if ($existingPhone) {
+            return $this->respond(['status' => false, 'message' => 'Phone number already exists'], 400);
         }
 
         $db->transStart();
@@ -85,15 +123,19 @@ class EmployeeController extends ResourceController
                 'Designations' => $request['Designations'] ?? null,
                 'joining_date' => $request['joining_date'] ?? null,
                 'Middle' => $request['Middle'] ?? null,
-                // 'TL_Status' => $request['TL_Status'] ?? null,
                 'user_code' => $newUserCode,
                 'role_ref_code' => $request['role_ref_code'] ?? null,
                 'team_lead_ref_code' => $request['team_lead_ref_code'] ?? null,
                 'hod_ref_code' => $request['hod_ref_code'] ?? null,
-                'Note' => $request['Note'] ?? null,
-                'created_by' => $createdBy
+                'Note' => $request['Note'] ?? 'New team member',
+                'created_by' => $createdBy,
+                'created_at' => date('Y-m-d H:i:s'),
+                'is_active' => 'Y'
             ];
-            $db->table('tbl_register')->insert($registerData);
+
+            if (!$db->table('tbl_register')->insert($registerData)) {
+                throw new \Exception('Failed to insert into tbl_register');
+            }
 
             // Insert into tbl_login
             $loginData = [
@@ -105,32 +147,51 @@ class EmployeeController extends ResourceController
                 'is_verified' => 'Y',
                 'designations_code' => $request['Designations'] ?? null,
                 'is_active' => 'Y',
-                'created_by' => $createdBy
+                'created_by' => $createdBy,
+                'created_at' => date('Y-m-d H:i:s')
             ];
-            $db->table('tbl_login')->insert($loginData);
 
-            // Determine access levels
+            if (!$db->table('tbl_login')->insert($loginData)) {
+                throw new \Exception('Failed to insert into tbl_login');
+            }
+
+            // Determine access levels - FIX THE LOGIC
             $accesslevelData = "";
-            if ($request['role_ref_code'] == 'EMP_htv') {
-                $accesslevelData = "H9KAW,KPVa6,bU5Y7,025ah,YjCHN,6oxyS,Cp3nm,b90GW,MEXrl,2gUm7,1DkHq,PNJWt,uvSOZ";
+
+            // Check role first
+            if (isset($request['role_ref_code'])) {
+                if ($request['role_ref_code'] == 'EMP_htv') {
+                    $accesslevelData = "H9KAW,KPVa6,bU5Y7,025ah,YjCHN,6oxyS,Cp3nm,b90GW,MEXrl,2gUm7,1DkHq,PNJWt,uvSOZ";
+                } elseif ($request['role_ref_code'] == 'ADM_3w7') {
+                    $accesslevelData = "FpfDG,H9KAW,Bkdv4,2Tm0a,KPVa6,k45PS,bU5Y7,xT9RX,NZXC9,uN0bD,mUQev,hySYA,BXARb,uCiHD,eQdRZ,bSDsm,PSba2,flgZW,6oxyS,7qjAU,PV4RQ,MtePJ,3iMFx,8fg9o,LBH1I,b90GW,7YPbI,MEXrl,cDjfg,2gUm7,oBgyO,C6Sal,i90yD,8bWdS,uVQwg,PNJWt,0Nmjr,zgqRE,MPBTr,n0NS9,2QChI,A3dGh,RaFqH,Mx7Sk,a143d,iL6uO";
+                } elseif ($request['role_ref_code'] == 'HRM_4w7') {
+                    $accesslevelData = "FpfDG,H9KAW,Bkdv4,2Tm0a,KPVa6,k45PS,bU5Y7,xT9RX,NZXC9,uN0bD,mUQev,hySYA,025ah,BXARb,uCiHD,bSDsm,PSba2,VSq2A,6oxyS,Cp3nm,7qjAU,PV4RQ,MtePJ,3iMFx,8fg9o,b90GW,MEXrl,cDjfg,2gUm7,1DkHq,oBgyO,C6Sal,i90yD,PNJWt,zgqRE,MPBTr,n0NS9,O62CH,O81I4,RaFqH,uvSOZ";
+                }
             }
-            if ($request['role_ref_code'] == 'ADM_3w7') {
-                $accesslevelData = "FpfDG,H9KAW,Bkdv4,2Tm0a,KPVa6,k45PS,bU5Y7,xT9RX,NZXC9,uN0bD,mUQev,hySYA,BXARb,uCiHD,eQdRZ,bSDsm,PSba2,flgZW,6oxyS,7qjAU,PV4RQ,MtePJ,3iMFx,8fg9o,LBH1I,b90GW,7YPbI,MEXrl,cDjfg,2gUm7,oBgyO,C6Sal,i90yD,8bWdS,uVQwg,PNJWt,0Nmjr,zgqRE,MPBTr,n0NS9,2QChI,A3dGh,RaFqH,Mx7Sk,a143d,iL6uO";
+
+            // Check designation if role didn't set access level
+            if (empty($accesslevelData) && isset($request['Designations'])) {
+                if ($request['Designations'] == 'DESGCPL003') {
+                    $accesslevelData = "bU5Y7,xT9RX,025ah,uCiHD,bSDsm,PSba2,Cp3nm,7qjAU,b90GW,MEXrl,cDjfg,PNJWt,MPBTr,O62CH,O81I4,8OTjs,A3dGh,83Bkx,mxpdz,uvSOZ";
+                } elseif ($request['Designations'] == 'DESGCPL004') {
+                    $accesslevelData = "KPVa6,k45PS,bU5Y7,025ah,BXARb,uCiHD,YjCHN,6oxyS,Cp3nm,MEXrl,2gUm7,1DkHq,PNJWt,O62CH,O81I4,8OTjs,A3dGh,83Bkx,f7BCP,mxpdz,uvSOZ";
+                } elseif ($request['Designations'] == 'DESGCPL021') {
+                    $accesslevelData = "025ah,uCiHD,eQdRZ,6oxyS,b90GW,MEXrl,PNJWt,m9i6A,O62CH,O81I4,8OTjs,83Bkx,mxpdz,uvSOZ";
+                }
             }
-            if ($request['role_ref_code'] == 'HRM_4w7') {
-                $accesslevelData = "FpfDG,H9KAW,Bkdv4,2Tm0a,KPVa6,k45PS,bU5Y7,xT9RX,NZXC9,uN0bD,mUQev,hySYA,025ah,BXARb,uCiHD,bSDsm,PSba2,VSq2A,6oxyS,Cp3nm,7qjAU,PV4RQ,MtePJ,3iMFx,8fg9o,b90GW,MEXrl,cDjfg,2gUm7,1DkHq,oBgyO,C6Sal,i90yD,PNJWt,zgqRE,MPBTr,n0NS9,O62CH,O81I4,RaFqH,uvSOZ";
+
+            // Check department if still empty
+            if (empty($accesslevelData) && isset($request['department_code'])) {
+                if ($request['department_code'] == 'DEPTM003') {
+                    $accesslevelData = "025ah,uCiHD,eQdRZ,6oxyS,b90GW,MEXrl,PNJWt,m9i6A,O62CH,O81I4,8OTjs,83Bkx,mxpdz,uvSOZ";
+                } elseif ($request['department_code'] == 'DEPTM002') {
+                    $accesslevelData = "83Bkx,H9KAW,KPVa6,bU5Y7,025ah,YjCHN,6oxyS,Cp3nm,b90GW,MEXrl,2gUm7,1DkHq,PNJWt,uvSOZ";
+                }
             }
-            if ($request['Designations'] == 'DESGCPL003') {
-                $accesslevelData = "bU5Y7,xT9RX,025ah,uCiHD,bSDsm,PSba2,Cp3nm,7qjAU,b90GW,MEXrl,cDjfg,PNJWt,MPBTr,O62CH,O81I4,8OTjs,A3dGh,83Bkx,mxpdz,uvSOZ";
-            }
-            if ($request['Designations'] == 'DESGCPL004') {
-                $accesslevelData = "KPVa6,k45PS,bU5Y7,025ah,BXARb,uCiHD,YjCHN,6oxyS,Cp3nm,MEXrl,2gUm7,1DkHq,PNJWt,O62CH,O81I4,8OTjs,A3dGh,83Bkx,f7BCP,mxpdz,uvSOZ";
-            }
-            if ($request['department_code'] == 'DEPTM003' || $request['Designations'] == 'DESGCPL021') {
-                $accesslevelData = "025ah,uCiHD,eQdRZ,6oxyS,b90GW,MEXrl,PNJWt,m9i6A,O62CH,O81I4,8OTjs,83Bkx,mxpdz,uvSOZ";
-            }
-            if ($request['department_code'] == 'DEPTM002') {
-                $accesslevelData = "83Bkx,H9KAW,KPVa6,bU5Y7,025ah,YjCHN,6oxyS,Cp3nm,b90GW,MEXrl,2gUm7,1DkHq,PNJWt,uvSOZ";
+
+            // If still empty, set default access level
+            if (empty($accesslevelData)) {
+                $accesslevelData = "H9KAW,KPVa6,bU5Y7,025ah,YjCHN,6oxyS,Cp3nm,b90GW,MEXrl,2gUm7,1DkHq,PNJWt,uvSOZ"; // Default employee access
             }
 
             // Insert access levels
@@ -138,17 +199,14 @@ class EmployeeController extends ResourceController
                 'user_ref_code' => $newUserCode,
                 'url_code' => $accesslevelData,
                 'created_by' => $createdBy,
+                'created_at' => date('Y-m-d H:i:s')
             ];
-            // print_r($accesslevel);die;
-            $db->table('tbl_access_level_by_user')->insert($accesslevel);
-            if ($db->affectedRows() <= 0) {
-                return $this->respond([
-                    'status' => false,
-                    'message' => 'tbl_access_level_by_user insert failed',
-                    'error' => $db->error(),
-                    'query' => (string) $db->getLastQuery()
-                ], 500);
+
+            if (!$db->table('tbl_access_level_by_user')->insert($accesslevel)) {
+                $error = $db->error();
+                throw new \Exception('Failed to insert access level: ' . ($error['message'] ?? 'Unknown error'));
             }
+
             $db->transComplete();
 
             if ($db->transStatus() === false) {
@@ -162,12 +220,22 @@ class EmployeeController extends ResourceController
                 'message' => 'Employee registered successfully',
                 'user_code_ref' => $newUserCode
             ]);
+
         } catch (\Throwable $e) {
             $db->transRollback();
+
+            // Check for specific constraint violations
+            if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
+                return $this->respond(['status' => false, 'message' => 'Duplicate entry detected. Email or phone number may already exist.'], 400);
+            }
+
+            if (strpos($e->getMessage(), 'foreign key constraint') !== false) {
+                return $this->respond(['status' => false, 'message' => 'Invalid reference (Company, Department, or Role does not exist)'], 400);
+            }
+
             return $this->respond(['status' => false, 'message' => 'Exception during registration: ' . $e->getMessage()], 500);
         }
     }
-
 
 
     public function add()
@@ -697,9 +765,11 @@ class EmployeeController extends ResourceController
                 if (!empty($employee->photo_file)) {
                     $employee->photo_file = base_url($employee->photo_file);
                 }
-                if (!empty($employee->company_logo)) {
-                    $employee->company_logo = base_url($employee->company_logo);
-                }
+         
+                  if (!empty($employee->company_logo)) {
+            $employee->company_logo = base_url('companylogo/' .$employee->company_logo);
+        }
+
 
                 return $this->respond(['status' => true, 'data' => $employee]);
             } else {
@@ -820,7 +890,7 @@ class EmployeeController extends ResourceController
         $request = $this->request->getJSON(true);
         $user_code = $request['user_code'] ?? null;
         $data = $this->request->getJSON(true);
-    
+
         try {
             $builder = $this->db->table('tbl_register');
             $builder->orderBy('user_code', 'DESC');
@@ -842,7 +912,7 @@ class EmployeeController extends ResourceController
                     'status' => true,
                     'message' => 'Data fetched successfully',
                     'data' => $data,
-               
+
                 ]);
             }
         } catch (DatabaseException $e) {
@@ -851,7 +921,7 @@ class EmployeeController extends ResourceController
             return $this->respond(['status' => false, 'message' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
         }
     }
-    
+
 
 
     public function getInsuranceData()
@@ -2311,8 +2381,8 @@ class EmployeeController extends ResourceController
         $assets = $this->db->table('tbl_assets AS a')
             ->select('a.*, r.user_code, r.First_Name, r.Last_Name, asst.category as asset_name, asst.asset_type as asset_type')
             ->join('tbl_register AS r', 'r.user_code = a.user_code_ref', 'left')
-            ->join('tbl_assetss AS asst', 'asst.asset_code  = a.asset_code', 'left') 
-      ->where('a.is_active', 'Y')
+            ->join('tbl_assetss AS asst', 'asst.asset_code  = a.asset_code', 'left')
+            ->where('a.is_active', 'Y')
             ->orderBy('a.assigned_date', 'DESC')
             ->get()
             ->getResultArray();
@@ -2825,113 +2895,113 @@ class EmployeeController extends ResourceController
         }
     }
 
-public function calculateSalaries()
-{
-    helper(['jwtvalidate_helper']);
-    $headers = $this->request->getServer('HTTP_AUTHORIZATION');
+    public function calculateSalaries()
+    {
+        helper(['jwtvalidate_helper']);
+        $headers = $this->request->getServer('HTTP_AUTHORIZATION');
 
-    if (!$headers) {
-        return $this->respond(['status' => false, 'message' => 'Authorization header missing'], 401);
+        if (!$headers) {
+            return $this->respond(['status' => false, 'message' => 'Authorization header missing'], 401);
+        }
+
+        $decoded = validatejwt($headers);
+        if (!$decoded) {
+            return $this->respond(['status' => false, 'message' => 'Invalid or expired token'], 401);
+        }
+
+        $request = $this->request->getJSON(true);
+        $startMonth = $request['start_month'] ?? null;
+        $endMonth = $request['end_month'] ?? null;
+
+        if (!$startMonth || !$endMonth) {
+            return $this->respond(['status' => false, 'message' => 'Both start_month and end_month are required'], 400);
+        }
+
+        try {
+            // Generate salary report directly from the three tables
+            $salaryReport = $this->generateSalaryReport($startMonth, $endMonth, null);
+
+            return $this->respond([
+                'status' => true,
+                'message' => "Salaries calculated successfully for " . count($salaryReport) . " employees",
+                'data' => $salaryReport,
+                'processed_count' => count($salaryReport)
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->respond([
+                'status' => false,
+                'message' => 'Salary calculation failed: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    $decoded = validatejwt($headers);
-    if (!$decoded) {
-        return $this->respond(['status' => false, 'message' => 'Invalid or expired token'], 401);
+    public function getSalaryReport()
+    {
+        helper(['jwtvalidate_helper']);
+        $headers = $this->request->getServer('HTTP_AUTHORIZATION');
+
+        if (!$headers) {
+            return $this->respond(['status' => false, 'message' => 'Authorization header missing'], 401);
+        }
+
+        $decoded = validatejwt($headers);
+        if (!$decoded) {
+            return $this->respond(['status' => false, 'message' => 'Invalid or expired token'], 401);
+        }
+
+        $request = $this->request->getJSON(true);
+        $startMonth = $request['start_month'] ?? null;
+        $endMonth = $request['end_month'] ?? null;
+        $userRefCode = $request['user_ref_code'] ?? null;
+        $page = $request['page'] ?? 1;
+        $limit = $request['limit'] ?? 10;
+
+        if (!$startMonth || !$endMonth) {
+            return $this->respond(['status' => false, 'message' => 'Both start_month and end_month are required'], 400);
+        }
+
+        try {
+            // Generate salary report directly from the three tables
+            $allSalaryData = $this->generateSalaryReport($startMonth, $endMonth, $userRefCode);
+
+            // Apply pagination
+            $totalRecords = count($allSalaryData);
+            $totalPages = ceil($totalRecords / $limit);
+            $offset = ($page - 1) * $limit;
+            $paginatedData = array_slice($allSalaryData, $offset, $limit);
+
+            return $this->respond([
+                'status' => true,
+                'message' => 'Salary report retrieved successfully',
+                'data' => $paginatedData,
+                'pagination' => [
+                    'current_page' => (int) $page,
+                    'per_page' => (int) $limit,
+                    'total_records' => $totalRecords,
+                    'total_pages' => $totalPages
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->respond([
+                'status' => false,
+                'message' => 'Failed to retrieve salary report: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    $request = $this->request->getJSON(true);
-    $startMonth = $request['start_month'] ?? null;
-    $endMonth = $request['end_month'] ?? null;
+    private function generateSalaryReport($startMonth, $endMonth, $userRefCode = null)
+    {
+        $startDate = $startMonth . '-01';
+        $endDate = date('Y-m-t', strtotime($endMonth . '-01'));
 
-    if (!$startMonth || !$endMonth) {
-        return $this->respond(['status' => false, 'message' => 'Both start_month and end_month are required'], 400);
-    }
+        // Debug: Log the parameters
+        log_message('debug', "Generating salary report from {$startDate} to {$endDate}");
 
-    try {
-        // Generate salary report directly from the three tables
-        $salaryReport = $this->generateSalaryReport($startMonth, $endMonth, null);
-
-        return $this->respond([
-            'status' => true,
-            'message' => "Salaries calculated successfully for " . count($salaryReport) . " employees",
-            'data' => $salaryReport,
-            'processed_count' => count($salaryReport)
-        ]);
-
-    } catch (\Exception $e) {
-        return $this->respond([
-            'status' => false,
-            'message' => 'Salary calculation failed: ' . $e->getMessage()
-        ], 500);
-    }
-}
-
-public function getSalaryReport()
-{
-    helper(['jwtvalidate_helper']);
-    $headers = $this->request->getServer('HTTP_AUTHORIZATION');
-
-    if (!$headers) {
-        return $this->respond(['status' => false, 'message' => 'Authorization header missing'], 401);
-    }
-
-    $decoded = validatejwt($headers);
-    if (!$decoded) {
-        return $this->respond(['status' => false, 'message' => 'Invalid or expired token'], 401);
-    }
-
-    $request = $this->request->getJSON(true);
-    $startMonth = $request['start_month'] ?? null;
-    $endMonth = $request['end_month'] ?? null;
-    $userRefCode = $request['user_ref_code'] ?? null;
-    $page = $request['page'] ?? 1;
-    $limit = $request['limit'] ?? 10;
-
-    if (!$startMonth || !$endMonth) {
-        return $this->respond(['status' => false, 'message' => 'Both start_month and end_month are required'], 400);
-    }
-
-    try {
-        // Generate salary report directly from the three tables
-        $allSalaryData = $this->generateSalaryReport($startMonth, $endMonth, $userRefCode);
-        
-        // Apply pagination
-        $totalRecords = count($allSalaryData);
-        $totalPages = ceil($totalRecords / $limit);
-        $offset = ($page - 1) * $limit;
-        $paginatedData = array_slice($allSalaryData, $offset, $limit);
-
-        return $this->respond([
-            'status' => true,
-            'message' => 'Salary report retrieved successfully',
-            'data' => $paginatedData,
-            'pagination' => [
-                'current_page' => (int)$page,
-                'per_page' => (int)$limit,
-                'total_records' => $totalRecords,
-                'total_pages' => $totalPages
-            ]
-        ]);
-
-    } catch (\Exception $e) {
-        return $this->respond([
-            'status' => false,
-            'message' => 'Failed to retrieve salary report: ' . $e->getMessage()
-        ], 500);
-    }
-}
-
-private function generateSalaryReport($startMonth, $endMonth, $userRefCode = null)
-{
-    $startDate = $startMonth . '-01';
-    $endDate = date('Y-m-t', strtotime($endMonth . '-01'));
-
-    // Debug: Log the parameters
-    log_message('debug', "Generating salary report from {$startDate} to {$endDate}");
-
-    // Get all active employees with their salary details
-    $builder = $this->db->table('tbl_register AS tr')
-        ->select('
+        // Get all active employees with their salary details
+        $builder = $this->db->table('tbl_register AS tr')
+            ->select('
             tr.user_code,
             tr.First_Name,
             tr.Last_Name,
@@ -2950,235 +3020,235 @@ private function generateSalaryReport($startMonth, $endMonth, $userRefCode = nul
             tsd.appraisal_date,
             tsd.authenticated_by
         ')
-        ->join('tbl_salary_details AS tsd', 'tsd.user_ref_code = tr.user_code', 'left')
-        ->join('tbl_login AS tl', 'tr.user_code = tl.user_code_ref', 'left')
-        ->where('tr.is_active', 'Y')
-        ->where('tl.is_active', 'Y')
-        ->groupBy('tr.user_code')
-        ->orderBy('tr.First_Name', 'ASC');
+            ->join('tbl_salary_details AS tsd', 'tsd.user_ref_code = tr.user_code', 'left')
+            ->join('tbl_login AS tl', 'tr.user_code = tl.user_code_ref', 'left')
+            ->where('tr.is_active', 'Y')
+            ->where('tl.is_active', 'Y')
+            ->groupBy('tr.user_code')
+            ->orderBy('tr.First_Name', 'ASC');
 
-    // Filter by employee if provided
-    if ($userRefCode) {
-        $builder->where('tr.user_code', $userRefCode);
-    }
-
-    $employees = $builder->get()->getResult();
-    
-    // Debug: Check if employees and salary data are retrieved
-    log_message('debug', "Found " . count($employees) . " employees");
-    
-    $salaryReport = [];
-
-    foreach ($employees as $employee) {
-        // Debug: Check individual employee salary data
-        if (empty($employee->basic_salary) || $employee->basic_salary <= 0) {
-            log_message('debug', "No salary data for employee: {$employee->user_code} - {$employee->First_Name}");
-        }
-        
-        // Get attendance data from tbl_time
-        $attendanceData = $this->calculateAttendanceForPeriod($employee->user_code, $startMonth, $endMonth);
-        
-        // Calculate salary based on attendance - PASS START MONTH
-        $salaryCalculation = $this->calculateEmployeeSalary($employee, $attendanceData, $startMonth);
-        
-        $salaryReport[] = $salaryCalculation;
-    }
-
-    return $salaryReport;
-}
-private function calculateEmployeeSalary($employee, $attendanceData, $startMonth)
-{
-    // Get salary components from tbl_salary_details
-    $basicSalary = floatval($employee->basic_salary ?? 0);
-    $hra = floatval($employee->hra ?? 0);
-    $specialAllowance = floatval($employee->special_allowance ?? 0);
-    $insurance = floatval($employee->insurance ?? 0);
-    $pf = floatval($employee->pf ?? 0);
-    $tds = floatval($employee->tds ?? 0);
-    $pt = floatval($employee->pt ?? 0);
-
-    $totalWorkingDays = $attendanceData['total_days'];
-    $presentDays = $attendanceData['present_days'];
-    
-    // Debug: Check if we have salary data
-    if ($basicSalary <= 0) {
-        log_message('debug', "No salary data for user: {$employee->user_code}, Basic: {$basicSalary}");
-    }
-    
-    // Calculate prorated salary based on attendance
-    if ($totalWorkingDays > 0 && $presentDays > 0) {
-        $attendanceRatio = $presentDays / $totalWorkingDays;
-        
-        // Basic salary is prorated based on attendance
-        $proratedBasicSalary = $basicSalary * $attendanceRatio;
-        
-        // HRA is usually 40-50% of basic, so prorate with basic
-        $proratedHra = $hra * $attendanceRatio;
-        
-        // Special Allowance prorated
-        $proratedSpecialAllowance = $specialAllowance * $attendanceRatio;
-        
-        // Deductions (insurance, PF, PT are usually fixed per month)
-        $proratedInsurance = $insurance;
-        $proratedPf = $pf;
-        $proratedTds = $tds * $attendanceRatio;
-        $proratedPt = $pt;
-    } else {
-        // No attendance or no working days
-        $proratedBasicSalary = 0;
-        $proratedHra = 0;
-        $proratedSpecialAllowance = 0;
-        $proratedInsurance = 0;
-        $proratedPf = 0;
-        $proratedTds = 0;
-        $proratedPt = 0;
-    }
-
-    // Calculate totals
-    $totalEarnings = $proratedBasicSalary + $proratedHra + $proratedSpecialAllowance;
-    $totalDeductions = $proratedInsurance + $proratedPf + $proratedTds + $proratedPt;
-    $netSalary = $totalEarnings - $totalDeductions;
-
-    // Determine payment status based on net salary and attendance
-    $paymentStatus = 'Pending';
-    if ($netSalary <= 0) {
-        $paymentStatus = 'N/A';
-    } elseif ($presentDays == 0) {
-        $paymentStatus = 'No Attendance';
-    } elseif ($netSalary > 0) {
-        $paymentStatus = 'Pending';
-    }
-
-    $attendanceRate = $totalWorkingDays > 0 ? ($presentDays / $totalWorkingDays) * 100 : 0;
-
-    return [
-        'user_ref_code' => $employee->user_code,
-        'user_code' => $employee->user_code,
-        'First_Name' => $employee->First_Name,
-        'Last_Name' => $employee->Last_Name,
-        'Email' => $employee->Email,
-        'Phone_no' => $employee->Phone_no,
-        'designation' => $employee->Designations,
-        'joining_date' => $employee->joining_date,
-        
-        // Salary Components (from tbl_salary_details)
-        'basic_salary' => round($proratedBasicSalary, 2),
-        'hra' => round($proratedHra, 2),
-        'special_allowance' => round($proratedSpecialAllowance, 2),
-        'insurance' => round($proratedInsurance, 2),
-        'pf' => round($proratedPf, 2),
-        'tds' => round($proratedTds, 2),
-        'pt' => round($proratedPt, 2),
-        
-        // Calculated Totals
-        'total_earnings' => round($totalEarnings, 2),
-        'total_deductions' => round($totalDeductions, 2),
-        'net_salary' => round($netSalary, 2),
-        
-        // Attendance Data (from tbl_time)
-        'attendance_days' => (int)$presentDays,
-        'total_days' => (int)$totalWorkingDays,
-        'attendance_rate' => round($attendanceRate, 2),
-        
-        // Status
-        'payment_status' => $paymentStatus,
-        'salaryMonth' => date('F Y', strtotime($startMonth . '-01')),
-        'attendanceBadge' => $attendanceRate >= 90 ? 'success' : ($attendanceRate >= 75 ? 'warning' : 'danger'),
-        'paymentBadge' => $paymentStatus === 'Paid' ? 'success' : ($paymentStatus === 'Pending' ? 'warning' : 'danger'),
-        
-        // Additional Info
-        'last_appraisal_date' => $employee->appraisal_date,
-        'authenticated_by' => $employee->authenticated_by,
-        'calculation_timestamp' => date('Y-m-d H:i:s')
-    ];
-}
-private function calculateAttendanceForPeriod($userRefCode, $startMonth, $endMonth)
-{
-    $startDate = $startMonth . '-01';
-    $endDate = date('Y-m-t', strtotime($endMonth . '-01'));
-    
-    // Calculate total working days in the period (excluding weekends)
-    $totalWorkingDays = $this->calculateWorkingDays($startDate, $endDate);
-    
-    // Get punch records from tbl_time
-    $attendanceRecords = $this->db->table('tbl_time')
-        ->select('today_date, punch_in, punch_out')
-        ->where('user_ref_code', $userRefCode)
-        ->where("DATE(today_date) >= DATE('{$startDate}')")
-        ->where("DATE(today_date) <= DATE('{$endDate}')")
-        ->where('is_active', 'Y')
-        ->orderBy('today_date', 'ASC')
-        ->get()
-        ->getResult();
-
-    $presentDays = 0;
-    $uniqueDates = [];
-
-    foreach ($attendanceRecords as $record) {
-        $date = date('Y-m-d', strtotime($record->today_date));
-        
-        // Avoid counting same date multiple times
-        if (in_array($date, $uniqueDates)) {
-            continue;
+        // Filter by employee if provided
+        if ($userRefCode) {
+            $builder->where('tr.user_code', $userRefCode);
         }
 
-        // Count as present if they have valid punch in and punch out
-        if (!empty($record->punch_in) && !empty($record->punch_out)) {
-            
-            // Calculate hours worked
-            $punchIn = strtotime($record->punch_in);
-            $punchOut = strtotime($record->punch_out);
-            
-            if ($punchIn && $punchOut && $punchOut > $punchIn) {
-                $hoursWorked = ($punchOut - $punchIn) / 3600; // Convert seconds to hours
-                
-                // Consider as full day if worked more than 4 hours
-                if ($hoursWorked >= 4) {
-                    $presentDays++;
-                } elseif ($hoursWorked >= 2) {
-                    // Half day if worked between 2-4 hours
-                    $presentDays += 0.5;
-                }
-                // Less than 2 hours is not counted
-            } else {
-                // If time calculation fails but has both punches, count as present
-                $presentDays++;
+        $employees = $builder->get()->getResult();
+
+        // Debug: Check if employees and salary data are retrieved
+        log_message('debug', "Found " . count($employees) . " employees");
+
+        $salaryReport = [];
+
+        foreach ($employees as $employee) {
+            // Debug: Check individual employee salary data
+            if (empty($employee->basic_salary) || $employee->basic_salary <= 0) {
+                log_message('debug', "No salary data for employee: {$employee->user_code} - {$employee->First_Name}");
             }
-            
-            $uniqueDates[] = $date;
+
+            // Get attendance data from tbl_time
+            $attendanceData = $this->calculateAttendanceForPeriod($employee->user_code, $startMonth, $endMonth);
+
+            // Calculate salary based on attendance - PASS START MONTH
+            $salaryCalculation = $this->calculateEmployeeSalary($employee, $attendanceData, $startMonth);
+
+            $salaryReport[] = $salaryCalculation;
         }
+
+        return $salaryReport;
+    }
+    private function calculateEmployeeSalary($employee, $attendanceData, $startMonth)
+    {
+        // Get salary components from tbl_salary_details
+        $basicSalary = floatval($employee->basic_salary ?? 0);
+        $hra = floatval($employee->hra ?? 0);
+        $specialAllowance = floatval($employee->special_allowance ?? 0);
+        $insurance = floatval($employee->insurance ?? 0);
+        $pf = floatval($employee->pf ?? 0);
+        $tds = floatval($employee->tds ?? 0);
+        $pt = floatval($employee->pt ?? 0);
+
+        $totalWorkingDays = $attendanceData['total_days'];
+        $presentDays = $attendanceData['present_days'];
+
+        // Debug: Check if we have salary data
+        if ($basicSalary <= 0) {
+            log_message('debug', "No salary data for user: {$employee->user_code}, Basic: {$basicSalary}");
+        }
+
+        // Calculate prorated salary based on attendance
+        if ($totalWorkingDays > 0 && $presentDays > 0) {
+            $attendanceRatio = $presentDays / $totalWorkingDays;
+
+            // Basic salary is prorated based on attendance
+            $proratedBasicSalary = $basicSalary * $attendanceRatio;
+
+            // HRA is usually 40-50% of basic, so prorate with basic
+            $proratedHra = $hra * $attendanceRatio;
+
+            // Special Allowance prorated
+            $proratedSpecialAllowance = $specialAllowance * $attendanceRatio;
+
+            // Deductions (insurance, PF, PT are usually fixed per month)
+            $proratedInsurance = $insurance;
+            $proratedPf = $pf;
+            $proratedTds = $tds * $attendanceRatio;
+            $proratedPt = $pt;
+        } else {
+            // No attendance or no working days
+            $proratedBasicSalary = 0;
+            $proratedHra = 0;
+            $proratedSpecialAllowance = 0;
+            $proratedInsurance = 0;
+            $proratedPf = 0;
+            $proratedTds = 0;
+            $proratedPt = 0;
+        }
+
+        // Calculate totals
+        $totalEarnings = $proratedBasicSalary + $proratedHra + $proratedSpecialAllowance;
+        $totalDeductions = $proratedInsurance + $proratedPf + $proratedTds + $proratedPt;
+        $netSalary = $totalEarnings - $totalDeductions;
+
+        // Determine payment status based on net salary and attendance
+        $paymentStatus = 'Pending';
+        if ($netSalary <= 0) {
+            $paymentStatus = 'N/A';
+        } elseif ($presentDays == 0) {
+            $paymentStatus = 'No Attendance';
+        } elseif ($netSalary > 0) {
+            $paymentStatus = 'Pending';
+        }
+
+        $attendanceRate = $totalWorkingDays > 0 ? ($presentDays / $totalWorkingDays) * 100 : 0;
+
+        return [
+            'user_ref_code' => $employee->user_code,
+            'user_code' => $employee->user_code,
+            'First_Name' => $employee->First_Name,
+            'Last_Name' => $employee->Last_Name,
+            'Email' => $employee->Email,
+            'Phone_no' => $employee->Phone_no,
+            'designation' => $employee->Designations,
+            'joining_date' => $employee->joining_date,
+
+            // Salary Components (from tbl_salary_details)
+            'basic_salary' => round($proratedBasicSalary, 2),
+            'hra' => round($proratedHra, 2),
+            'special_allowance' => round($proratedSpecialAllowance, 2),
+            'insurance' => round($proratedInsurance, 2),
+            'pf' => round($proratedPf, 2),
+            'tds' => round($proratedTds, 2),
+            'pt' => round($proratedPt, 2),
+
+            // Calculated Totals
+            'total_earnings' => round($totalEarnings, 2),
+            'total_deductions' => round($totalDeductions, 2),
+            'net_salary' => round($netSalary, 2),
+
+            // Attendance Data (from tbl_time)
+            'attendance_days' => (int) $presentDays,
+            'total_days' => (int) $totalWorkingDays,
+            'attendance_rate' => round($attendanceRate, 2),
+
+            // Status
+            'payment_status' => $paymentStatus,
+            'salaryMonth' => date('F Y', strtotime($startMonth . '-01')),
+            'attendanceBadge' => $attendanceRate >= 90 ? 'success' : ($attendanceRate >= 75 ? 'warning' : 'danger'),
+            'paymentBadge' => $paymentStatus === 'Paid' ? 'success' : ($paymentStatus === 'Pending' ? 'warning' : 'danger'),
+
+            // Additional Info
+            'last_appraisal_date' => $employee->appraisal_date,
+            'authenticated_by' => $employee->authenticated_by,
+            'calculation_timestamp' => date('Y-m-d H:i:s')
+        ];
+    }
+    private function calculateAttendanceForPeriod($userRefCode, $startMonth, $endMonth)
+    {
+        $startDate = $startMonth . '-01';
+        $endDate = date('Y-m-t', strtotime($endMonth . '-01'));
+
+        // Calculate total working days in the period (excluding weekends)
+        $totalWorkingDays = $this->calculateWorkingDays($startDate, $endDate);
+
+        // Get punch records from tbl_time
+        $attendanceRecords = $this->db->table('tbl_time')
+            ->select('today_date, punch_in, punch_out')
+            ->where('user_ref_code', $userRefCode)
+            ->where("DATE(today_date) >= DATE('{$startDate}')")
+            ->where("DATE(today_date) <= DATE('{$endDate}')")
+            ->where('is_active', 'Y')
+            ->orderBy('today_date', 'ASC')
+            ->get()
+            ->getResult();
+
+        $presentDays = 0;
+        $uniqueDates = [];
+
+        foreach ($attendanceRecords as $record) {
+            $date = date('Y-m-d', strtotime($record->today_date));
+
+            // Avoid counting same date multiple times
+            if (in_array($date, $uniqueDates)) {
+                continue;
+            }
+
+            // Count as present if they have valid punch in and punch out
+            if (!empty($record->punch_in) && !empty($record->punch_out)) {
+
+                // Calculate hours worked
+                $punchIn = strtotime($record->punch_in);
+                $punchOut = strtotime($record->punch_out);
+
+                if ($punchIn && $punchOut && $punchOut > $punchIn) {
+                    $hoursWorked = ($punchOut - $punchIn) / 3600; // Convert seconds to hours
+
+                    // Consider as full day if worked more than 4 hours
+                    if ($hoursWorked >= 4) {
+                        $presentDays++;
+                    } elseif ($hoursWorked >= 2) {
+                        // Half day if worked between 2-4 hours
+                        $presentDays += 0.5;
+                    }
+                    // Less than 2 hours is not counted
+                } else {
+                    // If time calculation fails but has both punches, count as present
+                    $presentDays++;
+                }
+
+                $uniqueDates[] = $date;
+            }
+        }
+
+        return [
+            'present_days' => $presentDays,
+            'total_days' => $totalWorkingDays,
+            'attendance_rate' => $totalWorkingDays > 0 ? round(($presentDays / $totalWorkingDays) * 100, 2) : 0,
+            'unique_dates' => $uniqueDates
+        ];
     }
 
-    return [
-        'present_days' => $presentDays,
-        'total_days' => $totalWorkingDays,
-        'attendance_rate' => $totalWorkingDays > 0 ? round(($presentDays / $totalWorkingDays) * 100, 2) : 0,
-        'unique_dates' => $uniqueDates
-    ];
-}
+    private function calculateWorkingDays($startDate, $endDate)
+    {
+        $start = strtotime($startDate);
+        $end = strtotime($endDate);
 
-private function calculateWorkingDays($startDate, $endDate)
-{
-    $start = strtotime($startDate);
-    $end = strtotime($endDate);
-    
-    $workingDays = 0;
-    $current = $start;
-    
-    // Loop through each day from start to end
-    while ($current <= $end) {
-        $dayOfWeek = date('N', $current); // 1 (Monday) to 7 (Sunday)
-        if ($dayOfWeek <= 5) { // Monday to Friday are working days
-            $workingDays++;
+        $workingDays = 0;
+        $current = $start;
+
+        // Loop through each day from start to end
+        while ($current <= $end) {
+            $dayOfWeek = date('N', $current); // 1 (Monday) to 7 (Sunday)
+            if ($dayOfWeek <= 5) { // Monday to Friday are working days
+                $workingDays++;
+            }
+            // Move to next day
+            $current = strtotime('+1 day', $current);
         }
-        // Move to next day
-        $current = strtotime('+1 day', $current);
-    }
-    
-    return $workingDays;
-}
 
-    
+        return $workingDays;
+    }
+
+
 }
 
 

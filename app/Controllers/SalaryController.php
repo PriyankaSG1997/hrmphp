@@ -612,7 +612,7 @@ public function mark_late_punchin()
 
         try {
             $record = $db->table('tbl_salary_details s')
-                ->select('s.*, r.First_Name, r.Last_Name, c.company_name, d.designation_name')
+                ->select('s.*, r.First_Name, r.Last_Name, c.logo,  c.company_name, d.designation_name')
                 ->join('tbl_register r', 's.user_ref_code = r.user_code', 'left')
                 ->join('tbl_company c', 'r.company_Code = c.company_Code', 'left')
                 ->join('tbl_designation_mst d', 'r.Designations = d.designation_code', 'left')
@@ -627,6 +627,9 @@ public function mark_late_punchin()
 
             // Calculate gross annual salary
             $grossAnnualSalary = ((float) $record->basic_salary + (float) $record->hra + (float) $record->special_allowance) * 13;
+      if (!empty($record->logo)) {
+           $record->logo = base_url('companylogo/' . $record->logo);
+        }
 
             $response = [
                 'status' => true,
@@ -636,6 +639,7 @@ public function mark_late_punchin()
                     'employee_name' => $record->First_Name . ' ' . $record->Last_Name,
                     'user_ref_code' => $record->user_ref_code,
                     'company_name' => $record->company_name,
+                    'company_logo' => $record->logo,
                     'designation' => $record->designation_name,
                     'basic_salary' => $record->basic_salary,
                     'hra' => $record->hra,
