@@ -108,8 +108,10 @@ class LettarsController extends BaseController
         }
 
         $data = $this->request->getJSON(true);
+        $created_by = $decoded->user_id ?? null;
 
-        $required = ['date', 'employee_name', 'employee_address', 'company_name', 'designation', 'gross_salary', 'ctc', 'faithfully_name', 'faithfully_designation'];
+        // Remove 'signature_code' from required fields
+        $required = ['date', 'employee_name', 'employee_address', 'company_name', 'designation', 'gross_salary'];
 
         foreach ($required as $field) {
             if (empty($data[$field])) {
@@ -118,6 +120,19 @@ class LettarsController extends BaseController
         }
 
         $db = \Config\Database::connect();
+
+        // Optional: Validate signature code if provided
+        if (!empty($data['signature_code'])) {
+            $signatureExists = $db->table('tbl_signatureandstamp')
+                ->where('signatureandstamp_code', $data['signature_code'])
+                ->where('is_active', 'Y')
+                ->countAllResults();
+
+            if ($signatureExists == 0) {
+                return $this->respond(['status' => false, 'message' => 'Invalid signature code'], 400);
+            }
+        }
+
         $insertData = [
             'date' => $data['date'],
             'employee_name' => $data['employee_name'],
@@ -125,11 +140,12 @@ class LettarsController extends BaseController
             'company_name' => $data['company_name'],
             'designation' => $data['designation'],
             'gross_salary' => $data['gross_salary'],
-            'ctc' => $data['ctc'],
-            'faithfully_name' => $data['faithfully_name'],
-            'faithfully_designation' => $data['faithfully_designation'],
+
+            'signature_code' => $data['signature_code'] ?? null, // Make it nullable
             'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s')
+            'updated_at' => date('Y-m-d H:i:s'),
+            'created_by' => $created_by,
+
         ];
 
         $db->table('tbl_offerletter')->insert($insertData);
@@ -142,7 +158,6 @@ class LettarsController extends BaseController
         helper(['jwtvalidate_helper']);
         $headers = $this->request->getServer('HTTP_AUTHORIZATION');
 
-        // Validate JWT
         if (!validatejwt($headers)) {
             return $this->respond(['status' => false, 'message' => 'Invalid or missing token'], 401);
         }
@@ -152,27 +167,46 @@ class LettarsController extends BaseController
             return $this->respond(['status' => false, 'message' => 'Token validation failed'], 401);
         }
 
-        // Get data from request
         $data = $this->request->getJSON(true);
+        $created_by = $decoded->user_id ?? null;
 
-        // Ensure ID is provided
+        // Check if ID is provided
         if (empty($data['id'])) {
             return $this->respond(['status' => false, 'message' => 'Missing: id'], 400);
         }
 
-        // Required fields
-        $required = ['date', 'employee_name', 'employee_address', 'company_name', 'designation', 'gross_salary', 'ctc', 'faithfully_name', 'faithfully_designation', 'status'];
+        // Remove 'signature_code' from required fields
+        $required = ['date', 'employee_name', 'employee_address', 'company_name', 'designation', 'gross_salary', 'ctc', 'faithfully_name', 'faithfully_designation'];
 
         foreach ($required as $field) {
-            if (!isset($data[$field]) || $data[$field] === '') {
+            if (empty($data[$field])) {
                 return $this->respond(['status' => false, 'message' => "Missing: $field"], 400);
             }
         }
 
         $db = \Config\Database::connect();
-        $builder = $db->table('tbl_offerletter');
 
-        // Prepare update data
+        // Check if record exists
+        $exists = $db->table('tbl_offerletter')
+            ->where('id', $data['id'])
+            ->countAllResults();
+
+        if ($exists == 0) {
+            return $this->respond(['status' => false, 'message' => 'Offer letter not found'], 404);
+        }
+
+        // Optional: Validate signature code if provided
+        if (!empty($data['signature_code'])) {
+            $signatureExists = $db->table('tbl_signatureandstamp')
+                ->where('signatureandstamp_code', $data['signature_code'])
+                ->where('is_active', 'Y')
+                ->countAllResults();
+
+            if ($signatureExists == 0) {
+                return $this->respond(['status' => false, 'message' => 'Invalid signature code'], 400);
+            }
+        }
+
         $updateData = [
             'date' => $data['date'],
             'employee_name' => $data['employee_name'],
@@ -183,19 +217,17 @@ class LettarsController extends BaseController
             'ctc' => $data['ctc'],
             'faithfully_name' => $data['faithfully_name'],
             'faithfully_designation' => $data['faithfully_designation'],
-            // 'status' => $data['status'],
-            'updated_at' => date('Y-m-d H:i:s')
+            'signature_code' => $data['signature_code'] ?? null, // Make it nullable
+            // 'status' => $data['status'] ?? 'Pending',
+            'updated_at' => date('Y-m-d H:i:s'),
+            'updated_by' => $created_by
         ];
 
-        // Perform update
-        $builder->where('id', $data['id']);
-        $updated = $builder->update($updateData);
+        $db->table('tbl_offerletter')
+            ->where('id', $data['id'])
+            ->update($updateData);
 
-        if ($updated) {
-            return $this->respond(['status' => true, 'message' => 'Offer letter updated successfully']);
-        } else {
-            return $this->respond(['status' => false, 'message' => 'Failed to update offer letter or no changes made'], 400);
-        }
+        return $this->respond(['status' => true, 'message' => 'Offer letter updated successfully']);
     }
 
 
@@ -420,7 +452,7 @@ class LettarsController extends BaseController
         try {
             $updateData = [
                 'task_date' => $data['task_date'],
-                'project_code' => $data['project_code'] ,
+                'project_code' => $data['project_code'],
                 'task_description' => $data['task_description'],
                 'status' => $data['status'],
                 'updated_at' => date('Y-m-d H:i:s')
@@ -475,30 +507,56 @@ class LettarsController extends BaseController
     if (!validatejwt($headers)) {
         return $this->respond(['status' => false, 'message' => 'Invalid or missing token'], 401);
     }
+    
     $request = $this->request->getJSON(true);
     $offerLetterId = $request['id'] ?? null;
+    
     if (empty($offerLetterId)) {
         return $this->respond(['status' => false, 'message' => 'Offer letter ID is required.'], 400);
     }
+    
     $db = \Config\Database::connect();
+    
     try {
         $data = $db->table('tbl_offerletter AS tol')
-            ->select('tol.*, tc.company_name AS company_master_name, tc.company_code AS company_code_ref, tc.logo AS company_logo, tc.address AS company_address, tc.email AS company_email')
+            ->select('tol.*, 
+                      tc.company_name AS company_master_name, 
+                      tc.company_code AS company_code_ref, 
+                      tc.contact_number as company_contact,
+                      tc.logo AS company_logo, 
+                      tc.address AS company_address, 
+                      tc.email AS company_email,
+                      ts.name AS signature_name,
+                      ts.signature_img,
+                      ts.stamp_img')
             ->join('tbl_company AS tc', 'tol.company_name = tc.company_code', 'left')
+            ->join('tbl_signatureandstamp AS ts', 'tol.signature_code = ts.signatureandstamp_code', 'left')
             ->where('tol.id', $offerLetterId)
             ->get()
             ->getRow();
+        
         if ($data) {
             $data->company_name = $data->company_master_name;
-            
-            // Format company logo path exactly like your existing pattern
+
+            // Format company logo path
             if (!empty($data->company_logo)) {
                 $data->company_logo = base_url('companylogo/' . $data->company_logo);
             }
+
+            // Format signature image path
+            if (!empty($data->signature_img)) {
+                $data->signature_img = base_url('uploads/signatures/'.$data->signature_img);
+            }
             
+            // Format stamp image path
+            if (!empty($data->stamp_img)) {
+                $data->stamp_img = base_url('uploads/stamps/'.$data->stamp_img);
+            }
+
             if (!empty($data->offer_letter_file)) {
                 $data->offer_letter_file = base_url($data->offer_letter_file);
             }
+            
             return $this->respond([
                 'status' => true,
                 'message' => 'Offer letter fetched successfully.',
@@ -510,8 +568,7 @@ class LettarsController extends BaseController
     } catch (\Exception $e) {
         return $this->respond(['status' => false, 'message' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
     }
-}   
-    public function addExperienceLetter()
+}    public function addExperienceLetter()
     {
         helper(['jwtvalidate_helper']);
         $headers = $this->request->getServer('HTTP_AUTHORIZATION');
@@ -521,11 +578,13 @@ class LettarsController extends BaseController
         }
 
         $decoded = validatejwt($headers);
+
         if (!$decoded) {
             return $this->respond(['status' => false, 'message' => 'Token validation failed'], 401);
         }
 
         $data = $this->request->getJSON(true);
+        $created_by = $decoded->user_id ?? null;
 
         // Required fields for experience letter
         $required = [
@@ -558,9 +617,13 @@ class LettarsController extends BaseController
             'employment_end_date' => $data['employment_end_date'],
             'faithfully_name' => $data['faithfully_name'],
             'faithfully_designation' => $data['faithfully_designation'],
-            'status' => $data['status'] ?? 'Pending',
+            // 'status' => $data['status'] ?? 'Pending',
             'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s')
+            'updated_at' => date('Y-m-d H:i:s'),
+            'created_by' => $created_by,
+            'signature_code' => $data['signature_code'] ?? null,
+
+
         ];
 
         // Optional fields
@@ -595,6 +658,8 @@ class LettarsController extends BaseController
         }
 
         $data = $this->request->getJSON(true);
+        $decoded = validatejwt($headers);
+        $created_by = $decoded->user_id ?? null;
 
         if (empty($data['id'])) {
             return $this->respond(['status' => false, 'message' => 'Experience letter ID is required'], 400);
@@ -631,7 +696,9 @@ class LettarsController extends BaseController
             'faithfully_name' => $data['faithfully_name'],
             'faithfully_designation' => $data['faithfully_designation'],
             'status' => $data['status'] ?? 'Pending',
-            'updated_at' => date('Y-m-d H:i:s')
+            'updated_at' => date('Y-m-d H:i:s'),
+            'signature_code' => $data['signature_code'] ?? null,
+            'updated_by' => $created_by,
         ];
 
         // Optional fields
@@ -756,21 +823,24 @@ class LettarsController extends BaseController
 
             $query = $db->table('tbl_experience_letter AS tel')
                 ->select('
-                tel.*, 
-                r.first_name,
-                r.middle, 
-                r.last_name,
-                tc.company_name as companyname, 
-                tc.logo AS company_logo, 
-                tc.address AS company_address,
-                tc.company_code,
-                d.designation_name
-            ')
+        tel.*, 
+        r.first_name,
+        r.middle, 
+        r.last_name,
+        tc.company_name as companyname,
+        tc.logo AS company_logo,
+        tc.address AS company_address,
+        tc.company_code,
+        d.designation_name,
+        ed.gender                                       
+    ')
                 ->join('tbl_register AS r', 'tel.employee_code = r.user_code', 'left')
                 ->join('tbl_company AS tc', 'tel.company_name = tc.company_code', 'left')
                 ->join('tbl_designation_mst AS d', 'tel.designation = d.designation_name', 'left')
+                ->join('tbl_employee_details AS ed', 'r.user_code = ed.user_code_ref', 'left')
                 ->where('tel.id', $id)
                 ->get();
+
 
             $experienceLetter = $query->getRow();
 
@@ -791,7 +861,7 @@ class LettarsController extends BaseController
                 'employee_code' => $experienceLetter->employee_code,
                 'employee_name' => trim($experienceLetter->first_name . ' ' . $experienceLetter->middle . ' ' . $experienceLetter->last_name),
                 'employee_address' => $experienceLetter->employee_address,
-                'company_name' => $experienceLetter->company_name,
+                'company_name' => $experienceLetter->companyname,
                 'company_code' => $experienceLetter->company_code,
                 'company_logo' => $companyLogo,
                 'company_address' => $experienceLetter->company_address,
@@ -803,15 +873,19 @@ class LettarsController extends BaseController
                 'status' => $experienceLetter->status,
                 'work_experience' => $experienceLetter->work_experience,
                 'reason_for_leaving' => $experienceLetter->reason_for_leaving,
-                'created_at' => $experienceLetter->created_at
+                'created_at' => $experienceLetter->created_at,
+                'gender' => $experienceLetter->gender,
+                'signature_code' => $experienceLetter->signature_code,
+
             ];
+
+            // log_message('info', 'Fetched Experience Letter => ' . json_encode($formattedData));
 
             return $this->respond([
                 'status' => true,
                 'message' => 'Experience letter fetched successfully',
                 'data' => $formattedData
             ]);
-
         } catch (\Exception $e) {
             return $this->respond([
                 'status' => false,
@@ -819,6 +893,4 @@ class LettarsController extends BaseController
             ], 500);
         }
     }
-
-
 }

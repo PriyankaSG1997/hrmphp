@@ -48,34 +48,77 @@ class EmployeeController extends ResourceController
 
         $db = \Config\Database::connect();
 
-        // Generate next user_code
+        // First, get the company name to create short code
+        $companyCode = $request['company_Code'] ?? null;
+        if (!$companyCode) {
+            return $this->respond(['status' => false, 'message' => 'Company Code is required'], 400);
+        }
+
+        // Get company details
+        $companyQuery = $db->table('tbl_company')
+            ->select('company_name, company_short_name')
+            ->where('company_code', $companyCode)
+            ->get()
+            ->getRow();
+
+        if (!$companyQuery) {
+            return $this->respond(['status' => false, 'message' => 'Invalid Company Code'], 400);
+        }
+
+        $companyName = $companyQuery->company_name;
+        $companyShortName = $companyQuery->company_short_name;
+
+        // If no short name in DB, create one from company name
+        if (empty($companyShortName)) {
+            $companyShortName = $this->createShortNameFromCompanyName($companyName);
+
+            // Update the company record with the generated short name
+            $db->table('tbl_company')
+                ->where('company_code', $companyCode)
+                ->update(['company_short_name' => $companyShortName]);
+        }
+
+        // Generate next user_code based on company short name
+        $prefix = strtoupper($companyShortName); // Convert to uppercase for consistency
+
+        // Find the last user_code with this prefix
         $lastRow = $db->table('tbl_register')
             ->select('user_code')
-            ->like('user_code', 'SKDCPL')
+            ->where('company_Code', $companyCode) // Add company filter
+            ->like('user_code', $prefix, 'after')
             ->orderBy('user_code', 'DESC')
             ->limit(1)
             ->get()
             ->getRow();
 
         $nextNumber = 1;
-        if ($lastRow && preg_match('/SKDCPL(\d+)/', $lastRow->user_code, $matches)) {
+        if ($lastRow && preg_match('/' . preg_quote($prefix, '/') . '(\d+)/', $lastRow->user_code, $matches)) {
             $nextNumber = intval($matches[1]) + 1;
         }
-        $newUserCode = 'SKDCPL' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-        // Required fields validation - ADD MORE FIELDS
-        $required = [
-            'First_Name',
-            'Last_Name',
-            'Email',
-            'Phone_no',
-            'company_Code',
-            'password',
-            'department_code',  // Add this
-            'role_ref_code',    // Add this
-            'joining_date'      // Add this
-        ];
+        // Generate new user code: COMPANY_SHORT_NAME + sequential number (padded to 3 digits)
+        $newUserCode = $prefix . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
+        // Check if email already exists
+        $existingEmail = $db->table('tbl_register')
+            ->where('Email', $request['Email'])
+            ->countAllResults();
+
+        if ($existingEmail > 0) {
+            return $this->respond(['status' => false, 'message' => 'Email already exists'], 400);
+        }
+
+        // Check if phone already exists
+        $existingPhone = $db->table('tbl_register')
+            ->where('Phone_no', $request['Phone_no'])
+            ->countAllResults();
+
+        if ($existingPhone > 0) {
+            return $this->respond(['status' => false, 'message' => 'Phone number already exists'], 400);
+        }
+
+        // Required fields validation
+        $required = ['First_Name', 'Last_Name', 'Email', 'Phone_no', 'company_Code', 'password'];
         foreach ($required as $field) {
             if (empty($request[$field])) {
                 return $this->respond(['status' => false, 'message' => "$field is required"], 400);
@@ -87,26 +130,14 @@ class EmployeeController extends ResourceController
             return $this->respond(['status' => false, 'message' => 'Invalid email format'], 400);
         }
 
-        // Check if email already exists
-        $existingEmail = $db->table('tbl_register')
-            ->where('Email', $request['Email'])
-            ->where('is_active', 'Y')
-            ->get()
-            ->getRow();
-
-        if ($existingEmail) {
-            return $this->respond(['status' => false, 'message' => 'Email already exists'], 400);
+        // Validate phone number (basic validation)
+        if (!preg_match('/^[0-9]{10}$/', $request['Phone_no'])) {
+            return $this->respond(['status' => false, 'message' => 'Phone number must be 10 digits'], 400);
         }
 
-        // Check if phone already exists
-        $existingPhone = $db->table('tbl_register')
-            ->where('Phone_no', $request['Phone_no'])
-            ->where('is_active', 'Y')
-            ->get()
-            ->getRow();
-
-        if ($existingPhone) {
-            return $this->respond(['status' => false, 'message' => 'Phone number already exists'], 400);
+        // Validate password strength
+        if (strlen($request['password']) < 6) {
+            return $this->respond(['status' => false, 'message' => 'Password must be at least 6 characters'], 400);
         }
 
         $db->transStart();
@@ -127,15 +158,13 @@ class EmployeeController extends ResourceController
                 'role_ref_code' => $request['role_ref_code'] ?? null,
                 'team_lead_ref_code' => $request['team_lead_ref_code'] ?? null,
                 'hod_ref_code' => $request['hod_ref_code'] ?? null,
-                'Note' => $request['Note'] ?? 'New team member',
+                'Note' => $request['Note'] ?? null,
                 'created_by' => $createdBy,
-                'created_at' => date('Y-m-d H:i:s'),
-                'is_active' => 'Y'
+                'created_at' => date('Y-m-d H:i:s')
             ];
 
-            if (!$db->table('tbl_register')->insert($registerData)) {
-                throw new \Exception('Failed to insert into tbl_register');
-            }
+            $db->table('tbl_register')->insert($registerData);
+            $registerId = $db->insertID();
 
             // Insert into tbl_login
             $loginData = [
@@ -150,49 +179,10 @@ class EmployeeController extends ResourceController
                 'created_by' => $createdBy,
                 'created_at' => date('Y-m-d H:i:s')
             ];
+            $db->table('tbl_login')->insert($loginData);
 
-            if (!$db->table('tbl_login')->insert($loginData)) {
-                throw new \Exception('Failed to insert into tbl_login');
-            }
-
-            // Determine access levels - FIX THE LOGIC
-            $accesslevelData = "";
-
-            // Check role first
-            if (isset($request['role_ref_code'])) {
-                if ($request['role_ref_code'] == 'EMP_htv') {
-                    $accesslevelData = "H9KAW,KPVa6,bU5Y7,025ah,YjCHN,6oxyS,Cp3nm,b90GW,MEXrl,2gUm7,1DkHq,PNJWt,uvSOZ";
-                } elseif ($request['role_ref_code'] == 'ADM_3w7') {
-                    $accesslevelData = "FpfDG,H9KAW,Bkdv4,2Tm0a,KPVa6,k45PS,bU5Y7,xT9RX,NZXC9,uN0bD,mUQev,hySYA,BXARb,uCiHD,eQdRZ,bSDsm,PSba2,flgZW,6oxyS,7qjAU,PV4RQ,MtePJ,3iMFx,8fg9o,LBH1I,b90GW,7YPbI,MEXrl,cDjfg,2gUm7,oBgyO,C6Sal,i90yD,8bWdS,uVQwg,PNJWt,0Nmjr,zgqRE,MPBTr,n0NS9,2QChI,A3dGh,RaFqH,Mx7Sk,a143d,iL6uO";
-                } elseif ($request['role_ref_code'] == 'HRM_4w7') {
-                    $accesslevelData = "FpfDG,H9KAW,Bkdv4,2Tm0a,KPVa6,k45PS,bU5Y7,xT9RX,NZXC9,uN0bD,mUQev,hySYA,025ah,BXARb,uCiHD,bSDsm,PSba2,VSq2A,6oxyS,Cp3nm,7qjAU,PV4RQ,MtePJ,3iMFx,8fg9o,b90GW,MEXrl,cDjfg,2gUm7,1DkHq,oBgyO,C6Sal,i90yD,PNJWt,zgqRE,MPBTr,n0NS9,O62CH,O81I4,RaFqH,uvSOZ";
-                }
-            }
-
-            // Check designation if role didn't set access level
-            if (empty($accesslevelData) && isset($request['Designations'])) {
-                if ($request['Designations'] == 'DESGCPL003') {
-                    $accesslevelData = "bU5Y7,xT9RX,025ah,uCiHD,bSDsm,PSba2,Cp3nm,7qjAU,b90GW,MEXrl,cDjfg,PNJWt,MPBTr,O62CH,O81I4,8OTjs,A3dGh,83Bkx,mxpdz,uvSOZ";
-                } elseif ($request['Designations'] == 'DESGCPL004') {
-                    $accesslevelData = "KPVa6,k45PS,bU5Y7,025ah,BXARb,uCiHD,YjCHN,6oxyS,Cp3nm,MEXrl,2gUm7,1DkHq,PNJWt,O62CH,O81I4,8OTjs,A3dGh,83Bkx,f7BCP,mxpdz,uvSOZ";
-                } elseif ($request['Designations'] == 'DESGCPL021') {
-                    $accesslevelData = "025ah,uCiHD,eQdRZ,6oxyS,b90GW,MEXrl,PNJWt,m9i6A,O62CH,O81I4,8OTjs,83Bkx,mxpdz,uvSOZ";
-                }
-            }
-
-            // Check department if still empty
-            if (empty($accesslevelData) && isset($request['department_code'])) {
-                if ($request['department_code'] == 'DEPTM003') {
-                    $accesslevelData = "025ah,uCiHD,eQdRZ,6oxyS,b90GW,MEXrl,PNJWt,m9i6A,O62CH,O81I4,8OTjs,83Bkx,mxpdz,uvSOZ";
-                } elseif ($request['department_code'] == 'DEPTM002') {
-                    $accesslevelData = "83Bkx,H9KAW,KPVa6,bU5Y7,025ah,YjCHN,6oxyS,Cp3nm,b90GW,MEXrl,2gUm7,1DkHq,PNJWt,uvSOZ";
-                }
-            }
-
-            // If still empty, set default access level
-            if (empty($accesslevelData)) {
-                $accesslevelData = "H9KAW,KPVa6,bU5Y7,025ah,YjCHN,6oxyS,Cp3nm,b90GW,MEXrl,2gUm7,1DkHq,PNJWt,uvSOZ"; // Default employee access
-            }
+            // Determine access levels
+            $accesslevelData = $this->getAccessLevelData($request);
 
             // Insert access levels
             $accesslevel = [
@@ -202,40 +192,229 @@ class EmployeeController extends ResourceController
                 'created_at' => date('Y-m-d H:i:s')
             ];
 
-            if (!$db->table('tbl_access_level_by_user')->insert($accesslevel)) {
-                $error = $db->error();
-                throw new \Exception('Failed to insert access level: ' . ($error['message'] ?? 'Unknown error'));
-            }
+            $db->table('tbl_access_level_by_user')->insert($accesslevel);
 
             $db->transComplete();
 
             if ($db->transStatus() === false) {
-                $error = $db->error();
-                $msg = isset($error['message']) && $error['message'] ? $error['message'] : 'Unknown DB error';
-                return $this->respond(['status' => false, 'message' => 'Registration failed due to database error: ' . $msg], 500);
+                return $this->respond(['status' => false, 'message' => 'Registration failed due to database error'], 500);
             }
 
             return $this->respond([
                 'status' => true,
                 'message' => 'Employee registered successfully',
-                'user_code_ref' => $newUserCode
+                'data' => [
+                    'user_code' => $newUserCode,
+                    'employee_id' => $registerId,
+                    'company_short_name' => $companyShortName,
+                    'email' => $request['Email'],
+                    'name' => $request['First_Name'] . ' ' . $request['Last_Name']
+                ]
             ]);
-
         } catch (\Throwable $e) {
             $db->transRollback();
-
-            // Check for specific constraint violations
-            if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
-                return $this->respond(['status' => false, 'message' => 'Duplicate entry detected. Email or phone number may already exist.'], 400);
-            }
-
-            if (strpos($e->getMessage(), 'foreign key constraint') !== false) {
-                return $this->respond(['status' => false, 'message' => 'Invalid reference (Company, Department, or Role does not exist)'], 400);
-            }
-
             return $this->respond(['status' => false, 'message' => 'Exception during registration: ' . $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Get access level data based on role, designation, and department
+     */
+    /**
+     * Get access level data based on role, designation, and department
+     */
+    private function getAccessLevelData($request)
+    {
+        $accesslevelData = "";
+
+        // DEFAULT ACCESS FOR ALL USERS
+        $defaultAccess = [
+            // Company policy
+            "6oxyS", // Company Policies
+            // Meeting
+            "bU5Y7", // Meeting
+            // Queries
+            "Cp3nm", // Add Queries Complaints
+            "7qjAU", // Queries List
+            // Punch in/out (assuming punch in covers both)
+            "uCiHD", // Punch In
+            // Vacancy
+            "MEXrl", // Vacancies
+            // Daily task
+            "1DkHq", // Daily Task
+            // Chat
+            "PNJWt", // Chat
+            // Events
+            "NpStL", // Event
+            // Achievements
+            "TEFH10", // Achievements
+            // Letters
+            // "PV4RQ", // Offer Letter
+            // "MtePJ", // Appraisal Letter
+            // "3iMFx", // Experience Letter
+            // "8fg9o", // Internship
+            "LBH1I", // Termination of Employment
+            "b90GW"  // Salary Slip
+        ];
+
+        // EMPLOYEE EXTRA ACCESS
+        $employeeExtraAccess = [
+            'uvSOZ',
+            //Emp Dashboard
+            "YjCHN",
+
+            // Task
+            "H9KAW", // Task
+            // Holiday
+            "n0NS9", // Add Holiday
+            // Training
+            "k45PS", // Training
+            // Meeting (already in default, but ensures access to add meeting too)
+            "i90yD", // Add Meeting
+            // Expense
+            "8OTjs", // Travel Cost
+            "mxpdz", // Outstation Travel
+            // Project
+            "mUQev", // Project
+            // Add client
+            "eQdRZ", // Client
+            // Add leave application
+            "025ah", // Add Leave Application
+            // Reports - task (for that employee)
+            "74"     // Report Task (id: 74, url_code: 5cLzV)
+        ];
+
+        // Check role first
+        if ($request['role_ref_code'] == 'EMP_htv') {
+            // Employee: Default + Employee extra access
+            $accesslevelData = implode(",", array_merge($defaultAccess, $employeeExtraAccess));
+        } elseif ($request['role_ref_code'] == 'ADM_3w7') {
+            // Admin: All access
+            $accesslevelData = "zADZB,FpfDG,H9KAW,Bkdv4,2Tm0a,KPVa6,bU5Y7,NZXC9,mUQev,hySYA,BXARb,uCiHD,eQdRZ,flgZW,6oxyS,PV4RQ,MtePJ,3iMFx,8fg9o,LBH1I,b90GW,7YPbI,MEXrl,2gUm7,C6Sal,i90yD,8bWdS,PNJWt,zgqRE,n0NS9,2QChI,Mx7Sk,a143d,iL6uO";
+
+            // Add the new default modules if not already included
+            $adminAccess = explode(",", $accesslevelData);
+            $allAccess = array_unique(array_merge($adminAccess, $defaultAccess, $employeeExtraAccess));
+            $accesslevelData = implode(",", $allAccess);
+        } elseif ($request['role_ref_code'] == 'HRM_4w7') {
+            // HR: HR access + defaults
+            $accesslevelData = "FpfDG,H9KAW,Bkdv4,2Tm0a,KPVa6,bU5Y7,NZXC9,mUQev,hySYA,025ah,BXARb,uCiHD,6oxyS,PV4RQ,MtePJ,3iMFx,8fg9o,b90GW,MEXrl,2gUm7,1DkHq,C6Sal,i90yD,PNJWt,zgqRE,n0NS9,O62CH,O81I4,uvSOZ";
+
+            // Add the new default modules if not already included
+            $hrAccess = explode(",", $accesslevelData);
+            $allAccess = array_unique(array_merge($hrAccess, $defaultAccess));
+            $accesslevelData = implode(",", $allAccess);
+        }
+
+        // Check designation if role didn't set it
+        if (empty($accesslevelData)) {
+            if ($request['Designations'] == 'DESGCPL003') {
+                $accesslevelData = "bU5Y7,025ah,uCiHD,b90GW,MEXrl,PNJWt,O62CH,O81I4,uvSOZ";
+                $designationAccess = explode(",", $accesslevelData);
+                $allAccess = array_unique(array_merge($designationAccess, $defaultAccess));
+                $accesslevelData = implode(",", $allAccess);
+            } elseif ($request['Designations'] == 'DESGCPL004') {
+                $accesslevelData = "KPVa6,bU5Y7,025ah,BXARb,uCiHD,YjCHN,6oxyS,MEXrl,2gUm7,1DkHq,PNJWt,O62CH,O81I4,f7BCP,uvSOZ";
+                $designationAccess = explode(",", $accesslevelData);
+                $allAccess = array_unique(array_merge($designationAccess, $defaultAccess));
+                $accesslevelData = implode(",", $allAccess);
+            } elseif ($request['Designations'] == 'DESGCPL021') {
+                $accesslevelData = "025ah,uCiHD,eQdRZ,6oxyS,b90GW,MEXrl,PNJWt,O62CH,O81I4,uvSOZ";
+                $designationAccess = explode(",", $accesslevelData);
+                $allAccess = array_unique(array_merge($designationAccess, $defaultAccess));
+                $accesslevelData = implode(",", $allAccess);
+            }
+        }
+
+        // Check department if still empty
+        if (empty($accesslevelData)) {
+            if ($request['department_code'] == 'DEPTM003') {
+                $accesslevelData = "025ah,uCiHD,eQdRZ,6oxyS,b90GW,MEXrl,PNJWt,O62CH,O81I4,uvSOZ";
+                $deptAccess = explode(",", $accesslevelData);
+                $allAccess = array_unique(array_merge($deptAccess, $defaultAccess));
+                $accesslevelData = implode(",", $allAccess);
+            } elseif ($request['department_code'] == 'DEPTM002') {
+                $accesslevelData = "H9KAW,KPVa6,bU5Y7,025ah,YjCHN,6oxyS,b90GW,MEXrl,2gUm7,1DkHq,PNJWt,uvSOZ";
+                $deptAccess = explode(",", $accesslevelData);
+                $allAccess = array_unique(array_merge($deptAccess, $defaultAccess, $employeeExtraAccess));
+                $accesslevelData = implode(",", $allAccess);
+            }
+        }
+
+        // Default access level if nothing matches
+        if (empty($accesslevelData)) {
+            $accesslevelData = implode(",", array_merge($defaultAccess, $employeeExtraAccess));
+        }
+
+        return $accesslevelData;
+    }
+    /**
+     * Create short name from company name (Improved version)
+     */
+    private function createShortNameFromCompanyName($companyName)
+    {
+        // Remove common suffixes using word boundaries
+        $patterns = [
+            '/\b(ltd|limited|pvt|private|inc|incorporated|llp|plc)\b/i',
+            '/\b(corp|corporation|company|co|solution|solutions|tech|technologies|technology)\b/i',
+            '/\b(enterprise|enterprises|group|global|international|worldwide|holdings)\b/i',
+            '/\b(services|consulting|consultants|consultancy|software|systems)\b/i'
+        ];
+
+        $cleanName = $companyName;
+        foreach ($patterns as $pattern) {
+            $cleanName = preg_replace($pattern, '', $cleanName);
+        }
+
+        // Remove special characters, numbers and extra spaces
+        $cleanName = preg_replace('/[^a-zA-Z\s]/', '', $cleanName);
+        $cleanName = preg_replace('/\s+/', ' ', trim($cleanName));
+
+        // Split into words
+        $words = explode(' ', $cleanName);
+
+        // Remove empty words
+        $words = array_filter($words, function ($word) {
+            return strlen($word) > 0;
+        });
+
+        // Reset array keys
+        $words = array_values($words);
+
+        // Strategy 1: Use first letters of words (max 4 letters)
+        if (count($words) >= 1) {
+            $shortName = '';
+            $maxLetters = min(count($words), 4); // Maximum 4 letters
+
+            for ($i = 0; $i < $maxLetters; $i++) {
+                if (isset($words[$i]) && strlen($words[$i]) > 0) {
+                    $shortName .= strtoupper($words[$i][0]);
+                }
+            }
+
+            // Return if we got at least 2 characters
+            if (strlen($shortName) >= 2) {
+                return $shortName;
+            }
+        }
+
+        // Strategy 2: Use first word (max 4 chars)
+        if (count($words) > 0 && strlen($words[0]) >= 2) {
+            $firstWord = $words[0];
+            $length = min(strlen($firstWord), 4);
+            return strtoupper(substr($firstWord, 0, $length));
+        }
+
+        // Strategy 3: Use first 4 alphanumeric characters from original name
+        $alphanumeric = preg_replace('/[^a-zA-Z0-9]/', '', $companyName);
+        if (strlen($alphanumeric) >= 2) {
+            return strtoupper(substr($alphanumeric, 0, min(strlen($alphanumeric), 4)));
+        }
+
+        // Fallback: Use "EMP" as prefix
+        return "EMP";
+    }
+
 
 
     public function add()
@@ -726,20 +905,23 @@ class EmployeeController extends ResourceController
             // Fetch main employee details
             $employee = $this->db->table('tbl_employee_details AS ted')
                 ->select('
-                    ted.*, 
-                    tr.First_Name, tr.Last_Name, tr.Email AS register_email, tr.Phone_no AS register_phone_no,
-                    tr.company_Code, tr.role_ref_code, tr.team_lead_ref_code, tr.Note AS register_note,
-                    tr.Designations AS designation_code, 
-                    tdm.designation_name,
-                    tl.user_name, tl.email AS login_email, tl.is_verified, tl.is_active AS login_is_active,
-                    tc.company_name, tc.address AS company_address, tc.email AS company_email,
-                    tc.pf_deduction, tc.contact_number, tc.website, tc.gst_number, tc.gst,
-                    tc.logo AS company_logo
-                ')
+                ted.*, 
+                tr.First_Name, tr.Last_Name, tr.Email AS register_email, tr.Phone_no AS register_phone_no,
+                tr.company_Code, tr.role_ref_code, tr.team_lead_ref_code, tr.Note AS register_note,
+                tr.Designations AS designation_code, 
+                tdm.designation_name,
+                tl.user_name, tl.email AS login_email, tl.is_verified, tl.is_active AS login_is_active,
+                tc.company_name, tc.address AS company_address, tc.email AS company_email,
+                tc.pf_deduction, tc.contact_number, tc.website, tc.gst_number, tc.gst,
+                tc.logo AS company_logo,
+                tbd.account_holder_name, tbd.bank_name, tbd.account_number, tbd.account_type,
+                tbd.branch_name, tbd.IFSC_code, tbd.upi_id, tbd.upi_mobile_no
+            ')
                 ->join('tbl_register AS tr', 'ted.user_code_ref = tr.user_code', 'left')
                 ->join('tbl_designation_mst AS tdm', 'tr.Designations = tdm.designation_code', 'left')
                 ->join('tbl_login AS tl', 'ted.user_code_ref = tl.user_code_ref', 'left')
                 ->join('tbl_company AS tc', 'tr.company_Code = tc.company_code', 'left')
+                ->join('tbl_bank_details AS tbd', 'ted.user_code_ref = tbd.user_code_ref', 'left')
                 ->where('ted.user_code_ref', $user_code_ref)
                 ->where('ted.is_active', 'Y')
                 ->get()
@@ -765,11 +947,9 @@ class EmployeeController extends ResourceController
                 if (!empty($employee->photo_file)) {
                     $employee->photo_file = base_url($employee->photo_file);
                 }
-         
-                  if (!empty($employee->company_logo)) {
-            $employee->company_logo = base_url('companylogo/' .$employee->company_logo);
-        }
-
+                if (!empty($employee->company_logo)) {
+                    $employee->company_logo = base_url('companylogo/' . $employee->company_logo);
+                }
 
                 return $this->respond(['status' => true, 'data' => $employee]);
             } else {
@@ -783,44 +963,6 @@ class EmployeeController extends ResourceController
     }
 
 
-    // public function getRegisterData()
-    // {
-    //     helper(['jwtvalidate_helper']);
-    //     $headers = $this->request->getServer('HTTP_AUTHORIZATION');
-
-    //     if (!$headers) {
-    //         return $this->respond(['status' => false, 'message' => 'Authorization header missing'], 401);
-    //     }
-
-    //     $decoded = validatejwt($headers);
-    //     if (!$decoded) {
-    //         return $this->respond(['status' => false, 'message' => 'Invalid or expired token'], 401);
-    //     }
-
-    //     $request = $this->request->getJSON(true);
-    //     $user_code = $request['user_code'] ?? null; // Use 'user_code' for tbl_register
-
-    //     try {
-    //         $builder = $this->db->table('tbl_register');
-    //         $builder->where('is_active', 'Y'); // Assuming 'is_active' exists in tbl_register
-
-    //         if ($user_code) {
-    //             $data = $builder->where('user_code', $user_code)->get()->getRow();
-    //             if ($data) {
-    //                 return $this->respond(['status' => true, 'data' => $data]);
-    //             } else {
-    //                 return $this->respond(['status' => false, 'message' => 'Registration data not found.'], 404);
-    //             }
-    //         } else {
-    //             $data = $builder->get()->getResult();
-    //             return $this->respond(['status' => true, 'data' => $data]);
-    //         }
-    //     } catch (DatabaseException $e) {
-    //         return $this->respond(['status' => false, 'message' => 'Database error: ' . $e->getMessage()], 500);
-    //     } catch (\Exception $e) {
-    //         return $this->respond(['status' => false, 'message' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
-    //     }
-    // }
 
     public function getRegisterData()
     {
@@ -836,44 +978,121 @@ class EmployeeController extends ResourceController
         $request = $this->request->getJSON(true);
         $user_code = $request['user_code'] ?? null;
         $data = $this->request->getJSON(true);
-        $page = $data['page'] ?? 1;
-        $limit = $data['limit'] ?? 10;
-        $offset = ($page - 1) * $limit;
+        $page = $data['page'] ?? null;
+        $limit = $data['limit'] ?? null;
+        // $offset = ($page - 1) * $limit;
+
         try {
             $builder = $this->db->table('tbl_register');
-            $builder->orderBy('user_code', 'DESC');
+
+            // UPDATED: Sort alphabetically by first name, then last name
+            $builder->orderBy('first_name', 'ASC');
+            $builder->orderBy('last_name', 'ASC');
+
             $builder->where('is_active', 'Y');
 
             if ($user_code) {
                 $data = $builder->where('user_code', $user_code)->get()->getRow();
                 if ($data) {
+                    // Add probation status for single record
+                    $data->probation_status = $this->calculateProbationStatus($data->joining_date);
                     return $this->respond(['status' => true, 'data' => $data]);
                 } else {
                     return $this->respond(['status' => false, 'message' => 'Registration data not found.'], 404);
                 }
             } else {
-                $total = $builder->countAllResults(false);
-                $builder->limit($limit, $offset);
-                $query = $builder->get();
-                $data = $query->getResult();
 
-                return $this->respond([
-                    'status' => true,
-                    'message' => 'Data fetched successfully',
-                    'data' => $data,
-                    'pagination' => [
-                        'current_page' => $page,
-                        'per_page' => $limit,
-                        'total_records' => $total,
-                        'total_pages' => ceil($total / $limit)
-                    ]
-                ]);
+                if ($page && $limit) {
+
+                    // Apply pagination
+                    $total = $builder->countAllResults(false);
+                    $offset = ($page - 1) * $limit;
+                    $builder->limit($limit, $offset);
+                    $query = $builder->get();
+                    $data = $query->getResult();
+
+                    foreach ($data as $employee) {
+                        $employee->probation_status = $this->calculateProbationStatus($employee->joining_date);
+                        $employee->probation_days_remaining = $this->calculateProbationDaysRemaining($employee->joining_date);
+                    }
+
+                    return $this->respond([
+                        'status' => true,
+                        'message' => 'Paginated data fetched successfully',
+                        'data' => $data,
+                        'pagination' => [
+                            'current_page' => $page,
+                            'per_page' => $limit,
+                            'total_records' => $total,
+                            'total_pages' => ceil($total / $limit)
+                        ]
+                    ]);
+                } else {
+
+                    // No pagination → return all data
+                    $data = $builder->get()->getResult();
+
+                    foreach ($data as $employee) {
+                        $employee->probation_status = $this->calculateProbationStatus($employee->joining_date);
+                        $employee->probation_days_remaining = $this->calculateProbationDaysRemaining($employee->joining_date);
+                    }
+
+                    return $this->respond([
+                        'status' => true,
+                        'message' => 'Full data fetched successfully',
+                        'data' => $data
+                    ]);
+                }
             }
         } catch (DatabaseException $e) {
             return $this->respond(['status' => false, 'message' => 'Database error: ' . $e->getMessage()], 500);
         } catch (\Exception $e) {
             return $this->respond(['status' => false, 'message' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
         }
+    }
+
+    // Helper method to calculate probation status
+    private function calculateProbationStatus($joiningDate)
+    {
+        if (!$joiningDate || $joiningDate === '0000-00-00') {
+            return 'Unknown';
+        }
+
+        // Probation period is 6 months
+        $probationMonths = 6;
+        $joiningDate = new \DateTime($joiningDate);
+        $today = new \DateTime('now', new \DateTimeZone('Asia/Kolkata')); // Kolkata timezone
+
+        $endDate = clone $joiningDate;
+        $endDate->modify("+{$probationMonths} months");
+
+        if ($today < $endDate) {
+            return 'In Probation';
+        } else {
+            return 'Probation Completed';
+        }
+    }
+
+    // Helper method to calculate remaining probation days
+    private function calculateProbationDaysRemaining($joiningDate)
+    {
+        if (!$joiningDate || $joiningDate === '0000-00-00') {
+            return null;
+        }
+
+        $probationMonths = 6;
+        $joiningDate = new \DateTime($joiningDate);
+        $today = new \DateTime('now', new \DateTimeZone('Asia/Kolkata'));
+
+        $endDate = clone $joiningDate;
+        $endDate->modify("+{$probationMonths} months");
+
+        if ($today < $endDate) {
+            $interval = $today->diff($endDate);
+            return $interval->days;
+        }
+
+        return 0;
     }
 
     public function getRegisterDatawp()
@@ -1635,119 +1854,242 @@ class EmployeeController extends ResourceController
             return $this->respond(['status' => false, 'message' => 'Invalid user ID in token'], 400);
         }
 
-        // Get user_code_ref from JSON body
-        $userCodeRef = $request['user_code_ref'] ?? null;
+        // Accept both user_code and user_code_ref for compatibility
+        $userCode = $request['user_code'] ?? $request['user_code_ref'] ?? null;
 
-        if (!$userCodeRef) {
-            return $this->respond(['status' => false, 'message' => 'user_code_ref is required for updating'], 400);
+        if (!$userCode) {
+            return $this->respond(['status' => false, 'message' => 'user_code is required for updating'], 400);
         }
 
         $db = \Config\Database::connect();
+
+        // Start transaction
         $db->transStart();
 
         try {
-            $registerTable = $db->table('tbl_register');
-            $loginTable = $db->table('tbl_login');
+            // Debug: Log the request
+            log_message('debug', 'UpdateRegisterEmployee Request: ' . print_r($request, true));
+            log_message('debug', 'User Code: ' . $userCode);
+            log_message('debug', 'Updated By: ' . $updatedBy);
 
-            // Check if the employee exists in both tables
-            $existingRegister = $registerTable->where('user_code', $userCodeRef)->get()->getRow();
-            $existingLogin = $loginTable->where('user_code_ref', $userCodeRef)->get()->getRow();
+            // Check if employee exists in tbl_register
+            $existingRegister = $db->table('tbl_register')
+                ->where('user_code', $userCode)
+                ->get()
+                ->getRow();
 
-            if (!$existingRegister || !$existingLogin) {
+            if (!$existingRegister) {
                 $db->transRollback();
-                return $this->respond(['status' => false, 'message' => 'Employee not found with the provided user_code_ref'], 404);
+                return $this->respond([
+                    'status' => false,
+                    'message' => 'Employee not found with user_code: ' . $userCode
+                ], 404);
             }
 
+            // Check if employee exists in tbl_login
+            $existingLogin = $db->table('tbl_login')
+                ->where('user_code_ref', $userCode)
+                ->get()
+                ->getRow();
+
+            if (!$existingLogin) {
+                $db->transRollback();
+                return $this->respond([
+                    'status' => false,
+                    'message' => 'Employee login not found for user_code: ' . $userCode
+                ], 404);
+            }
+
+            // VALIDATE FOREIGN KEY REFERENCES BEFORE UPDATE
+            $validationErrors = [];
+
+            // Check if company_Code exists
+            if (isset($request['company_Code']) && $request['company_Code']) {
+                $companyExists = $db->table('tbl_company')
+                    ->where('company_code', $request['company_Code'])
+                    ->countAllResults();
+
+                if ($companyExists === 0) {
+                    $validationErrors[] = 'Company code does not exist: ' . $request['company_Code'];
+                }
+            }
+
+            // Check if Designations exists
+            if (isset($request['Designations']) && $request['Designations']) {
+                $designationExists = $db->table('tbl_designation_mst')
+                    ->where('designation_code', $request['Designations'])
+                    ->countAllResults();
+
+                if ($designationExists === 0) {
+                    $validationErrors[] = 'Designation code does not exist: ' . $request['Designations'];
+                }
+            }
+
+            // Check if department_code exists
+            if (isset($request['department_code']) && $request['department_code']) {
+                $departmentExists = $db->table('tbl_department')
+                    ->where('department_code', $request['department_code'])
+                    ->countAllResults();
+
+                if ($departmentExists === 0) {
+                    $validationErrors[] = 'Department code does not exist: ' . $request['department_code'];
+                }
+            }
+
+            // Check if role_ref_code exists
+            if (isset($request['role_ref_code']) && $request['role_ref_code']) {
+                $roleExists = $db->table('tbl_ref_code')
+                    ->where('ref_code', $request['role_ref_code'])
+                    ->where('type', 'Role')
+                    ->countAllResults();
+
+                if ($roleExists === 0) {
+                    $validationErrors[] = 'Role code does not exist: ' . $request['role_ref_code'];
+                }
+            }
+
+            // If validation errors, return them
+            if (!empty($validationErrors)) {
+                $db->transRollback();
+                return $this->respond([
+                    'status' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validationErrors
+                ], 400);
+            }
+
+            // Prepare update data for tbl_register
             $registerData = [];
-            if (isset($request['First_Name'])) {
-                $registerData['First_Name'] = $request['First_Name'];
-            }
-            if (isset($request['Last_Name'])) {
-                $registerData['Last_Name'] = $request['Last_Name'];
-            }
-            if (isset($request['Email'])) {
-                $registerData['Email'] = $request['Email'];
-            }
-            if (isset($request['Phone_no'])) {
-                $registerData['Phone_no'] = $request['Phone_no'];
-            }
-            if (isset($request['company_Code'])) {
-                $registerData['company_Code'] = $request['company_Code'];
-            }
-            if (isset($request['branch_code'])) {
-                $registerData['branch_code'] = $request['branch_code'];
-            }
-            if (isset($request['department_code'])) {
-                $registerData['department_code'] = $request['department_code'];
-            }
-            if (isset($request['Designations'])) {
-                $registerData['Designations'] = $request['Designations'];
-            }
-            if (isset($request['joining_date'])) {
-                $registerData['joining_date'] = $request['joining_date'];
-            }
-            if (isset($request['role_ref_code'])) {
-                $registerData['role_ref_code'] = $request['role_ref_code'];
-            }
-            if (isset($request['team_lead_ref_code'])) {
-                $registerData['team_lead_ref_code'] = $request['team_lead_ref_code'];
-            }
-            if (isset($request['hod_ref_code'])) {
-                $registerData['hod_ref_code'] = $request['hod_ref_code'];
-            }
-            if (isset($request['Note'])) {
-                $registerData['Note'] = $request['Note'];
+
+            // Map all possible fields from request to tbl_register columns
+            $registerFields = [
+                'First_Name',
+                'Last_Name',
+                'Email',
+                'Phone_no',
+                'company_Code',
+                'branch_code',
+                'department_code',
+                'Designations',
+                'joining_date',
+                'role_ref_code',
+                'team_lead_ref_code',
+                'hod_ref_code',
+                'Note'
+            ];
+
+            foreach ($registerFields as $field) {
+                if (isset($request[$field])) {
+                    // Handle null values specifically for branch_code
+                    if ($field === 'branch_code' && $request[$field] === null) {
+                        $registerData[$field] = null;
+                    } else {
+                        $registerData[$field] = trim($request[$field]);
+                    }
+                }
             }
 
-            $registerData['updated_by'] = $updatedBy;
-            $registerData['updated_at'] = date('Y-m-d H:i:s');
+            // Add Middle name if present (check both Middle and middle)
+            if (isset($request['Middle'])) {
+                $registerData['Middle'] = trim($request['Middle']);
+            } elseif (isset($request['middle'])) {
+                $registerData['Middle'] = trim($request['middle']);
+            }
 
-            // Update tbl_register
+            // Only update if there's data to update
             if (!empty($registerData)) {
-                $registerTable->where('user_code', $userCodeRef)->update($registerData);
+                $registerData['updated_by'] = $updatedBy;
+                $registerData['updated_at'] = date('Y-m-d H:i:s');
+
+                log_message('debug', 'Updating tbl_register with data: ' . print_r($registerData, true));
+
+                $result = $db->table('tbl_register')
+                    ->where('user_code', $userCode)
+                    ->update($registerData);
+
+                if ($result === false) {
+                    throw new \Exception('Failed to update tbl_register');
+                }
+
+                log_message('debug', 'tbl_register updated. Affected rows: ' . $db->affectedRows());
             }
 
+            // Prepare update data for tbl_login
             $loginData = [];
-            if (isset($request['First_Name']) && isset($request['Last_Name'])) {
-                $loginData['user_name'] = trim($request['First_Name'] . ' ' . $request['Last_Name']);
+
+            // Update user_name if First_Name or Last_Name changed
+            if (isset($request['First_Name']) || isset($request['Last_Name'])) {
+                $firstName = $request['First_Name'] ?? $existingRegister->First_Name;
+                $lastName = $request['Last_Name'] ?? $existingRegister->Last_Name;
+                $loginData['user_name'] = trim($firstName . ' ' . $lastName);
             }
+
             if (isset($request['Email'])) {
-                $loginData['email'] = $request['Email'];
+                $loginData['email'] = trim($request['Email']);
             }
-            if (isset($request['password'])) {
-                $loginData['password'] = password_hash($request['password'], PASSWORD_BCRYPT);
+
+            if (isset($request['password']) && !empty(trim($request['password']))) {
+                $loginData['password'] = password_hash(trim($request['password']), PASSWORD_BCRYPT);
             }
+
             if (isset($request['role_ref_code'])) {
-                $loginData['role_ref_code'] = $request['role_ref_code'];
+                $loginData['role_ref_code'] = trim($request['role_ref_code']);
             }
+
             if (isset($request['Designations'])) {
-                $loginData['designations_code'] = $request['Designations'];
+                $loginData['designations_code'] = trim($request['Designations']);
             }
 
-            $loginData['updated_by'] = $updatedBy;
-            $loginData['updated_at'] = date('Y-m-d H:i:s');
-
-            // Update tbl_login
+            // Only update if there's data to update
             if (!empty($loginData)) {
-                $loginTable->where('user_code_ref', $userCodeRef)->update($loginData);
+                $loginData['updated_by'] = $updatedBy;
+                $loginData['updated_at'] = date('Y-m-d H:i:s');
+
+                log_message('debug', 'Updating tbl_login with data: ' . print_r($loginData, true));
+
+                $result = $db->table('tbl_login')
+                    ->where('user_code_ref', $userCode)
+                    ->update($loginData);
+
+                if ($result === false) {
+                    throw new \Exception('Failed to update tbl_login');
+                }
+
+                log_message('debug', 'tbl_login updated. Affected rows: ' . $db->affectedRows());
             }
 
             $db->transComplete();
 
             if ($db->transStatus() === false) {
                 $error = $db->error();
-                $msg = isset($error['message']) && $error['message'] ? $error['message'] : 'Unknown DB error';
-                return $this->respond(['status' => false, 'message' => 'Update failed due to database error: ' . $msg], 500);
+                $lastQuery = (string) $db->getLastQuery();
+
+                log_message('error', 'Database Error: ' . print_r($error, true));
+                log_message('error', 'Last Query: ' . $lastQuery);
+
+                return $this->respond([
+                    'status' => false,
+                    'message' => 'Update failed due to database error',
+                    'error_details' => $error,
+                    'last_query' => $lastQuery
+                ], 500);
             }
 
             return $this->respond([
                 'status' => true,
                 'message' => 'Employee registration details updated successfully',
-                'user_code_ref' => $userCodeRef
+                'user_code' => $userCode,
+                'updated_fields' => array_merge(array_keys($registerData), array_keys($loginData))
             ]);
         } catch (\Throwable $e) {
             $db->transRollback();
-            return $this->respond(['status' => false, 'message' => 'Exception during update: ' . $e->getMessage()], 500);
+            log_message('error', 'Exception in updateRegisterEmployee: ' . $e->getMessage());
+            log_message('error', 'Stack trace: ' . $e->getTraceAsString());
+
+            return $this->respond([
+                'status' => false,
+                'message' => 'Exception during update: ' . $e->getMessage()
+            ], 500);
         }
     }
     public function updateEmployeeDetails()
@@ -1808,6 +2150,9 @@ class EmployeeController extends ResourceController
 
         $this->db->transStart();
         try {
+            // Debug: Log the request data
+            log_message('debug', 'Starting updateEmployeeDetails for user: ' . $userCodeRef);
+
             foreach ($fileFields as $fileField => $subDir) {
                 $dir = $baseUploadDir . $subDir;
                 if (!is_dir($dir)) {
@@ -1820,43 +2165,51 @@ class EmployeeController extends ResourceController
                         throw new \Exception("Failed to move uploaded file: " . $fileField);
                     }
                     $uploaded[$fileField] = 'public/uploads/employees/' . $userCodeRef . '/' . $subDir . $newName;
+                    log_message('debug', 'File uploaded: ' . $fileField . ' -> ' . $uploaded[$fileField]);
                 }
             }
 
+            // Collect all POST data
+            $postData = $this->request->getPost();
+
+            // Map form fields to database columns
             $updateData = [
-                'date_of_birth' => $this->request->getPost('date_of_birth') ?? $existingDetails->date_of_birth,
-                'Gender' => $this->request->getPost('Gender') ?? $existingDetails->Gender,
-                'aadhar_number' => $this->request->getPost('aadhar_number') ?? $existingDetails->aadhar_number,
-                'pan_card_no' => $this->request->getPost('pan_card_no') ?? $existingDetails->pan_card_no,
-                'blood_group' => $this->request->getPost('blood_group') ?? $existingDetails->blood_group,
-                'current_address' => $this->request->getPost('current_address') ?? $existingDetails->current_address,
-                'permanent_address' => $this->request->getPost('permanent_address') ?? $existingDetails->permanent_address,
-                'phone_number' => $this->request->getPost('phone_number') ?? $existingDetails->phone_number,
-                'second_phone_number' => $this->request->getPost('second_phone_number') ?? $existingDetails->second_phone_number,
-                'marital_status' => $this->request->getPost('marital_status') ?? $existingDetails->marital_status,
-                'personal_email' => $this->request->getPost('personal_email') ?? $existingDetails->personal_email,
-                'reporting_to' => $this->request->getPost('reporting_to') ?? $existingDetails->reporting_to,
-                'graduation' => $this->request->getPost('graduation') ?? $existingDetails->graduation,
-                'graduationdegree' => $this->request->getPost('graduationdegree') ?? $existingDetails->graduationdegree,
-                'graduationunivercity' => $this->request->getPost('graduationunivercity') ?? $existingDetails->graduationunivercity,
-                'graduationspecialization' => $this->request->getPost('graduationspecialization') ?? $existingDetails->graduationspecialization,
-                'graduation_year_of_completion' => $this->request->getPost('graduation_year_of_completion') ?? $existingDetails->graduation_year_of_completion,
-                'post_graduation' => $this->request->getPost('post_graduation') ?? $existingDetails->post_graduation,
-                'post_univercity' => $this->request->getPost('post_univercity') ?? $existingDetails->post_univercity,
-                'postgraduationspecialization' => $this->request->getPost('postgraduationspecialization') ?? $existingDetails->postgraduationspecialization,
-                'post_graduation_year_of_completion' => $this->request->getPost('post_graduation_year_of_completion') ?? $existingDetails->post_graduation_year_of_completion,
-                'previous_organization_name' => $this->request->getPost('previous_organization_name') ?? $existingDetails->previous_organization_name,
-                'previous_organization_designation' => $this->request->getPost('previous_organization_designation') ?? $existingDetails->previous_organization_designation,
-                'reason_of_leaving' => $this->request->getPost('reason_of_leaving') ?? $existingDetails->reason_of_leaving,
-                'previous_organization_start_year' => $this->request->getPost('previous_organization_start_year') ?? $existingDetails->previous_organization_start_year,
-                'previous_organization_end_year' => $this->request->getPost('previous_organization_end_year') ?? $existingDetails->previous_organization_end_year,
-                'emergency_contact_number' => $this->request->getPost('emergency_contact_number') ?? $existingDetails->emergency_contact_number,
-                'emergency_contact_person_name' => $this->request->getPost('emergency_contact_person_name') ?? $existingDetails->emergency_contact_person_name,
-                'emergency_contact_person_relation' => $this->request->getPost('emergency_contact_person_relation') ?? $existingDetails->emergency_contact_person_relation,
+                'date_of_birth' => $this->request->getPost('date_of_birth') ?: $existingDetails->date_of_birth,
+                'Gender' => $this->request->getPost('Gender') ?: $existingDetails->Gender,
+                'aadhar_number' => $this->request->getPost('aadhar_number') ?: $existingDetails->aadhar_number,
+                'pan_card_no' => $this->request->getPost('pan_card_no') ?: $existingDetails->pan_card_no,
+                'blood_group' => $this->request->getPost('blood_group') ?: $existingDetails->blood_group,
+                'contact_information' => $this->request->getPost('contact_information') ?: $existingDetails->contact_information,
+                'current_address' => $this->request->getPost('current_address') ?: $existingDetails->current_address,
+                'permanent_address' => $this->request->getPost('permanent_address') ?: $existingDetails->permanent_address,
+                'phone_number' => $this->request->getPost('phone_number') ?: $existingDetails->phone_number,
+                'whatsapp_no' => $this->request->getPost('whatsapp_no') ?: $existingDetails->whatsapp_no,
+                'marital_status' => $this->request->getPost('marital_status') ?: $existingDetails->marital_status,
+                'personal_email' => $this->request->getPost('personal_email') ?: $existingDetails->personal_email,
+                'reporting_to' => $this->request->getPost('reporting_to') ?: $existingDetails->reporting_to,
+                'graduation' => $this->request->getPost('graduation') ?: $existingDetails->graduation,
+                'graduationdegree' => $this->request->getPost('graduationdegree') ?: $existingDetails->graduationdegree,
+                'graduationunivercity' => $this->request->getPost('graduationunivercity') ?: $existingDetails->graduationunivercity,
+                'graduationspecialization' => $this->request->getPost('graduationspecialization') ?: $existingDetails->graduationspecialization,
+                'graduation_year_of_completion' => $this->request->getPost('graduation_year_of_completion') ?: $existingDetails->graduation_year_of_completion,
+                'post_graduation' => $this->request->getPost('post_graduation') ?: $existingDetails->post_graduation,
+                'post_univercity' => $this->request->getPost('post_univercity') ?: $existingDetails->post_univercity,
+                'postgraduationspecialization' => $this->request->getPost('postgraduationspecialization') ?: $existingDetails->postgraduationspecialization,
+                'post_graduation_year_of_completion' => $this->request->getPost('post_graduation_year_of_completion') ?: $existingDetails->post_graduation_year_of_completion,
+                'previous_organization_name' => $this->request->getPost('previous_organization_name') ?: $existingDetails->previous_organization_name,
+                'previous_organization_designation' => $this->request->getPost('previous_organization_designation') ?: $existingDetails->previous_organization_designation,
+                'reason_of_leaving' => $this->request->getPost('reason_of_leaving') ?: $existingDetails->reason_of_leaving,
+                'previous_organization_start_year' => $this->request->getPost('previous_organization_start_year') ?: $existingDetails->previous_organization_start_year,
+                'previous_organization_end_year' => $this->request->getPost('previous_organization_end_year') ?: $existingDetails->previous_organization_end_year,
+                'emergency_contact_number' => $this->request->getPost('emergency_contact_number') ?: $existingDetails->emergency_contact_number,
+                'emergency_contact_person_name' => $this->request->getPost('emergency_contact_person_name') ?: $existingDetails->emergency_contact_person_name,
+                'emergency_contact_person_relation' => $this->request->getPost('emergency_contact_person_relation') ?: $existingDetails->emergency_contact_person_relation,
+                'whatsapp_permission' => $this->request->getPost('whatsapp_permission') ?: $existingDetails->whatsapp_permission,
                 'updated_at' => date('Y-m-d H:i:s'),
                 'updated_by' => $updatedBy
             ];
 
+            // Handle file uploads
             if (isset($uploaded['adhar_card_file'])) {
                 $updateData['adhar_card_file'] = $uploaded['adhar_card_file'];
             }
@@ -1867,140 +2220,94 @@ class EmployeeController extends ResourceController
                 $updateData['photo_file'] = $uploaded['photo_file'];
             }
 
-            $builder->where('user_code_ref', $userCodeRef)->update($updateData);
+            // Debug: Log update data
+            log_message('debug', 'Update data prepared: ' . print_r($updateData, true));
 
+            // Perform the update
+            $result = $builder->where('user_code_ref', $userCodeRef)->update($updateData);
+
+            if ($result === false) {
+                throw new \Exception('Database update query failed');
+            }
+
+            log_message('debug', 'Update query executed. Affected rows: ' . $this->db->affectedRows());
+
+            // Handle certificate files
             $certFiles = $this->request->getFiles();
             if (!empty($certFiles) && isset($certFiles['other_certificates'])) {
-                $this->db->table('tbl_other_certificates_employee')->where('user_code_ref', $userCodeRef)->delete();
-
-                $certArray = $certFiles['other_certificates'];
-                $certBuilder = $this->db->table('tbl_other_certificates_employee');
-                foreach ($certArray as $certFile) {
+                // Only delete if new files are being uploaded
+                $hasValidCertificateFiles = false;
+                foreach ($certFiles['other_certificates'] as $certFile) {
                     if ($certFile && $certFile->isValid() && !$certFile->hasMoved()) {
-                        $newName = $certFile->getRandomName();
-                        if (!$certFile->move($certUploadDir, $newName)) {
-                            throw new \Exception("Failed to move uploaded certificate file.");
+                        $hasValidCertificateFiles = true;
+                        break;
+                    }
+                }
+
+                if ($hasValidCertificateFiles) {
+                    // Delete existing certificates only if new ones are uploaded
+                    $this->db->table('tbl_other_certificates_employee')->where('user_code_ref', $userCodeRef)->delete();
+
+                    $certArray = $certFiles['other_certificates'];
+                    $certBuilder = $this->db->table('tbl_other_certificates_employee');
+                    foreach ($certArray as $certFile) {
+                        if ($certFile && $certFile->isValid() && !$certFile->hasMoved()) {
+                            $newName = $certFile->getRandomName();
+                            if (!$certFile->move($certUploadDir, $newName)) {
+                                throw new \Exception("Failed to move uploaded certificate file.");
+                            }
+                            $certInsert = [
+                                'user_code_ref' => $userCodeRef,
+                                'file_name' => $certFile->getClientName(),
+                                'file_path' => 'public/uploads/employees/' . $userCodeRef . '/certificates/' . $newName,
+                                'created_at' => date('Y-m-d H:i:s'),
+                                'created_by' => $updatedBy
+                            ];
+                            $certBuilder->insert($certInsert);
+                            log_message('debug', 'Certificate uploaded: ' . $certFile->getClientName());
                         }
-                        $certInsert = [
-                            'user_code_ref' => $userCodeRef,
-                            'file_name' => $certFile->getClientName(),
-                            'file_path' => 'public/uploads/employees/' . $userCodeRef . '/certificates/' . $newName,
-                            'created_at' => date('Y-m-d H:i:s'),
-                            'created_by' => $updatedBy
-                        ];
-                        $certBuilder->insert($certInsert);
                     }
                 }
             }
+
             $this->db->transComplete();
 
             if ($this->db->transStatus() === false) {
-                $err = $this->db->error();
-                throw new \Exception('Update failed due to database error: ' . ($err['message'] ?? 'Unknown DB error'));
+                // Get the actual database error
+                $db = db_connect();
+                $error = $db->error();
+
+                // Log detailed error information
+                log_message('error', 'Database transaction failed');
+                log_message('error', 'Error code: ' . ($error['code'] ?? 'N/A'));
+                log_message('error', 'Error message: ' . ($error['message'] ?? 'N/A'));
+                log_message('error', 'Last query: ' . $db->getLastQuery());
+
+                $errorMessage = $error['message'] ?? 'Unknown database error';
+                throw new \Exception('Update failed due to database error: ' . $errorMessage);
             }
 
             return $this->respond(['status' => true, 'message' => 'Employee details updated successfully.']);
         } catch (\Throwable $e) {
             $this->db->transRollback();
-            return $this->respond(['status' => false, 'message' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+
+            // Log the exception
+            log_message('error', 'Exception in updateEmployeeDetails: ' . $e->getMessage());
+            log_message('error', 'File: ' . $e->getFile());
+            log_message('error', 'Line: ' . $e->getLine());
+            log_message('error', 'Trace: ' . $e->getTraceAsString());
+
+            return $this->respond([
+                'status' => false,
+                'message' => 'An unexpected error occurred: ' . $e->getMessage(),
+                'debug_info' => [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            ], 500);
         }
     }
 
-    // public function updateInsuranceDetails()
-    // {
-    //     helper('jwtvalidate_helper');
-
-    //     $headers = $this->request->getServer('HTTP_AUTHORIZATION');
-    //     if (!$headers) {
-    //         return $this->respond(['status' => false, 'message' => 'Authorization header missing'], 401);
-    //     }
-
-    //     $decoded = validatejwt($headers);
-    //     if (!$decoded) {
-    //         return $this->respond(['status' => false, 'message' => 'Invalid or expired token'], 401);
-    //     }
-
-    //     $updatedBy = $decoded->user_id ?? 'system';
-    //     $request = $this->request->getJSON(true) ?? [];
-
-    //     // Get user_code_ref from the JSON body
-    //     $userCodeRef = $request['user_code_ref'] ?? null;
-
-    //     if (!$userCodeRef) {
-    //         return $this->respond(['status' => false, 'message' => 'user_code_ref is required for updating.'], 400);
-    //     }
-
-    //     $validation = \Config\Services::validation();
-    //     $validation->setRules([
-    //         'user_code_ref' => 'required|max_length[50]',
-    //         'spouse_name' => 'permit_empty|max_length[150]',
-    //         'spouse_birthdate' => 'permit_empty|valid_date',
-    //         'child_name' => 'permit_empty|max_length[150]',
-    //         'child_birthdate' => 'permit_empty|valid_date',
-    //         'child_two_name' => 'permit_empty|max_length[150]',
-    //         'child_two_birthdate' => 'permit_empty|valid_date',
-    //         'father_full_name' => 'permit_empty|max_length[150]',
-    //         'father_birthdate' => 'permit_empty|valid_date',
-    //         'mother_full_name' => 'permit_empty|max_length[150]',
-    //         'mother_birthdate' => 'permit_empty|valid_date',
-    //         'MIL_name' => 'permit_empty|max_length[150]',
-    //         'MIL_birthdate' => 'permit_empty|valid_date',
-    //         'FIL_name' => 'permit_empty|max_length[150]',
-    //         'FIL_birthdate' => 'permit_empty|valid_date',
-    //     ]);
-
-    //     if (!$validation->run($request)) {
-    //         return $this->respond(['status' => false, 'message' => $validation->getErrors()], 400);
-    //     }
-
-    //     $db = \Config\Database::connect();
-    //     $builder = $db->table('tbl_insurance_details');
-    //     $existingInsurance = $builder->where('user_code_ref', $userCodeRef)->get()->getRow();
-
-    //     if (!$existingInsurance) {
-    //         return $this->respond(['status' => false, 'message' => 'Insurance details not found for this user_code_ref'], 404);
-    //     }
-
-    //     // Updated data array with all the new fields
-    //     $updateData = [
-    //         'spouse_name' => $request['spouse_name'] ?? $existingInsurance->spouse_name,
-    //         'spouse_birthdate' => $request['spouse_birthdate'] ?? $existingInsurance->spouse_birthdate,
-    //         'child_name' => $request['child_name'] ?? $existingInsurance->child_name,
-    //         'child_birthdate' => $request['child_birthdate'] ?? $existingInsurance->child_birthdate,
-    //         'child_two_name' => $request['child_two_name'] ?? $existingInsurance->child_two_name,
-    //         'child_two_birthdate' => $request['child_two_birthdate'] ?? $existingInsurance->child_two_birthdate,
-
-    //         // New fields to be updated
-    //         'father_full_name' => $request['father_full_name'] ?? $existingInsurance->father_full_name,
-    //         'father_birthdate' => $request['father_birthdate'] ?? $existingInsurance->father_birthdate,
-    //         'mother_full_name' => $request['mother_full_name'] ?? $existingInsurance->mother_full_name,
-    //         'mother_birthdate' => $request['mother_birthdate'] ?? $existingInsurance->mother_birthdate,
-    //         'MIL_name' => $request['MIL_name'] ?? $existingInsurance->MIL_name,
-    //         'MIL_birthdate' => $request['MIL_birthdate'] ?? $existingInsurance->MIL_birthdate,
-    //         'FIL_name' => $request['FIL_name'] ?? $existingInsurance->FIL_name,
-    //         'FIL_birthdate' => $request['FIL_birthdate'] ?? $existingInsurance->FIL_birthdate,
-
-    //         'updated_by' => $updatedBy,
-    //         'updated_at' => date('Y-m-d H:i:s')
-    //     ];
-
-    //     $db->transStart();
-    //     try {
-    //         if ($builder->where('user_code_ref', $userCodeRef)->update($updateData)) {
-    //             $db->transComplete();
-    //             return $this->respond([
-    //                 'status' => true,
-    //                 'message' => 'Insurance details updated successfully.'
-    //             ]);
-    //         } else {
-    //             $db->transRollback();
-    //             return $this->respond(['status' => false, 'message' => 'Failed to update insurance details'], 500);
-    //         }
-    //     } catch (\Throwable $e) {
-    //         $db->transRollback();
-    //         return $this->respond(['status' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
-    //     }
-    // }
     public function updateInsuranceDetails()
     {
         helper('jwtvalidate_helper');
@@ -2927,7 +3234,6 @@ class EmployeeController extends ResourceController
                 'data' => $salaryReport,
                 'processed_count' => count($salaryReport)
             ]);
-
         } catch (\Exception $e) {
             return $this->respond([
                 'status' => false,
@@ -2982,7 +3288,6 @@ class EmployeeController extends ResourceController
                     'total_pages' => $totalPages
                 ]
             ]);
-
         } catch (\Exception $e) {
             return $this->respond([
                 'status' => false,
@@ -3010,6 +3315,7 @@ class EmployeeController extends ResourceController
             tr.Designations,
             tr.joining_date,
             tr.department_code,
+            tdm.designation_name,
             tsd.basic_salary,
             tsd.hra,
             tsd.special_allowance,
@@ -3022,6 +3328,7 @@ class EmployeeController extends ResourceController
         ')
             ->join('tbl_salary_details AS tsd', 'tsd.user_ref_code = tr.user_code', 'left')
             ->join('tbl_login AS tl', 'tr.user_code = tl.user_code_ref', 'left')
+            ->join('tbl_designation_mst AS tdm', 'tdm.designation_code = tr.Designations', 'left')
             ->where('tr.is_active', 'Y')
             ->where('tl.is_active', 'Y')
             ->groupBy('tr.user_code')
@@ -3056,6 +3363,7 @@ class EmployeeController extends ResourceController
 
         return $salaryReport;
     }
+
     private function calculateEmployeeSalary($employee, $attendanceData, $startMonth)
     {
         // Get salary components from tbl_salary_details
@@ -3128,7 +3436,10 @@ class EmployeeController extends ResourceController
             'Last_Name' => $employee->Last_Name,
             'Email' => $employee->Email,
             'Phone_no' => $employee->Phone_no,
-            'designation' => $employee->Designations,
+            // 'designation' => $employee->Designations,
+            'designation_code' => $employee->Designations,
+            'designation_name' => $employee->designation_name,
+
             'joining_date' => $employee->joining_date,
 
             // Salary Components (from tbl_salary_details)
@@ -3247,8 +3558,4 @@ class EmployeeController extends ResourceController
 
         return $workingDays;
     }
-
-
 }
-
-

@@ -42,6 +42,8 @@ class AccountController extends BaseController
         $created_by = $decodedToken->user_id ?? null;
         $input = $this->request->getJSON(true);
 
+
+
         $db = \Config\Database::connect();
         $company = $db->table('tbl_company')
             ->select('company_code, company_name')
@@ -52,21 +54,45 @@ class AccountController extends BaseController
             return $this->respond(['status' => false, 'message' => 'Invalid company code'], 400);
         }
 
-        $prefix = strtoupper(substr($company->company_name, 0, 3));
+        // $prefix = strtoupper(substr($company->company_name, 0, 3));
+        // $monthYear = date('mY');
+        // $lastVoucher = $db->table('tbl_payment_records')
+        //     ->select('voucher_no')
+        //     ->like('voucher_no', $prefix . $monthYear, 'after')
+        //     ->orderBy('id', 'DESC')
+        //     ->get()
+        //     ->getRow();
+        // if ($lastVoucher) {
+        //     $lastSerial = (int) substr($lastVoucher->voucher_no, -3);
+        //     $newSerial = str_pad($lastSerial + 1, 3, '0', STR_PAD_LEFT);
+        // } else {
+        //     $newSerial = "001";
+        // }
+        // $voucher_no = $prefix . '-' . $monthYear . $newSerial;
+
+        $cleanName = preg_replace('/[^A-Za-z]/', '', $company->company_name);
+        $prefix = strtoupper(substr($cleanName, 0, 3));
+
         $monthYear = date('mY');
+
+        $searchPrefix = $prefix . '-' . $monthYear;
+
         $lastVoucher = $db->table('tbl_payment_records')
             ->select('voucher_no')
-            ->like('voucher_no', $prefix . $monthYear, 'after')
+            ->like('voucher_no', $searchPrefix, 'after')
             ->orderBy('id', 'DESC')
             ->get()
             ->getRow();
+
         if ($lastVoucher) {
             $lastSerial = (int) substr($lastVoucher->voucher_no, -3);
             $newSerial = str_pad($lastSerial + 1, 3, '0', STR_PAD_LEFT);
         } else {
             $newSerial = "001";
         }
+
         $voucher_no = $prefix . '-' . $monthYear . $newSerial;
+
         $payment_code = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 6);
         $data = [
             'payment_code' => $payment_code,
@@ -88,7 +114,8 @@ class AccountController extends BaseController
             'branch' => $input['branch'] ?? null,
             'created_by' => $created_by,
             'created_at' => date('Y-m-d H:i:s'),
-            'is_active' => 'Y'
+            'is_active' => 'Y',
+            'expense_bill_no' => $input['expense_bill_no'],
         ];
 
         try {
@@ -130,13 +157,55 @@ class AccountController extends BaseController
             return $this->respond(['status' => false, 'message' => 'Invalid company code'], 400);
         }
 
+        // log_message('info', 'Fetched company => Code: ' . $company->company_code . ' | Name: ' . $company->company_name);
+
+
         // Generate invoice code
-        $prefix = strtoupper(substr($company->company_name, 0, 3));
-        $monthYear = date('mY');
+        // $prefix = strtoupper(substr($company->company_name, 0, 3));
+        // $monthYear = date('mY');
+
+        // $lastInvoice = $db->table('tbl_tax_invoice')
+        //     ->select('invoice_code')
+        //     ->like('invoice_code', $prefix . '-' . $monthYear, 'after')
+        //     ->orderBy('id', 'DESC')
+        //     ->get()
+        //     ->getRow();
+
+        // if ($lastInvoice) {
+        //     $lastSerial = (int) substr($lastInvoice->invoice_code, -3);
+        //     $newSerial = str_pad($lastSerial + 1, 3, '0', STR_PAD_LEFT);
+        // } else {
+        //     $newSerial = "001";
+        // }
+
+        // $invoice_code = $prefix . '-' . $monthYear . $newSerial;
+
+        // $prefix = strtoupper(substr($company->company_name, 0, 3)); // MIT 
+        $name = str_replace(' ', '', $company->company_name); // remove spaces
+        $prefix = strtoupper(substr($name, 0, 3));
+
+
+        // ===== Financial Year Logic =====
+        $currentMonth = date('n'); // 1-12
+        $currentYear = date('y');  // 25
+        $nextYear = $currentYear + 1; // 26
+
+        if ($currentMonth <= 3) {
+            // Before April → FY belongs to previous year
+            $fy = ($currentYear - 1) . $currentYear;
+        } else {
+            // April & onward
+            $fy = $currentYear . $nextYear;
+        }
+
+        // Final code part → 2526
+        $periodCode = 'G' . $fy;
+
+        //=================================
 
         $lastInvoice = $db->table('tbl_tax_invoice')
             ->select('invoice_code')
-            ->like('invoice_code', $prefix . '-' . $monthYear, 'after')
+            ->like('invoice_code', $prefix . '-' . $periodCode, 'after')
             ->orderBy('id', 'DESC')
             ->get()
             ->getRow();
@@ -148,7 +217,9 @@ class AccountController extends BaseController
             $newSerial = "001";
         }
 
-        $invoice_code = $prefix . '-' . $monthYear . $newSerial;
+        $invoice_code = $prefix . '-' . $periodCode . '-' . $newSerial;
+
+
 
         // Main invoice data
         $invoiceData = [
@@ -176,7 +247,8 @@ class AccountController extends BaseController
             'signature_code' => $input['signature_code'] ?? null,
             'created_by' => $created_by,
             'created_at' => date('Y-m-d H:i:s'),
-            'is_active' => 'Y'
+            'is_active' => 'Y',
+            'client_phone_number' => $input['client_phone_number'] ?? null,
         ];
 
         $db->transStart(); // Start transaction
@@ -370,7 +442,9 @@ class AccountController extends BaseController
             'total' => $input['total'] ?? 0.00,
             'created_by' => $created_by,
             'created_at' => date('Y-m-d H:i:s'),
-            'is_active' => 'Y'
+            'is_active' => 'Y',
+            'signature_code' => $input['signature_code'] ?? null,
+
         ];
         try {
             $db->transStart();
@@ -465,6 +539,7 @@ class AccountController extends BaseController
             'total' => $input['total'],
             'notes' => $input['notes'] ?? null,
             'created_by' => $created_by,
+            'signature_code' => $input['signature_code'] ?? null,
             'created_at' => date('Y-m-d H:i:s'),
             'is_active' => 'Y'
         ];
@@ -553,7 +628,8 @@ class AccountController extends BaseController
             'Paymentstatus' => "pending",
             'created_by' => $created_by,
             'created_at' => date('Y-m-d H:i:s'),
-            'is_active' => 'Y'
+            'is_active' => 'Y',
+            'signature_code' => $input['signature_code'] ?? null,
         ];
         $db->table('tbl_debitnote')->insert($parentData);
         if (!empty($input['items']) && is_array($input['items'])) {
@@ -733,6 +809,7 @@ class AccountController extends BaseController
         $builder = $db->table('tbl_creditnote as c')
             ->select('c.*, co.company_name')
             ->join('tbl_company as co', 'c.company_code = co.company_code', 'left')
+
             ->where('c.is_active', 'Y');
         if ($company_code) {
             $builder->where('c.company_code', $company_code);
@@ -900,7 +977,8 @@ class AccountController extends BaseController
             'bank_name' => $input['bank_name'] ?? null,
             'branch' => $input['branch'] ?? null,
             'updated_by' => $decodedToken->user_id ?? null,
-            'updated_at' => date('Y-m-d H:i:s')
+            'updated_at' => date('Y-m-d H:i:s'),
+            'expense_bill_no' => $input['expense_bill_no'],
         ];
         if ($db->table('tbl_payment_records')->where('payment_code', $input['payment_code'])->update($data)) {
             return $this->respond(['status' => true, 'message' => 'Payment record updated successfully']);
@@ -942,6 +1020,7 @@ class AccountController extends BaseController
             'scst' => $input['scst'] ?? 0.00,
             'total' => $input['total'] ?? 0.00,
             'notes' => $input['notes'] ?? null,
+
             'updated_by' => $decodedToken->user_id ?? null,
             'updated_at' => date('Y-m-d H:i:s')
         ];
@@ -1053,7 +1132,9 @@ class AccountController extends BaseController
             'total' => $input['total'] ?? 0.00,
             'is_active' => $input['status'] ?? 'Y',
             'updated_by' => $decodedToken->user_id ?? null,
-            'updated_at' => date('Y-m-d H:i:s')
+            'updated_at' => date('Y-m-d H:i:s'),
+                        'signature_code' => $input['signature_code'] ?? null,
+
         ];
         $db->transStart();
         $db->table('tbl_purchase_order')
@@ -1130,6 +1211,7 @@ class AccountController extends BaseController
             'tax' => $input['tax'] ?? 0,
             'total' => $input['total'] ?? 0,
             'notes' => $input['notes'] ?? null,
+            'signature_code' => $input['signature_code'] ?? null,
             'updated_by' => $decodedToken->user_id ?? null,
             'updated_at' => date('Y-m-d H:i:s')
         ];
@@ -1212,7 +1294,8 @@ class AccountController extends BaseController
                 'total' => $input['total'] ?? 0,
                 'updated_by' => $decodedToken->user_id ?? null,
                 'Paymentstatus' => $input['Paymentstatus'] ?? null,
-                'updated_at' => date('Y-m-d H:i:s')
+                'updated_at' => date('Y-m-d H:i:s'),
+                'signature_code' => $input['signature_code'] ?? null,
             ];
 
             $db->table('tbl_debitnote')
@@ -1367,10 +1450,13 @@ class AccountController extends BaseController
             ], 400);
         }
 
-        // Fetch invoice
+        // Fetch invoice with LEFT JOIN to signatureandstamp table
         $invoice = $db->table('tbl_tax_invoice as t')
+            ->select('t.*, s.name as signatory_name, s.signature_img, s.stamp_img')
+            ->join('tbl_signatureandstamp as s', 's.signatureandstamp_code = t.signature_code', 'left')
             ->where('t.invoice_code', $invoice_code)
             ->where('t.is_active', 'Y')
+            ->where('s.is_active', 'Y') // Optional: only get active signatures
             ->get()
             ->getRowArray();
 
@@ -1381,17 +1467,21 @@ class AccountController extends BaseController
             ], 404);
         }
 
-    // print_r(value: $invoice);
+        // Process signature image URLs if they exist
+        if (!empty($invoice['signature_img'])) {
+            $invoice['signature_img'] = base_url('uploads/signatures/' . $invoice['signature_img']);
+        }
+
+        if (!empty($invoice['stamp_img'])) {
+            $invoice['stamp_img'] = base_url('uploads/stamps/' . $invoice['stamp_img']);
+        }
+
         // Fetch company data
         $company = $db->table('tbl_company')
             ->where('company_code', $invoice['company_code'])
             ->where('is_active', 'Y')
             ->get()
             ->getRowArray();
-// echo $invoice['company_code'];
-//             echo "<pre>";
-//             print_r($company);
-//             exit();
 
         if (!empty($company['logo'])) {
             $company['logo'] = base_url('companylogo/' . $company['logo']);
@@ -1423,61 +1513,89 @@ class AccountController extends BaseController
         ], 200);
     }
 
+ public function get_purchase_order_by_code()
+{
+    helper(['jwtvalidate', 'url']);
+    $authHeader = $this->request->getHeaderLine('Authorization');
+    $decodedToken = validatejwt($authHeader);
 
-    public function get_purchase_order_by_code()
-    {
-        helper(['jwtvalidate', 'url']);
-        $authHeader = $this->request->getHeaderLine('Authorization');
-        $decodedToken = validatejwt($authHeader);
-
-        if (!$decodedToken) {
-            return $this->respond(['status' => false, 'message' => 'Invalid or missing JWT'], 401);
-        }
-
-        $db = \Config\Database::connect();
-        $input = $this->request->getJSON(true);
-        $purchase_code = $input['purchase_code'] ?? null;
-
-        if (!$purchase_code) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'purchase_code is required'
-            ], 400);
-        }
-
-        $order = $db->table('tbl_purchase_order as po')
-            ->select('po.*, c.company_name, c.logo')
-            ->join('tbl_company as c', 'po.company_code = c.company_code', 'left')
-            ->where('po.purchase_code', $purchase_code)
-            ->where('po.is_active', 'Y')
-            ->get()
-            ->getRowArray();
-
-        if (!$order) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Purchase order not found'
-            ], 404);
-        }
-
-        // ✅ Format the company logo path exactly like in your offer letter logic
-        if (!empty($order['logo'])) {
-            $order['logo'] = base_url('companylogo/' . $order['logo']);
-        }
-
-        // ✅ Fetch related items
-        $order['items'] = $db->table('tbl_purchase_order_item_relation')
-            ->where('purchase_code', $purchase_code)
-            ->where('is_active', 'Y')
-            ->get()
-            ->getResultArray();
-
-        return $this->respond([
-            'status' => true,
-            'message' => 'Purchase order fetched successfully.',
-            'data' => $order
-        ], 200);
+    if (!$decodedToken) {
+        return $this->respond(['status' => false, 'message' => 'Invalid or missing JWT'], 401);
     }
+
+    $db = \Config\Database::connect();
+    $input = $this->request->getJSON(true);
+    $purchase_code = $input['purchase_code'] ?? null;
+
+    if (!$purchase_code) {
+        return $this->respond([
+            'status' => false,
+            'message' => 'purchase_code is required'
+        ], 400);
+    }
+
+    $order = $db->table('tbl_purchase_order as po')
+        // Select all purchase order fields, company fields, and signature fields
+        ->select('po.*, 
+                  c.company_name, 
+                  c.logo as company_logo,
+                  s.signatureandstamp_code as signature_code,
+                  s.name as signatory_name, 
+                  s.signature_img, 
+                  s.stamp_img')
+        ->join('tbl_company as c', 'po.company_code = c.company_code', 'left')
+        ->join('tbl_signatureandstamp as s', 's.signatureandstamp_code = po.signature_code', 'left')
+        ->where('po.purchase_code', $purchase_code)
+        ->where('po.is_active', 'Y')
+        ->get()
+        ->getRowArray();
+
+    if (!$order) {
+        return $this->respond([
+            'status' => false,
+            'message' => 'Purchase order not found'
+        ], 404);
+    }
+
+    // ✅ Format the company logo path
+    if (!empty($order['company_logo'])) {
+        $order['company_logo'] = base_url('companylogo/' . $order['company_logo']);
+    } else {
+        $order['company_logo'] = '';
+    }
+
+    // ✅ Format the signature image path
+    if (!empty($order['signature_img'])) {
+        $order['signature_img'] = base_url('uploads/signatures/' . $order['signature_img']);
+    } else {
+        $order['signature_img'] = '';
+    }
+
+    // ✅ Format the stamp image path
+    if (!empty($order['stamp_img'])) {
+        $order['stamp_img'] = base_url('uploads/stamps/' . $order['stamp_img']);
+    } else {
+        $order['stamp_img'] = '';
+    }
+
+    // Ensure signatory_name is not null
+    if (empty($order['signatory_name'])) {
+        $order['signatory_name'] = 'Authorized Signatory';
+    }
+
+    // ✅ Fetch related items
+    $order['items'] = $db->table('tbl_purchase_order_item_relation')
+        ->where('purchase_code', $purchase_code)
+        ->where('is_active', 'Y')
+        ->get()
+        ->getResultArray();
+
+    return $this->respond([
+        'status' => true,
+        'message' => 'Purchase order fetched successfully.',
+        'data' => $order
+    ], 200);
+}
 
     public function get_credit_note_by_code()
     {
@@ -1501,8 +1619,10 @@ class AccountController extends BaseController
         }
 
         $creditNote = $db->table('tbl_creditnote as c')
-            ->select('c.*, co.company_name, co.logo as company_logo')
+            ->select('c.*, co.company_name, co.logo as company_logo,s.name as signatory_name, s.signature_img, s.stamp_img')
             ->join('tbl_company as co', 'c.company_code = co.company_code', 'left')
+            ->join('tbl_signatureandstamp as s', 's.signatureandstamp_code = c.signature_code', 'left')
+
             ->where('c.creditnote_code', $credit_code)
             ->where('c.is_active', 'Y')
             ->get()
@@ -1527,6 +1647,14 @@ class AccountController extends BaseController
         // ✅ Add formatted company logo path
         if (!empty($creditNote['company_logo'])) {
             $creditNote['company_logo'] = base_url('companylogo/' . $creditNote['company_logo']);
+        }
+
+        if (!empty($creditNote['signature_img'])) {
+            $creditNote['signature_img'] = base_url('uploads/signatures/' . $creditNote['signature_img']);
+        }
+
+        if (!empty($creditNote['stamp_img'])) {
+            $creditNote['stamp_img'] = base_url('uploads/stamps/' . $creditNote['stamp_img']);
         }
 
         return $this->respond([
@@ -1676,6 +1804,7 @@ class AccountController extends BaseController
             ->where('t.company_code', $company_code);
 
         $invoices = $builder->get()->getResultArray();
+        log_message('info', 'Fetched invoices ' . print_r($invoices, true));
 
         if (empty($invoices)) {
             return $this->respond([

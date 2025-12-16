@@ -44,7 +44,8 @@ class MeetingController extends BaseController
             'subject' => $input['subject'],
             'client_involve' => $input['client_involve'] ?? null,
             'employee_ids' => json_encode($input['employee_ids']), // array → json
-            'status' => $input['status'] ?? 'Pending',
+            'project_code'=> $input['project_code'] ?? null,
+            // 'status' => $input['status'] ?? 'Pending',
             'created_by' => $created_by,
         ];
 
@@ -84,7 +85,7 @@ class MeetingController extends BaseController
         }
 
         $data = [];
-        $fields = ['meeting_link', 'meeting_date', 'meeting_time', 'host', 'subject', 'client_involve', 'employee_ids', 'status', 'is_active'];
+        $fields = ['meeting_link', 'meeting_date', 'meeting_time', 'host', 'subject', 'client_involve', 'employee_ids', 'status','project_code', 'is_active'];
         foreach ($fields as $f) {
             if (isset($input[$f])) {
                 $data[$f] = ($f == 'employee_ids') ? json_encode($input[$f]) : $input[$f];

@@ -78,6 +78,7 @@ $routes->post('punch_in', 'TimeController::punch_in');
 $routes->post('punch_out', 'TimeController::punch_out');
 $routes->post('getallleavetype', 'LeaveController::getallleavetype');
 $routes->post('add_leave', 'LeaveController::add_leave');
+$routes->post('getEmployeeLeaveInfo', 'LeaveController::getEmployeeLeaveInfo');
 $routes->post('approveLeave', 'LeaveController::approveLeave');
 $routes->post('getallleave', 'LeaveController::getallleave');
 $routes->get('leave_attachments/(:any)', 'LeaveController::leave_attachments/$1');
@@ -253,6 +254,8 @@ $routes->post('getAllTraining', 'TrainingController::getAllTraining');
 $routes->post('getInternById', 'TrainingController::getInternById');
 $routes->post('getAllInterns', 'TrainingController::getAllInterns');
 $routes->post('addInternshipLetter', 'TrainingController::addInternshipLetter');
+$routes->post('updateInternshipLetter', 'TrainingController::updateInternshipLetter');
+
 $routes->post('getAllInternshipLetters', 'TrainingController::getAllInternshipLetters');
 $routes->post('getInternshipLetterById', 'TrainingController::getInternshipLetterById');
 

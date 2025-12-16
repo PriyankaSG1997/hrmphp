@@ -25,13 +25,12 @@ class SalaryController extends BaseController
     protected $key = 'HS256';
     protected $uri;
     protected $modelName = 'App\Models\HomeModel';
-    protected $format    = 'json';
+    protected $format = 'json';
     protected $homeModel;
     use ResponseTrait;
 
     public function calculate()
     {
-
         helper('jwtvalidate');
         $authHeader = $this->request->getHeaderLine('Authorization');
         $decodedToken = validatejwt($authHeader);
@@ -71,64 +70,64 @@ class SalaryController extends BaseController
         $result = $salaryModel->calculateSalaryForAll($month);
         return $this->response->setJSON($result);
     }
-public function mark_late_punchin()
-{
-    helper('jwtvalidate');
-    $authHeader = $this->request->getHeaderLine('Authorization');
-    $decodedToken = validatejwt($authHeader);
+    public function mark_late_punchin()
+    {
+        helper('jwtvalidate');
+        $authHeader = $this->request->getHeaderLine('Authorization');
+        $decodedToken = validatejwt($authHeader);
 
-    if (!$decodedToken) {
-        return $this->respond([
-            'status' => false,
-            'message' => 'Invalid or missing JWT token.'
-        ], 401);
-    }
-    $data = $this->request->getJSON(true);
-    $punchInDate = $data['punch_in_date'] ?? null;
-    $reason = $data['reason'] ?? null;
-    $userCode = $data['user_code'] ?? null;
-    if (!$punchInDate) {
-        return $this->respond([
-            'status' => false,
-            'message' => 'punch_in_date is required.'
-        ], 400);
-    }
-    try {
-        $db = \Config\Database::connect();
-        $builder = $db->table('tbl_mark_latepunchin');
-        $existing = $builder->where([
-            'user_code' => $userCode,
-            'punch_in_date' => $punchInDate,
-            'is_active' => 'Y'
-        ])->get()->getRowArray();
-        if ($existing) {
+        if (!$decodedToken) {
             return $this->respond([
                 'status' => false,
-                'message' => 'This date is already marked as late punch-in exempted.'
-            ], 409);
+                'message' => 'Invalid or missing JWT token.'
+            ], 401);
         }
-        $insertData = [
-            'user_code' => $userCode,
-            'punch_in_date' => $punchInDate,
-            'reason' => $reason,
-            'created_by' => $userCode,
-            'created_at' => date('Y-m-d H:i:s'),
-            'is_active' => 'Y'
-        ];
-        $builder->insert($insertData);
-        return $this->respond([
-            'status' => true,
-            'message' => 'Late punch-in marked successfully.',
-            'data' => $insertData
-        ], 200);
+        $data = $this->request->getJSON(true);
+        $punchInDate = $data['punch_in_date'] ?? null;
+        $reason = $data['reason'] ?? null;
+        $userCode = $data['user_code'] ?? null;
+        if (!$punchInDate) {
+            return $this->respond([
+                'status' => false,
+                'message' => 'punch_in_date is required.'
+            ], 400);
+        }
+        try {
+            $db = \Config\Database::connect();
+            $builder = $db->table('tbl_mark_latepunchin');
+            $existing = $builder->where([
+                'user_code' => $userCode,
+                'punch_in_date' => $punchInDate,
+                'is_active' => 'Y'
+            ])->get()->getRowArray();
+            if ($existing) {
+                return $this->respond([
+                    'status' => false,
+                    'message' => 'This date is already marked as late punch-in exempted.'
+                ], 409);
+            }
+            $insertData = [
+                'user_code' => $userCode,
+                'punch_in_date' => $punchInDate,
+                'reason' => $reason,
+                'created_by' => $userCode,
+                'created_at' => date('Y-m-d H:i:s'),
+                'is_active' => 'Y'
+            ];
+            $builder->insert($insertData);
+            return $this->respond([
+                'status' => true,
+                'message' => 'Late punch-in marked successfully.',
+                'data' => $insertData
+            ], 200);
 
-    } catch (\Exception $e) {
-        return $this->respond([
-            'status' => false,
-            'message' => 'Error: ' . $e->getMessage()
-        ], 500);
+        } catch (\Exception $e) {
+            return $this->respond([
+                'status' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
-}
 
     public function getAttendanceByUserCode()
     {
@@ -183,7 +182,7 @@ public function mark_late_punchin()
 
         $data = $this->request->getJSON(true);
 
-        if (!isset($data['user_ref_code'], $data['basic_salary'],$data['tds'])) {
+        if (!isset($data['user_ref_code'], $data['basic_salary'], $data['tds'])) {
             return $this->respond([
                 'status' => false,
                 'message' => 'Missing required fields'
@@ -207,14 +206,14 @@ public function mark_late_punchin()
 
         try {
             $builder->insert([
-                'user_ref_code'     => $data['user_ref_code'],
-                'basic_salary'      => $data['basic_salary'],
+                'user_ref_code' => $data['user_ref_code'],
+                'basic_salary' => $data['basic_salary'],
                 // 'hra'               => $data['hra'],
                 // 'special_allowance' => $data['special_allowance'],
                 // 'insurance'         => $data['insurance'] ?? 0,
                 // 'pf'                => $data['pf'] ?? 0,
-                'tds'               => $data['tds'] ?? 0,
-                'created_at'        => date('Y-m-d H:i:s'),
+                'tds' => $data['tds'] ?? 0,
+                'created_at' => date('Y-m-d H:i:s'),
             ]);
 
             return $this->respond([
@@ -225,7 +224,7 @@ public function mark_late_punchin()
             return $this->respond([
                 'status' => false,
                 'message' => 'Failed to add salary record',
-                'error'   => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -245,7 +244,7 @@ public function mark_late_punchin()
 
         $data = $this->request->getJSON(true);
 
-        if (!isset($data['user_ref_code'], $data['basic_salary'], $data['hra'], $data['special_allowance'])) {
+        if (!isset($data['user_ref_code'], $data['basic_salary'])) {
             return $this->respond([
                 'status' => false,
                 'message' => 'Missing required fields'
@@ -257,13 +256,13 @@ public function mark_late_punchin()
 
         try {
             $builder->where('user_ref_code', $data['user_ref_code'])->update([
-                'basic_salary'      => $data['basic_salary'],
-                'hra'               => $data['hra'],
-                'special_allowance' => $data['special_allowance'],
-                'insurance'         => $data['insurance'] ?? 0,
-                'pf'                => $data['pf'] ?? 0,
-                'tds'               => $data['tds'] ?? 0,
-                'updated_at'        => date('Y-m-d H:i:s'),
+                'basic_salary' => $data['basic_salary'],
+                'hra' => $data['hra'] ?? 0,
+                'special_allowance' => $data['special_allowance'] ?? 0,
+                'insurance' => $data['insurance'] ?? 0,
+                'pf' => $data['pf'] ?? 0,
+                'tds' => $data['tds'] ?? 0,
+                'updated_at' => date('Y-m-d H:i:s'),
             ]);
 
             return $this->respond([
@@ -274,7 +273,7 @@ public function mark_late_punchin()
             return $this->respond([
                 'status' => false,
                 'message' => 'Failed to update salary record',
-                'error'   => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -318,8 +317,8 @@ public function mark_late_punchin()
         $hra = (float) $salaryDetails['hra'];
         $special = (float) $salaryDetails['special_allowance'];
         $insurance = (float) $salaryDetails['insurance'];
-        $pf       = (float) $salaryDetails['pf'];
-        $tds      = (float) $salaryDetails['tds'];
+        $pf = (float) $salaryDetails['pf'];
+        $tds = (float) $salaryDetails['tds'];
         $grossSalary = $basic + $hra + $special;
 
         // Fetch user info
@@ -358,7 +357,9 @@ public function mark_late_punchin()
         }
 
         $data = $this->request->getJSON(true);
-        $required = ['user_ref_code', 'basic_salary', 'hra', 'special_allowance', 'appraisal_date'];
+
+        // Updated required fields
+        $required = ['user_ref_code', 'basic_salary', 'appraisal_date', 'authenticated_by'];
         foreach ($required as $field) {
             if (!isset($data[$field])) {
                 return $this->respond(['status' => false, 'message' => "Missing required field: $field"], 400);
@@ -381,19 +382,45 @@ public function mark_late_punchin()
                 ], 404);
             }
 
+            // Get the signatureandstamp_code from authenticated_by (which contains the ID from Angular)
+            $signatureId = $data['authenticated_by'];
+
+            // Fetch the signature record to get the signatureandstamp_code
+            $signatureRecord = $db->table('tbl_signatureandstamp')
+                ->where('id', $signatureId)
+                ->get()
+                ->getRow();
+
+            if (!$signatureRecord) {
+                return $this->respond([
+                    'status' => false,
+                    'message' => 'Invalid signature selected',
+                ], 400);
+            }
+
+            $signatureCode = $signatureRecord->signatureandstamp_code;
+
+            // Calculate gross_monthly_salary (basic_salary only)
+            $gross_monthly_salary = (float) $data['basic_salary'];
+
+            // Calculate net_monthly_salary
+            $net_monthly_salary = $gross_monthly_salary - ((float) ($data['tds'] ?? 0));
+
             // Insert a new salary record for the appraisal
             $insertData = [
                 'user_ref_code' => $userRefCode,
                 'basic_salary' => $data['basic_salary'],
-                'hra' => $data['hra'],
-                'special_allowance' => $data['special_allowance'],
-                'insurance'         => $data['insurance'] ?? 0,
-                'pf'                => $data['pf'] ?? 0,
-                'tds'               => $data['tds'] ?? 0,
+                'hra' => $data['hra'] ?? 0,
+                'special_allowance' => $data['special_allowance'] ?? 0,
+                'insurance' => $data['insurance'] ?? 0,
+                'pf' => $data['pf'] ?? 0,
+                'pt' => $data['pf'] ?? 0, // Map pf to pt column
+                'tds' => $data['tds'] ?? 0,
                 'appraisal_date' => $data['appraisal_date'],
-                'authenticated_by' => $data['authenticated_by'],
+                'authenticated_by' => $signatureCode, // Store the signatureandstamp_code
                 'created_at' => date('Y-m-d H:i:s'),
             ];
+
             $db->table('tbl_salary_details')->insert($insertData);
 
             // Get the ID of the newly inserted record
@@ -408,7 +435,6 @@ public function mark_late_punchin()
             return $this->respond(['status' => false, 'message' => 'An error occurred: ' . $e->getMessage()], 500);
         }
     }
-
     public function getAppraisalByUserCode()
     {
         helper('jwtvalidate');
@@ -439,10 +465,12 @@ public function mark_late_punchin()
 
         // Get all salary history for the user, sorted by appraisal date in descending order
         $salaryRecords = $db->table('tbl_salary_details')
+            ->select("*, IFNULL(appraisal_date, created_at) AS appraisal_effective_date")
             ->where('user_ref_code', $userRefCode)
-            ->orderBy('appraisal_date', 'DESC')
+            ->orderBy('appraisal_effective_date', 'DESC')
             ->get()
             ->getResultArray();
+
 
         $responseRecords = [];
         if (!empty($salaryRecords)) {
@@ -466,38 +494,52 @@ public function mark_late_punchin()
                 $newRecord = $salaryRecords[$i];
                 $oldRecord = $salaryRecords[$i + 1] ?? null;
 
-                // Calculate gross annual salary for the new record
-                $newGrossAnnualSalary = ((float) $newRecord['basic_salary'] + (float) $newRecord['hra'] + (float) $newRecord['special_allowance']) * 12;
+                // Calculate gross annual salary for the new record (using gross_monthly_salary if available)
+                $gross_monthly = isset($newRecord['gross_monthly_salary']) && $newRecord['gross_monthly_salary'] > 0
+                    ? (float) $newRecord['gross_monthly_salary']
+                    : ((float) $newRecord['basic_salary'] + (float) $newRecord['hra'] + (float) $newRecord['special_allowance']);
+
+                $newGrossAnnualSalary = $gross_monthly * 12;
 
                 // Prepare the new appraisal details including the 'id'
                 $newAppraisalDetails = [
-                    'id' => $newRecord['id'], // Added 'id' here
+                    'id' => $newRecord['id'],
                     'basic_salary' => $newRecord['basic_salary'],
                     'hra' => $newRecord['hra'],
                     'special_allowance' => $newRecord['special_allowance'],
                     'insurance' => $newRecord['insurance'],
                     'pf' => $newRecord['pf'],
                     'tds' => $newRecord['tds'],
+                    'gross_monthly_salary' => isset($newRecord['gross_monthly_salary']) ? $newRecord['gross_monthly_salary'] : null,
+                    'net_monthly_salary' => isset($newRecord['net_monthly_salary']) ? $newRecord['net_monthly_salary'] : null,
                     'gross_annual_salary' => number_format($newGrossAnnualSalary, 2, '.', ''),
-                    'appraisal_date' => $newRecord['appraisal_date']
+                    'appraisal_date' => $newRecord['appraisal_date'] ?? $newRecord['created_at'],
+                    'authenticated_by' => $newRecord['authenticated_by'] ?? null
                 ];
 
                 $oldAppraisalDetails = null;
                 if ($oldRecord) {
                     // Calculate gross annual salary for the old record
-                    $oldGrossAnnualSalary = ((float) $oldRecord['basic_salary'] + (float) $oldRecord['hra'] + (float) $oldRecord['special_allowance']) * 12;
+                    $old_gross_monthly = isset($oldRecord['gross_monthly_salary']) && $oldRecord['gross_monthly_salary'] > 0
+                        ? (float) $oldRecord['gross_monthly_salary']
+                        : ((float) $oldRecord['basic_salary'] + (float) $oldRecord['hra'] + (float) $oldRecord['special_allowance']);
+
+                    $oldGrossAnnualSalary = $old_gross_monthly * 12;
 
                     // Prepare the old appraisal details
                     $oldAppraisalDetails = [
-                        'id' => $oldRecord['id'], // Added 'id' here
+                        'id' => $oldRecord['id'],
                         'basic_salary' => $oldRecord['basic_salary'],
                         'hra' => $oldRecord['hra'],
                         'special_allowance' => $oldRecord['special_allowance'],
                         'insurance' => $oldRecord['insurance'],
                         'pf' => $oldRecord['pf'],
                         'tds' => $oldRecord['tds'],
+                        'gross_monthly_salary' => isset($oldRecord['gross_monthly_salary']) ? $oldRecord['gross_monthly_salary'] : null,
+                        'net_monthly_salary' => isset($oldRecord['net_monthly_salary']) ? $oldRecord['net_monthly_salary'] : null,
                         'gross_annual_salary' => number_format($oldGrossAnnualSalary, 2, '.', ''),
-                        'appraisal_date' => $oldRecord['appraisal_date']
+                        'appraisal_date' => $oldRecord['appraisal_date'],
+                        'authenticated_by' => $oldRecord['authenticated_by'] ?? null
                     ];
                 }
 
@@ -611,11 +653,21 @@ public function mark_late_punchin()
         $db = \Config\Database::connect();
 
         try {
+            // Modified query to join with tbl_signatureandstamp
             $record = $db->table('tbl_salary_details s')
-                ->select('s.*, r.First_Name, r.Last_Name, c.logo,  c.company_name, d.designation_name')
+                ->select('
+                s.*, 
+                r.First_Name, r.Last_Name, c.company_name, c.logo AS company_logo,
+                d.designation_name,
+                ss.name as authenticated_by_name,
+                ss.signature_img as signature_image,
+                ss.stamp_img as stamp_image,
+                ss.signatureandstamp_code
+            ')
                 ->join('tbl_register r', 's.user_ref_code = r.user_code', 'left')
-                ->join('tbl_company c', 'r.company_Code = c.company_Code', 'left')
+                ->join('tbl_company c', 'r.company_Code = c.company_code', 'left')
                 ->join('tbl_designation_mst d', 'r.Designations = d.designation_code', 'left')
+                ->join('tbl_signatureandstamp ss', 's.authenticated_by = ss.signatureandstamp_code', 'left') // New join
                 ->where('s.id', $id)
                 ->where('s.user_ref_code', $userRefCode)
                 ->get()
@@ -625,12 +677,14 @@ public function mark_late_punchin()
                 return $this->respond(['status' => false, 'message' => 'Appraisal record not found or does not belong to this user.'], 404);
             }
 
-            // Calculate gross annual salary
-            $grossAnnualSalary = ((float) $record->basic_salary + (float) $record->hra + (float) $record->special_allowance) * 13;
-      if (!empty($record->logo)) {
-           $record->logo = base_url('companylogo/' . $record->logo);
-        }
+            // Calculate gross annual salary based on gross_monthly_salary if available
+            $grossMonthly = isset($record->gross_monthly_salary) && $record->gross_monthly_salary > 0
+                ? (float) $record->gross_monthly_salary
+                : ((float) $record->basic_salary + (float) $record->hra + (float) $record->special_allowance);
 
+            $grossAnnual = $grossMonthly * 13;
+
+            // Prepare response
             $response = [
                 'status' => true,
                 'message' => 'Appraisal record retrieved successfully.',
@@ -639,17 +693,20 @@ public function mark_late_punchin()
                     'employee_name' => $record->First_Name . ' ' . $record->Last_Name,
                     'user_ref_code' => $record->user_ref_code,
                     'company_name' => $record->company_name,
-                    'company_logo' => $record->logo,
+                    'company_logo' => !empty($record->company_logo) ? base_url('companylogo/' . $record->company_logo) : null,
                     'designation' => $record->designation_name,
                     'basic_salary' => $record->basic_salary,
                     'hra' => $record->hra,
-                    'authenticated_by' => $record->authenticated_by,
+                    'authenticated_by' => $record->authenticated_by_name ?? $record->authenticated_by, // Use name from signature table
+                    'authenticated_by_code' => $record->authenticated_by, // Original code
+                    'signature_image' => !empty($record->signature_image) ? base_url('uploads/signatures/' . $record->signature_image) : null,
+                    'stamp_image' => !empty($record->stamp_image) ? base_url('uploads/stamps/' . $record->stamp_image) : null,
                     'special_allowance' => $record->special_allowance,
                     'insurance' => $record->insurance,
-                    'pf' => $record->pf,
+                    'pf' => $record->pf ?? $record->pt, // Handle both pt/pf columns
                     'tds' => $record->tds,
-                    'gross_annual_salary' => number_format($grossAnnualSalary, 2, '.', ''),
-                    'gross_monthly_salary' => number_format($grossAnnualSalary / 13, 2, '.', ''),
+                    'gross_annual_salary' => number_format($grossAnnual, 2, '.', ''),
+                    'gross_monthly_salary' => number_format($grossMonthly, 2, '.', ''),
                     'appraisal_date' => $record->appraisal_date,
                     'created_at' => $record->created_at,
                     'updated_at' => $record->updated_at,

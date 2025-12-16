@@ -1,0 +1,87 @@
+DEBUG - 2025-12-16 10:59:32 --> Starting updateEmployeeDetails for user: SKDCPL109
+DEBUG - 2025-12-16 10:59:32 --> Update data prepared: Array
+(
+    [date_of_birth] => 2016-12-16
+    [Gender] => Female
+    [aadhar_number] => 123333333333
+    [pan_card_no] => AAACS8577K
+    [blood_group] => A+
+    [contact_information] => 1231234567
+    [current_address] => pune
+    [permanent_address] => pune
+    [phone_number] => 
+    [whatsapp_no] => 1231234567
+    [marital_status] => Married
+    [personal_email] => ashwini@gmail.com
+    [reporting_to] => 
+    [graduation] => 
+    [graduationdegree] => 
+    [graduationunivercity] => 
+    [graduationspecialization] => 
+    [graduation_year_of_completion] => 0000-01-01
+    [post_graduation] => 
+    [post_univercity] => 
+    [postgraduationspecialization] => 
+    [post_graduation_year_of_completion] => 0000-01-01
+    [previous_organization_name] => 
+    [previous_organization_designation] => 
+    [reason_of_leaving] => 
+    [previous_organization_start_year] => 0000-01-01
+    [previous_organization_end_year] => 0000-01-01
+    [emergency_contact_number] => 
+    [emergency_contact_person_name] => 
+    [emergency_contact_person_relation] => 
+    [whatsapp_permission] => 1
+    [updated_at] => 2025-12-16 10:59:32
+    [updated_by] => SKDCPL109
+)
+
+DEBUG - 2025-12-16 10:59:32 --> Update query executed. Affected rows: 1
+DEBUG - 2025-12-16 11:01:04 --> Generating salary report from 2025-12-01 to 2025-12-31
+DEBUG - 2025-12-16 11:01:04 --> Found 4 employees
+DEBUG - 2025-12-16 11:01:04 --> No salary data for employee: SKDCPL112 - Kiran
+DEBUG - 2025-12-16 11:01:04 --> No salary data for user: SKDCPL112, Basic: 0
+ERROR - 2025-12-16 11:06:36 --> mysqli_sql_exception: Unknown column 'leave_duration' in 'field list' in C:\xampp\htdocs\hrmphp\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\hrmphp\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `tb...', 0)
+#1 C:\xampp\htdocs\hrmphp\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `tb...')
+#2 C:\xampp\htdocs\hrmphp\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `tb...')
+#3 C:\xampp\htdocs\hrmphp\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tb...', Array, false)
+#4 C:\xampp\htdocs\hrmphp\app\Controllers\LeaveController.php(173): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 C:\xampp\htdocs\hrmphp\system\CodeIgniter.php(933): App\Controllers\LeaveController->add_leave()
+#6 C:\xampp\htdocs\hrmphp\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LeaveController))
+#7 C:\xampp\htdocs\hrmphp\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\hrmphp\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\hrmphp\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\hrmphp\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-12-16 11:07:34 --> mysqli_sql_exception: Unknown column 'leave_duration' in 'field list' in C:\xampp\htdocs\hrmphp\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\hrmphp\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `tb...', 0)
+#1 C:\xampp\htdocs\hrmphp\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `tb...')
+#2 C:\xampp\htdocs\hrmphp\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `tb...')
+#3 C:\xampp\htdocs\hrmphp\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `tb...', Array, false)
+#4 C:\xampp\htdocs\hrmphp\app\Controllers\LeaveController.php(173): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 C:\xampp\htdocs\hrmphp\system\CodeIgniter.php(933): App\Controllers\LeaveController->add_leave()
+#6 C:\xampp\htdocs\hrmphp\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LeaveController))
+#7 C:\xampp\htdocs\hrmphp\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\hrmphp\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\hrmphp\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\hrmphp\index.php(69): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+DEBUG - 2025-12-16 11:22:22 --> Generating salary report from 2025-12-01 to 2025-12-31
+DEBUG - 2025-12-16 11:22:22 --> Found 4 employees
+DEBUG - 2025-12-16 11:22:22 --> No salary data for employee: SKDCPL112 - Kiran
+DEBUG - 2025-12-16 11:22:22 --> No salary data for user: SKDCPL112, Basic: 0
+DEBUG - 2025-12-16 11:22:58 --> Generating salary report from 2025-12-01 to 2025-12-31
+DEBUG - 2025-12-16 11:22:58 --> Found 4 employees
+DEBUG - 2025-12-16 11:22:58 --> No salary data for employee: SKDCPL112 - Kiran
+DEBUG - 2025-12-16 11:22:58 --> No salary data for user: SKDCPL112, Basic: 0
+DEBUG - 2025-12-16 11:23:05 --> Generating salary report from 2025-12-01 to 2025-12-31
+DEBUG - 2025-12-16 11:23:05 --> Found 4 employees
+DEBUG - 2025-12-16 11:23:05 --> No salary data for employee: SKDCPL112 - Kiran
+DEBUG - 2025-12-16 11:23:05 --> No salary data for user: SKDCPL112, Basic: 0
+DEBUG - 2025-12-16 11:23:15 --> Generating salary report from 2025-12-01 to 2025-12-31
+DEBUG - 2025-12-16 11:23:15 --> Found 4 employees
+DEBUG - 2025-12-16 11:23:15 --> No salary data for employee: SKDCPL112 - Kiran
+DEBUG - 2025-12-16 11:23:15 --> No salary data for user: SKDCPL112, Basic: 0
