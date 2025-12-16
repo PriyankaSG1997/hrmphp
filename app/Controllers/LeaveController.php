@@ -3,240 +3,35 @@
 namespace App\Controllers;
 
 use DateTime;
+use DateTimeZone;
+use DateInterval;
 use CodeIgniter\Controller;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourceController;
-use CodeIgniter\Database\Exceptions\DatabaseException;
-use Exception;
-use Config\Services;
-use App\Models\HomeModel;
 use Config\Database;
-use DateTimeZone;
-use Config\App;
-use Helper\jwtvalidate;
 
-require_once ROOTPATH . 'public/JWT/src/JWT.php';
 class LeaveController extends BaseController
 {
-    protected $db;
-    protected $key = 'HS256';
-    protected $uri;
-    protected $modelName = 'App\Models\HomeModel';
-    protected $format    = 'json';
-    protected $homeModel;
     use ResponseTrait;
+    protected $db;
+    protected $kolkataTimezone;
 
-    public function getallleavetype()
+    public function __construct()
     {
-        helper('jwtvalidate');
-        $authHeader = $this->request->getHeaderLine('Authorization');
-        $decodedToken = validatejwt($authHeader);
-        if (!$decodedToken) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Invalid or missing JWT'
-            ], 401);
-        }
-        try {
-            $this->db = \Config\Database::connect();
-            $builder = $this->db->table('tbl_leave_mst');
-            $builder->where('is_active', 'Y');
-            $query = $builder->get();
-            $result = $query->getResult();
-            return $this->respond([
-                'status' => true,
-                'data'   => $result
-            ], 200);
-        } catch (\Exception $e) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Failed to fetch leave types',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        $this->db = Database::connect();
+        $this->kolkataTimezone = new DateTimeZone('Asia/Kolkata');
     }
-    // public function add_leave()
-    // {
-    //     helper('jwtvalidate');
-    //     $authHeader = $this->request->getHeaderLine('Authorization');
-    //     $decodedToken = validatejwt($authHeader);
-    //     if (!$decodedToken) {
-    //         return $this->respond([
-    //             'status' => false,
-    //             'message' => 'Invalid or missing JWT'
-    //         ], 401);
-    //     }
-    //     $created_by = $decodedToken->user_id ?? null;
-    //     $input = $this->request->getPost();
-    //     $leave_form_code = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
-    //     $data = [
-    //         'leave_form_code'    => $leave_form_code,
-    //         'user_ref_code'      => $input['user_ref_code'] ?? $created_by,
-    //         'leave_code'         => $input['leave_code'] ?? null,
-    //         'start_date'         => $input['start_date'] ?? null,
-    //         'end_date'           => $input['end_date'] ?? null,
-    //         'total_days'         => $input['total_days'] ?? null,
-    //         'reason'             => $input['reason'] ?? '',
-    //         'status'             => 'PENDING',
-    //         'created_by'         => $created_by
-    //     ];
-    //     $attachmentFile = $this->request->getFile('attachment');
-    //     if ($attachmentFile && $attachmentFile->isValid() && !$attachmentFile->hasMoved()) {
-    //         $attachmentName = $leave_form_code . '_' . $attachmentFile->getRandomName();
-    //         $attachmentFile->move(ROOTPATH . 'public/leave_attachments', $attachmentName);
-    //         $data['attachment'] = 'leave_attachments/' . $attachmentName;
-    //     }
 
-    //     try {
-    //         $db = \Config\Database::connect();
-    //         $db->table('tbl_leave_forms')->insert($data);
-
-    //         return $this->respond([
-    //             'status' => true,
-    //             'message' => 'Leave application submitted successfully',
-    //             'leave_form_code' => $leave_form_code
-    //         ], 201);
-    //     } catch (\Exception $e) {
-    //         return $this->respond([
-    //             'status' => false,
-    //             'message' => 'Failed to submit leave application',
-    //             'error'   => $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
-
-
-    // public function approveLeave()
-    // {
-    //     helper('jwtvalidate');
-    //     $authHeader = $this->request->getHeaderLine('Authorization');
-    //     $decodedToken = validatejwt($authHeader);
-    //     if (!$decodedToken) {
-    //         return $this->respond([
-    //             'status' => false,
-    //             'message' => 'Invalid or missing JWT'
-    //         ], 401);
-    //     }
-    //     $created_by = $decodedToken->user_id ?? null;
-    //     $input = $this->request->getJSON(true);
-    //     $leave_form_code     = $input['leave_form_code'] ?? null;
-    //     $user_ref_code       = $input['user_ref_code'] ?? null;
-    //     $status              = strtoupper($input['status'] ?? '');
-    //     $leave_type          = strtoupper($input['leave_type'] ?? '');
-    //     $year_start_end_date = $input['year_start_end_date'] ?? null;
-    //     $start_date          = $input['start_date'] ?? null;
-    //     $end_date            = $input['end_date'] ?? null;
-    //     $total_days          = $input['total_days'] ?? null;
-    //     if (!$leave_form_code || !$user_ref_code || !$leave_type || !$year_start_end_date || !$status || !$start_date || !$end_date) {
-    //         return $this->respond([
-    //             'status' => false,
-    //             'message' => 'Missing or invalid required fields.'
-    //         ], 400);
-    //     }
-    //     $allowedLeaveTypes = ['CASUAL', 'MARRIAGE', 'MATERNITY', 'PATERNITY', 'SICK'];
-    //     if (!in_array($leave_type, $allowedLeaveTypes)) {
-    //         return $this->respond([
-    //             'status' => false,
-    //             'message' => 'Invalid leave type.'
-    //         ], 400);
-    //     }
-    //     $db = \Config\Database::connect();
-    //     $now = (new \DateTime('now', new \DateTimeZone('Asia/Kolkata')))->format('Y-m-d H:i:s');
-    //     $newBalance = null;
-    //     if ($status === 'APPROVED') {
-    //         $builder = $db->table('tbl_emp_leaves_remains');
-    //         $leaveData = $builder->where('user_ref_code', $user_ref_code)
-    //             ->where('years_start_end_date', $year_start_end_date)
-    //             ->get()
-    //             ->getRowArray();
-    //         if (!$leaveData) {
-    //             return $this->respond([
-    //                 'status' => false,
-    //                 'message' => 'Leave data not found for user.'
-    //             ], 404);
-    //         }
-    //         $currentBalance = (int)($leaveData[$leave_type] ?? 0);
-    //         $holidayDates = array_column(
-    //             $db->table('tbl_holiday_mst')
-    //                 ->select('holiday_date')
-    //                 ->where('is_active', 'Y')
-    //                 ->where('holiday_date >=', $start_date)
-    //                 ->where('holiday_date <=', $end_date)
-    //                 ->get()
-    //                 ->getResultArray(),
-    //             'holiday_date'
-    //         );
-    //         $start = new \DateTime($start_date);
-    //         $end   = new \DateTime($end_date);
-    //         $end->modify('+1 day');
-    //         $workingDays = 0;
-    //         $interval = new \DatePeriod($start, new \DateInterval('P1D'), $end);
-    //         foreach ($interval as $date) {
-    //             $day = $date->format('w');
-    //             $dayOfMonth = $date->format('j');
-    //             $currentDateStr = $date->format('Y-m-d');
-    //             $weekOfMonth = ceil($dayOfMonth / 7);
-
-    //             $isSunday = $day == 0;
-    //             $is2ndOr4thSaturday = ($day == 6) && ($weekOfMonth == 2 || $weekOfMonth == 4);
-    //             $isHoliday = in_array($currentDateStr, $holidayDates);
-
-    //             if (!$isSunday && !$is2ndOr4thSaturday && !$isHoliday) {
-    //                 $workingDays++;
-    //             }
-    //         }
-    //         if ($workingDays <= 0) {
-    //             return $this->respond([
-    //                 'status' => false,
-    //                 'message' => 'No working (deductible) days found in the selected range.'
-    //             ]);
-    //         }
-    //         if ($currentBalance < $workingDays) {
-    //             return $this->respond([
-    //                 'status' => false,
-    //                 'message' => 'Insufficient leave balance.'
-    //             ], 400);
-    //         }
-    //         $newBalance = $currentBalance - $workingDays;
-    //         $updateData = [
-    //             $leave_type  => $newBalance,
-    //             'updated_at' => $now,
-    //             'updated_by' => $created_by
-    //         ];
-
-    //         $builder->where('user_ref_code', $user_ref_code)
-    //             ->where('years_start_end_date', $year_start_end_date)
-    //             ->update($updateData);
-    //     }
-    //     $db->table('tbl_leave_forms')->where('leave_form_code', $leave_form_code)->update([
-    //         'status'            => $status,
-    //         'approver_ref_code' => $created_by,
-    //         'start_date'       =>  $start_date,
-    //         'end_date'        =>    $end_date,
-    //         'total_days'      => $total_days,
-    //         'approval_date'     => $now,
-    //         'updated_at'        => $now,
-    //         'updated_by'        => $created_by
-    //     ]);
-
-    //     return $this->respond([
-    //         'status' => true,
-    //         'message' => $status === 'APPROVED'
-    //             ? "Leave approved. Remaining {$leave_type} leave: {$newBalance}"
-    //             : "Leave status updated to {$status} (no leave balance deducted)"
-    //     ]);
-    // }
-
-
-
-
+    /**
+     * Add Leave Application
+     * Handles PAID, WFH, and UNPAID leaves
+     */
     public function add_leave()
     {
         helper('jwtvalidate');
         $authHeader = $this->request->getHeaderLine('Authorization');
         $decodedToken = validatejwt($authHeader);
+
         if (!$decodedToken) {
             return $this->respond([
                 'status' => false,
@@ -245,56 +40,725 @@ class LeaveController extends BaseController
         }
 
         $created_by = $decodedToken->user_id ?? null;
-        $input = $this->request->getPost();
-        $leave_form_code = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
 
-        // ✅ Detect half-day leave
-        $isHalfDay = isset($input['half_day']) && strtoupper($input['half_day']) === 'Y';
+        // Generate unique leave form code
+        $leave_form_code = 'LEAVE' . substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
 
-        $data = [
-            'leave_form_code' => $leave_form_code,
-            'user_ref_code'   => $input['user_ref_code'] ?? $created_by,
-            'leave_code'      => $input['leave_code'] ?? null,
-            'start_date'      => $input['start_date'] ?? null,
-            'end_date'        => $input['end_date'] ?? null,
-            'total_days'      => $isHalfDay ? 0.5 : ($input['total_days'] ?? null),
-            'reason'          => $input['reason'] ?? '',
-            'half_day'        => $isHalfDay ? 'Y' : 'N', // ✅ Store it in DB if you have this column
-            'status'          => 'PENDING',
-            'created_by'      => $created_by
-        ];
-
-        $attachmentFile = $this->request->getFile('attachment');
-        if ($attachmentFile && $attachmentFile->isValid() && !$attachmentFile->hasMoved()) {
-            $attachmentName = $leave_form_code . '_' . $attachmentFile->getRandomName();
-            $attachmentFile->move(ROOTPATH . 'public/leave_attachments', $attachmentName);
-            $data['attachment'] = 'leave_attachments/' . $attachmentName;
+        // Handle both JSON and FormData inputs
+        $input = [];
+        if ($this->request->getHeaderLine('Content-Type') === 'application/json') {
+            $input = $this->request->getJSON(true);
+        } else {
+            $input = $this->request->getPost();
+            if (isset($input['total_days'])) {
+                $input['total_days'] = floatval($input['total_days']);
+            }
         }
 
+        // Validation rules
+        $validation = \Config\Services::validation();
+        $validation->setRules([
+            'user_ref_code' => 'required|max_length[100]',
+            'leave_type' => 'required|in_list[PAID,WFH,UNPAID]',
+            'leave_duration' => 'required|in_list[FULL,HALF]',
+            'start_date' => 'required|valid_date',
+            'end_date' => 'permit_empty|valid_date',
+            'reason' => 'required|max_length[500]',
+            'total_days' => 'required|decimal'
+        ]);
+
+        if (!$validation->run($input)) {
+            return $this->respond([
+                'status' => false,
+                'message' => $validation->getErrors()
+            ], 400);
+        }
+
+        $this->db->transBegin();
+
         try {
-            $db = \Config\Database::connect();
-            $db->table('tbl_leave_forms')->insert($data);
+            $userRefCode = $input['user_ref_code'] ?? $created_by;
+            $leaveType = strtoupper($input['leave_type'] ?? '');
+            $leaveDuration = strtoupper($input['leave_duration'] ?? '');
+            $startDate = $input['start_date'] ?? '';
+            $endDate = $leaveDuration === 'HALF' ? $input['start_date'] : ($input['end_date'] ?? $input['start_date']);
+            $reason = $input['reason'] ?? '';
+            $totalDays = floatval($input['total_days'] ?? 0);
+
+            // Check if user exists
+            $userExists = $this->db->table('tbl_register')
+                ->where('user_code', $userRefCode)
+                ->where('is_active', 'Y')
+                ->countAllResults();
+
+            if (!$userExists) {
+                return $this->respond([
+                    'status' => false,
+                    'message' => 'User not found or inactive'
+                ], 404);
+            }
+
+            // Get user details
+            $user = $this->db->table('tbl_register')
+                ->select('joining_date, role_ref_code')
+                ->where('user_code', $userRefCode)
+                ->get()
+                ->getRow();
+
+            if (!$user) {
+                return $this->respond([
+                    'status' => false,
+                    'message' => 'User details not found'
+                ], 404);
+            }
+
+            $isAdmin = ($user->role_ref_code === 'ADM_3w7');
+
+            // For PAID leaves, check earned leaves balance with monthly carry forward rules
+            if ($leaveType === 'PAID') {
+                $currentDate = new DateTime('now', $this->kolkataTimezone);
+                $leaveDate = new DateTime($startDate, $this->kolkataTimezone);
+
+                // Get available balance for the leave month
+                $paidLeaveBalance = $this->getAvailablePaidLeavesForMonth($userRefCode, $leaveDate);
+
+                if ($paidLeaveBalance < $totalDays) {
+                    return $this->respond([
+                        'status' => false,
+                        'message' => 'Insufficient paid leave balance for this month. Available: ' . $paidLeaveBalance . ' days'
+                    ], 400);
+                }
+            }
+
+            // For unpaid leaves, calculate salary deduction
+            $isUnpaid = ($leaveType === 'UNPAID');
+            $salaryDeductionAmount = 0;
+
+            if ($isUnpaid) {
+                $salaryDeductionAmount = $this->calculateSalaryDeduction($userRefCode, $totalDays);
+            }
+
+            // Determine status
+            $status = 'PENDING';
+            $approvedBy = null;
+            $approvalDate = null;
+
+            // WFH is auto-approved
+            if ($leaveType === 'WFH') {
+                $status = 'AUTO_APPROVED';
+                $approvedBy = 'SYSTEM';
+                $approvalDate = (new DateTime('now', $this->kolkataTimezone))->format('Y-m-d H:i:s');
+            }
+
+            // Prepare leave data
+            $data = [
+                'leave_form_code' => $leave_form_code,
+                'user_ref_code' => $userRefCode,
+                'leave_code' => $leaveType,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'total_days' => $totalDays,
+                'reason' => $reason,
+                'leave_duration' => $leaveDuration,
+                'half_day' => $leaveDuration === 'HALF' ? 'Y' : 'N',
+                'status' => $status,
+                'approver_ref_code' => $approvedBy,
+                'approval_date' => $approvalDate,
+                'active_status' => 'Y',
+                'created_by' => $created_by,
+                'created_at' => (new DateTime('now', $this->kolkataTimezone))->format('Y-m-d H:i:s')
+            ];
+
+            // Insert leave application
+            $insertResult = $this->db->table('tbl_leave_forms')->insert($data);
+
+            if (!$insertResult) {
+                $error = $this->db->error();
+                throw new \Exception('Failed to insert leave application: ' . $error['message']);
+            }
+
+            // For unpaid leaves, create salary deduction record
+            if ($isUnpaid && $salaryDeductionAmount > 0) {
+                $deductionData = [
+                    'user_ref_code' => $userRefCode,
+                    'leave_form_code' => $leave_form_code,
+                    'deduction_type' => 'UNPAID_LEAVE',
+                    'amount' => $salaryDeductionAmount,
+                    'deduction_date' => $startDate,
+                    'description' => 'Unpaid leave deduction for ' . $totalDays . ' days',
+                    'created_at' => (new DateTime('now', $this->kolkataTimezone))->format('Y-m-d H:i:s'),
+                    'created_by' => $created_by
+                ];
+
+                $this->db->table('tbl_salary_deductions')->insert($deductionData);
+            }
+
+            if ($this->db->transStatus() === FALSE) {
+                $this->db->transRollback();
+                return $this->respond([
+                    'status' => false,
+                    'message' => 'Failed to submit leave application'
+                ], 500);
+            }
+
+            $this->db->transCommit();
 
             return $this->respond([
                 'status' => true,
-                'message' => 'Leave application submitted successfully',
-                'leave_form_code' => $leave_form_code
+                'message' => $status === 'AUTO_APPROVED' ?
+                    'Work From Home request auto-approved' :
+                    'Leave application submitted successfully',
+                'leave_form_code' => $leave_form_code,
+                'auto_approved' => $status === 'AUTO_APPROVED'
             ], 201);
+
         } catch (\Exception $e) {
+            $this->db->transRollback();
             return $this->respond([
                 'status' => false,
                 'message' => 'Failed to submit leave application',
-                'error'   => $e->getMessage()
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    private function getAvailablePaidLeavesForMonth($userRefCode, $requestDate)
+    {
+        // Get user details
+        $user = $this->db->table('tbl_register')
+            ->select('joining_date, role_ref_code')
+            ->where('user_code', $userRefCode)
+            ->get()
+            ->getRow();
+
+        if (!$user) {
+            return 0;
+        }
+
+        $isAdmin = ($user->role_ref_code === 'ADM_3w7');
+
+        // Calculate using Kolkata timezone
+        $joiningDate = new DateTime($user->joining_date . ' 00:00:00', $this->kolkataTimezone);
+
+        // Calculate probation status at request date
+        $probationEndDate = (clone $joiningDate)->add(new DateInterval('P6M'));
+        $inProbationAtRequest = ($requestDate < $probationEndDate) && !$isAdmin;
+
+        if ($inProbationAtRequest) {
+            return 0; // No paid leaves during probation
+        }
+
+        // Get request year and month
+        $requestYear = (int) $requestDate->format('Y');
+        $requestMonth = (int) $requestDate->format('m');
+
+        // Calculate total months worked AFTER probation up to the request month
+        $startFromDate = ($probationEndDate > $joiningDate) ? clone $probationEndDate : clone $joiningDate;
+        $monthsEarned = 0;
+
+        // Count months from probation end to request date
+        $currentCheckDate = clone $startFromDate;
+        while (
+            $currentCheckDate <= $requestDate &&
+            $currentCheckDate->format('Y') == $requestYear
+        ) {
+            $monthsEarned++;
+            $currentCheckDate->add(new DateInterval('P1M'));
+        }
+
+        // For admin, get fixed yearly allocation
+        if ($isAdmin) {
+            $monthsEarned = 12; // Admin gets 12 per year
+        }
+
+        // Get paid leaves taken in the SAME YEAR up to request month
+        $startOfYear = $requestYear . '-01-01';
+        $endOfRequestMonth = $requestYear . '-' . str_pad($requestMonth, 2, '0', STR_PAD_LEFT) . '-31';
+
+        $paidTakenResult = $this->db->table('tbl_leave_forms')
+            ->selectSum('total_days', 'total_paid')
+            ->where('user_ref_code', $userRefCode)
+            ->where('leave_code', 'PAID')
+            ->where('status', 'APPROVED')
+            ->where('start_date >=', $startOfYear)
+            ->where('start_date <=', $endOfRequestMonth)
+            ->get()
+            ->getRow();
+
+        $paidTaken = floatval($paidTakenResult->total_paid ?? 0);
+
+        // Calculate available leaves
+        $availableLeaves = max(0, $monthsEarned - $paidTaken);
+
+        return $availableLeaves;
+    }
+    private function checkMonthlyLeaveLimit($userRefCode, $requestDate, $requestedDays)
+    {
+        $requestDateTime = new DateTime($requestDate, $this->kolkataTimezone);
+        $year = $requestDateTime->format('Y');
+        $month = $requestDateTime->format('n');
+
+        $monthlyLeaves = $this->getMonthlyLeavesTaken($userRefCode, $year, $month);
+
+        if ($month == 1) {
+            // January: Max 1 leave
+            if (($monthlyLeaves + $requestedDays) > 1) {
+                return [
+                    'allowed' => false,
+                    'message' => 'January limit exceeded. Maximum 1 paid leave allowed in January.'
+                ];
+            }
+        } elseif ($month == 2) {
+            // Check if leaves were taken in January
+            $januaryLeaves = $this->getMonthlyLeavesTaken($userRefCode, $year, 1);
+
+            if ($januaryLeaves == 0) {
+                // No leaves in January, can take 2 in February
+                if (($monthlyLeaves + $requestedDays) > 2) {
+                    return [
+                        'allowed' => false,
+                        'message' => 'February limit exceeded. Maximum 2 paid leaves allowed in February if no leave was taken in January.'
+                    ];
+                }
+            } else {
+                // Leaves were taken in January, max 1 in February
+                if (($monthlyLeaves + $requestedDays) > 1) {
+                    return [
+                        'allowed' => false,
+                        'message' => 'February limit exceeded. Maximum 1 paid leave allowed in February if leave was taken in January.'
+                    ];
+                }
+            }
+        }
+
+        return ['allowed' => true, 'message' => ''];
+    }
+
+    private function getPaidLeaveBalanceWithNewRules($userRefCode, $currentDate, $requestDate)
+    {
+        // Get user details
+        $user = $this->db->table('tbl_register')
+            ->select('joining_date, role_ref_code')
+            ->where('user_code', $userRefCode)
+            ->get()
+            ->getRow();
+
+        if (!$user) {
+            return 0;
+        }
+
+        $isAdmin = ($user->role_ref_code === 'ADM_3w7');
+
+        // Calculate using Kolkata timezone
+        $joiningDate = new DateTime($user->joining_date . ' 00:00:00', $this->kolkataTimezone);
+        $probationEndDate = (clone $joiningDate)->add(new DateInterval('P6M'));
+
+        $inProbation = ($currentDate < $probationEndDate) && !$isAdmin;
+
+        // Calculate earned paid leaves
+        $earnedPaidLeaves = 0;
+        if (!$inProbation) {
+            $monthsSinceJoining = $this->calculateMonthsDifference($joiningDate, $currentDate);
+            $monthsAfterProbation = max(0, $monthsSinceJoining - 6);
+            $earnedPaidLeaves = $monthsAfterProbation; // 1 per month after probation
+
+            // For admin, give 12 paid leaves
+            if ($isAdmin) {
+                $earnedPaidLeaves = 12;
+            }
+        }
+
+        // Get current year
+        $currentYear = $currentDate->format('Y');
+        $requestYear = (new DateTime($requestDate, $this->kolkataTimezone))->format('Y');
+
+        // Get paid leaves taken in the SAME YEAR as the request
+        $paidResult = $this->db->table('tbl_leave_forms')
+            ->selectSum('total_days', 'total_paid')
+            ->where('user_ref_code', $userRefCode)
+            ->where('leave_code', 'PAID')
+            ->where('status', 'APPROVED')
+            ->where('YEAR(start_date)', $requestYear) // Only count leaves from the same year
+            ->get()
+            ->getRow();
+
+        $paidTaken = floatval($paidResult->total_paid ?? 0);
+
+        // Calculate balance for the requested year
+        $yearlyBalance = max(0, $earnedPaidLeaves - $paidTaken);
+
+        // Apply monthly limits based on the request date
+        $requestDateTime = new DateTime($requestDate, $this->kolkataTimezone);
+        $requestMonth = $requestDateTime->format('n'); // 1 for January, 2 for February
+
+        if ($requestMonth == 1) {
+            // January: Check how many leaves already taken in January
+            $januaryLeaves = $this->getMonthlyLeavesTaken($userRefCode, $requestYear, 1);
+            $januaryLimit = 1;
+
+            // Available leaves in January = min(yearly balance, January limit - leaves already taken)
+            $availableInJanuary = min($yearlyBalance, $januaryLimit - $januaryLeaves);
+            return max(0, $availableInJanuary);
+
+        } elseif ($requestMonth == 2) {
+            // February: Check if leaves were taken in January
+            $januaryLeaves = $this->getMonthlyLeavesTaken($userRefCode, $requestYear, 1);
+            $februaryLeaves = $this->getMonthlyLeavesTaken($userRefCode, $requestYear, 2);
+
+            if ($januaryLeaves == 0) {
+                // No leaves taken in January, can take 2 in February
+                $februaryLimit = 2;
+                $availableInFebruary = min($yearlyBalance, $februaryLimit - $februaryLeaves);
+                return max(0, $availableInFebruary);
+            } else {
+                // Leaves were taken in January, normal balance applies
+                $februaryLimit = 1; // Only 1 if leaves were taken in January
+                $availableInFebruary = min($yearlyBalance, $februaryLimit - $februaryLeaves);
+                return max(0, $availableInFebruary);
+            }
+        }
+
+        // For other months, return the yearly balance
+        return $yearlyBalance;
+    }
+
+    private function getMonthlyLeavesTaken($userRefCode, $year, $month)
+    {
+        $result = $this->db->table('tbl_leave_forms')
+            ->selectSum('total_days', 'monthly_total')
+            ->where('user_ref_code', $userRefCode)
+            ->where('leave_code', 'PAID')
+            ->where('status', 'APPROVED')
+            ->where('YEAR(start_date)', $year)
+            ->where('MONTH(start_date)', $month)
+            ->get()
+            ->getRow();
+
+        return floatval($result->monthly_total ?? 0);
+    }
+
+    /**
+     * Get Employee Leave Information
+     */
+    public function getEmployeeLeaveInfo()
+    {
+        helper('jwtvalidate');
+        $authHeader = $this->request->getHeaderLine('Authorization');
+        $decodedToken = validatejwt($authHeader);
+
+        if (!$decodedToken) {
+            return $this->respond([
+                'status' => false,
+                'message' => 'Invalid or missing JWT'
+            ], 401);
+        }
+
+        $user_ref_code = $decodedToken->user_id;
+
+        // Also check if user_ref_code is passed in request body
+        if ($this->request->getMethod() === 'post') {
+            $input = $this->request->getJSON(true);
+            if (isset($input['user_ref_code'])) {
+                $user_ref_code = $input['user_ref_code'];
+            }
+        }
+
+        try {
+            // Get user details
+            $user = $this->db->table('tbl_register')
+                ->select('joining_date, role_ref_code, first_name, last_name')
+                ->where('user_code', $user_ref_code)
+                ->where('is_active', 'Y')
+                ->get()
+                ->getRow();
+
+            if (!$user) {
+                return $this->respond([
+                    'status' => false,
+                    'message' => 'Employee not found'
+                ], 404);
+            }
+
+            $isAdmin = ($user->role_ref_code === 'ADM_3w7');
+            $joiningDate = new DateTime($user->joining_date . ' 00:00:00', $this->kolkataTimezone);
+            $currentDate = new DateTime('now', $this->kolkataTimezone);
+
+            // Calculate probation period
+            $probationEndDate = (clone $joiningDate)->add(new DateInterval('P6M'));
+            $inProbation = ($currentDate < $probationEndDate) && !$isAdmin;
+
+            // Get current year and month
+            $currentYear = (int) $currentDate->format('Y');
+            $currentMonth = (int) $currentDate->format('m');
+
+            // Calculate total earned paid leaves for current year up to current month
+            $monthsEarnedThisYear = 0;
+
+            if (!$inProbation) {
+                // Calculate from January of current year or from probation end date
+                $startDate = max(
+                    new DateTime($currentYear . '-01-01', $this->kolkataTimezone),
+                    $probationEndDate
+                );
+
+                $monthCheck = clone $startDate;
+                while (
+                    $monthCheck <= $currentDate &&
+                    $monthCheck->format('Y') == $currentYear
+                ) {
+                    $monthsEarnedThisYear++;
+                    $monthCheck->add(new DateInterval('P1M'));
+                }
+
+                if ($isAdmin) {
+                    $monthsEarnedThisYear = 12; // Admin gets 12 per year
+                }
+            }
+
+            // Get paid leaves taken in current year
+            $paidResult = $this->db->table('tbl_leave_forms')
+                ->selectSum('total_days', 'total_paid')
+                ->where('user_ref_code', $user_ref_code)
+                ->where('leave_code', 'PAID')
+                ->where('status', 'APPROVED')
+                ->where('YEAR(start_date)', $currentYear)
+                ->get()
+                ->getRow();
+
+            $paidTaken = floatval($paidResult->total_paid ?? 0);
+
+            // Calculate available paid leaves (can carry forward from previous months)
+            $paidBalance = max(0, $monthsEarnedThisYear - $paidTaken);
+
+            // Get monthly breakdown
+            $monthlyBreakdown = $this->getMonthlyLeaveBreakdown($user_ref_code, $currentYear, $currentMonth, $isAdmin, $probationEndDate);
+
+            // Get paid leaves pending
+            $paidPendingResult = $this->db->table('tbl_leave_forms')
+                ->selectSum('total_days', 'total_paid_pending')
+                ->where('user_ref_code', $user_ref_code)
+                ->where('leave_code', 'PAID')
+                ->where('status', 'PENDING')
+                ->get()
+                ->getRow();
+
+            $paidPending = floatval($paidPendingResult->total_paid_pending ?? 0);
+
+            // Get other leave types
+            $wfhResult = $this->db->table('tbl_leave_forms')
+                ->selectSum('total_days', 'total_wfh')
+                ->where('user_ref_code', $user_ref_code)
+                ->where('leave_code', 'WFH')
+                ->whereIn('status', ['APPROVED', 'AUTO_APPROVED'])
+                ->get()
+                ->getRow();
+
+            $wfhTaken = floatval($wfhResult->total_wfh ?? 0);
+
+            $wfhPendingResult = $this->db->table('tbl_leave_forms')
+                ->selectSum('total_days', 'total_wfh_pending')
+                ->where('user_ref_code', $user_ref_code)
+                ->where('leave_code', 'WFH')
+                ->where('status', 'PENDING')
+                ->get()
+                ->getRow();
+
+            $wfhPending = floatval($wfhPendingResult->total_wfh_pending ?? 0);
+
+            $unpaidResult = $this->db->table('tbl_leave_forms')
+                ->selectSum('total_days', 'total_unpaid')
+                ->where('user_ref_code', $user_ref_code)
+                ->where('leave_code', 'UNPAID')
+                ->where('status', 'APPROVED')
+                ->get()
+                ->getRow();
+
+            $unpaidTaken = floatval($unpaidResult->total_unpaid ?? 0);
+
+            $unpaidPendingResult = $this->db->table('tbl_leave_forms')
+                ->selectSum('total_days', 'total_unpaid_pending')
+                ->where('user_ref_code', $user_ref_code)
+                ->where('leave_code', 'UNPAID')
+                ->where('status', 'PENDING')
+                ->get()
+                ->getRow();
+
+            $unpaidPending = floatval($unpaidPendingResult->total_unpaid_pending ?? 0);
+
+            return $this->respond([
+                'status' => true,
+                'data' => [
+                    'in_probation' => $inProbation,
+                    'joining_date' => $user->joining_date,
+                    'probation_end_date' => $probationEndDate->format('Y-m-d'),
+                    'months_earned_this_year' => $monthsEarnedThisYear,
+                    'paid_leaves_taken' => $paidTaken,
+                    'paid_leaves_pending' => $paidPending,
+                    'paid_leaves_balance' => $paidBalance,
+                    'wfh_taken_total' => $wfhTaken,
+                    'wfh_pending' => $wfhPending,
+                    'unpaid_taken_total' => $unpaidTaken,
+                    'unpaid_pending' => $unpaidPending,
+                    'can_apply_paid' => !$inProbation || $isAdmin,
+                    'can_apply_wfh' => true,
+                    'can_apply_unpaid' => true,
+                    'employee_name' => trim($user->first_name . ' ' . $user->last_name),
+                    'monthly_breakdown' => $monthlyBreakdown,
+                    'carry_forward_info' => [
+                        'monthly_carry_forward' => true,
+                        'yearly_carry_forward' => false,
+                        'message' => 'Unused paid leaves carry forward to next month(s) within same year. No carry forward to next year.',
+                        'cannot_take_future_leaves' => 'You can only use leaves earned up to current month'
+                    ],
+                    'current_year' => $currentYear,
+                    'current_month' => $currentMonth,
+                    'leave_policy' => [
+                        'probation_period_months' => 6,
+                        'paid_leaves_per_month' => 1,
+                        'admin_paid_leaves_per_year' => 12,
+                        'monthly_carry_forward' => true,
+                        'yearly_reset' => true,
+                        'no_future_leaves' => true,
+                        'description' => 'Earn 1 paid leave per month after probation. Unused leaves carry forward within same year. Yearly reset with no carry forward to next year.'
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->respond([
+                'status' => false,
+                'message' => 'Error fetching leave information',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
 
+    private function getMonthlyLeaveBreakdown($userRefCode, $year, $currentMonth, $isAdmin, $probationEndDate)
+    {
+        $breakdown = [];
 
+        // For admin, all months have 1 leave
+        $monthlyAllocation = $isAdmin ? 1 : 0;
+
+        for ($month = 1; $month <= $currentMonth; $month++) {
+            $monthDate = new DateTime($year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-01', $this->kolkataTimezone);
+
+            // Check if month is after probation for non-admin
+            if (!$isAdmin) {
+                $monthlyAllocation = ($monthDate >= $probationEndDate) ? 1 : 0;
+            }
+
+            // Get leaves taken in this month
+            $monthStart = $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-01';
+            $monthEnd = date('Y-m-t', strtotime($monthStart));
+
+            $takenResult = $this->db->table('tbl_leave_forms')
+                ->selectSum('total_days', 'monthly_taken')
+                ->where('user_ref_code', $userRefCode)
+                ->where('leave_code', 'PAID')
+                ->where('status', 'APPROVED')
+                ->where('start_date >=', $monthStart)
+                ->where('start_date <=', $monthEnd)
+                ->get()
+                ->getRow();
+
+            $taken = floatval($takenResult->monthly_taken ?? 0);
+
+            // Calculate accumulated balance (carry forward from previous months)
+            $accumulatedBalance = 0;
+            if ($month == 1) {
+                $accumulatedBalance = $monthlyAllocation - $taken;
+            } else {
+                // Get previous month's accumulated balance
+                $prevMonthBalance = isset($breakdown[$month - 2]['accumulated_balance']) ? $breakdown[$month - 2]['accumulated_balance'] : 0;
+                $accumulatedBalance = $prevMonthBalance + $monthlyAllocation - $taken;
+            }
+
+            $breakdown[] = [
+                'month' => $month,
+                'month_name' => date('F', strtotime($year . '-' . $month . '-01')),
+                'allocation' => $monthlyAllocation,
+                'taken' => $taken,
+                'accumulated_balance' => max(0, $accumulatedBalance),
+                'available_now' => max(0, $accumulatedBalance),
+                'after_probation' => $isAdmin || ($monthDate >= $probationEndDate)
+            ];
+        }
+
+        return $breakdown;
+    }
+
+    private function getYearlyLeaves($userRefCode, $year, $leaveType)
+    {
+        $result = $this->db->table('tbl_leave_forms')
+            ->selectSum('total_days', 'yearly_total')
+            ->where('user_ref_code', $userRefCode)
+            ->where('leave_code', $leaveType)
+            ->whereIn('status', ['APPROVED', 'AUTO_APPROVED'])
+            ->where('YEAR(start_date)', $year)
+            ->get()
+            ->getRow();
+
+        return floatval($result->yearly_total ?? 0);
+    }
+
+
+    /**
+     * Get Paid Leave Balance
+     */
+    private function getPaidLeaveBalance($userRefCode, $currentDate)
+    {
+        return $this->getAvailablePaidLeavesForMonth($userRefCode, $currentDate);
+    }
+    /**
+     * Calculate months difference between two dates
+     */
+    private function calculateMonthsDifference($startDate, $endDate)
+    {
+        $start = clone $startDate;
+        $end = clone $endDate;
+
+        $yearDiff = $end->format('Y') - $start->format('Y');
+        $monthDiff = $end->format('m') - $start->format('m');
+        $dayDiff = $end->format('d') - $start->format('d');
+
+        $totalMonths = ($yearDiff * 12) + $monthDiff;
+
+        if ($dayDiff < 0) {
+            $totalMonths--;
+        }
+
+        return max(0, $totalMonths);
+    }
+
+    /**
+     * Calculate salary deduction for unpaid leave
+     */
+    private function calculateSalaryDeduction($userRefCode, $days)
+    {
+        $salary = $this->db->table('tbl_salary_details')
+            ->select('basic_salary')
+            ->where('user_ref_code', $userRefCode)
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->getRow();
+
+        if ($salary && $salary->basic_salary > 0) {
+            $dailySalary = $salary->basic_salary / 22;
+            return $dailySalary * $days;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Approve/Reject Leave
+     */
     public function approveLeave()
     {
         helper('jwtvalidate');
         $authHeader = $this->request->getHeaderLine('Authorization');
         $decodedToken = validatejwt($authHeader);
+
         if (!$decodedToken) {
             return $this->respond([
                 'status' => false,
@@ -303,138 +767,97 @@ class LeaveController extends BaseController
         }
 
         $created_by = $decodedToken->user_id ?? null;
+
+        // Get JSON input
         $input = $this->request->getJSON(true);
 
-        $leave_form_code     = $input['leave_form_code'] ?? null;
-        $user_ref_code       = $input['user_ref_code'] ?? null;
-        $status              = strtoupper($input['status'] ?? '');
-        $leave_type          = strtoupper($input['leave_type'] ?? '');
-        $year_start_end_date = $input['year_start_end_date'] ?? null;
-        $start_date          = $input['start_date'] ?? null;
-        $end_date            = $input['end_date'] ?? null;
-        $total_days          = $input['total_days'] ?? null;
-        $isHalfDay           = isset($input['half_day']) && strtoupper($input['half_day']) === 'Y'; // ✅ NEW
+        // If not JSON, try to get POST data
+        if (empty($input)) {
+            $input = $this->request->getPost();
+        }
 
-        if (!$leave_form_code || !$user_ref_code || !$leave_type || !$year_start_end_date || !$status || !$start_date || !$end_date) {
+        $validation = \Config\Services::validation();
+        $validation->setRules([
+            'leave_form_code' => 'required|max_length[100]',
+            'status' => 'required|in_list[APPROVED,REJECTED]'
+        ]);
+
+        if (!$validation->run($input)) {
             return $this->respond([
                 'status' => false,
-                'message' => 'Missing or invalid required fields.'
+                'message' => $validation->getErrors()
             ], 400);
         }
 
-        $allowedLeaveTypes = ['CASUAL', 'MARRIAGE', 'MATERNITY', 'PATERNITY', 'SICK'];
-        if (!in_array($leave_type, $allowedLeaveTypes)) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Invalid leave type.'
-            ], 400);
-        }
+        $leave_form_code = $input['leave_form_code'] ?? null;
+        $status = strtoupper($input['status'] ?? '');
 
-        $db = \Config\Database::connect();
-        $now = (new \DateTime('now', new \DateTimeZone('Asia/Kolkata')))->format('Y-m-d H:i:s');
-        $newBalance = null;
+        $this->db->transStart();
 
-        if ($status === 'APPROVED') {
-            $builder = $db->table('tbl_emp_leaves_remains');
-            $leaveData = $builder->where('user_ref_code', $user_ref_code)
-                ->where('years_start_end_date', $year_start_end_date)
+        try {
+            // Get leave application
+            $leave = $this->db->table('tbl_leave_forms')
+                ->where('leave_form_code', $leave_form_code)
                 ->get()
-                ->getRowArray();
+                ->getRow();
 
-            if (!$leaveData) {
+            if (!$leave) {
                 return $this->respond([
                     'status' => false,
-                    'message' => 'Leave data not found for user.'
+                    'message' => 'Leave application not found'
                 ], 404);
             }
 
-            $currentBalance = (float)($leaveData[$leave_type] ?? 0);
+            $userRefCode = $leave->user_ref_code;
+            $leaveType = $leave->leave_code;
+            $totalDays = floatval($leave->total_days);
 
-            // ✅ For half-day, directly deduct 0.5
-            if ($isHalfDay) {
-                $workingDays = 0.5;
-            } else {
-                // Existing working day calculation
-                $holidayDates = array_column(
-                    $db->table('tbl_holiday_mst')
-                        ->select('holiday_date')
-                        ->where('is_active', 'Y')
-                        ->where('holiday_date >=', $start_date)
-                        ->where('holiday_date <=', $end_date)
-                        ->get()
-                        ->getResultArray(),
-                    'holiday_date'
-                );
+            // For PAID leave approval, check balance
+            if ($status === 'APPROVED' && $leaveType === 'PAID') {
+                $currentDate = new DateTime('now', $this->kolkataTimezone);
+                $paidBalance = $this->getPaidLeaveBalance($userRefCode, $currentDate);
 
-                $start = new \DateTime($start_date);
-                $end   = new \DateTime($end_date);
-                $end->modify('+1 day');
-                $workingDays = 0;
-                $interval = new \DatePeriod($start, new \DateInterval('P1D'), $end);
-
-                foreach ($interval as $date) {
-                    $day = $date->format('w');
-                    $dayOfMonth = $date->format('j');
-                    $currentDateStr = $date->format('Y-m-d');
-                    $weekOfMonth = ceil($dayOfMonth / 7);
-
-                    $isSunday = $day == 0;
-                    $is2ndOr4thSaturday = ($day == 6) && ($weekOfMonth == 2 || $weekOfMonth == 4);
-                    $isHoliday = in_array($currentDateStr, $holidayDates);
-
-                    if (!$isSunday && !$is2ndOr4thSaturday && !$isHoliday) {
-                        $workingDays++;
-                    }
+                if ($paidBalance < $totalDays) {
+                    return $this->respond([
+                        'status' => false,
+                        'message' => 'Insufficient paid leave balance. Available: ' . $paidBalance . ' days'
+                    ], 400);
                 }
             }
 
-            if ($workingDays <= 0) {
-                return $this->respond([
-                    'status' => false,
-                    'message' => 'No working (deductible) days found in the selected range.'
-                ]);
-            }
-
-            if ($currentBalance < $workingDays) {
-                return $this->respond([
-                    'status' => false,
-                    'message' => 'Insufficient leave balance.'
-                ], 400);
-            }
-
-            $newBalance = $currentBalance - $workingDays;
-
+            // Update leave status
             $updateData = [
-                $leave_type  => $newBalance,
-                'updated_at' => $now,
+                'status' => $status,
+                'approver_ref_code' => $created_by,
+                'approval_date' => (new DateTime('now', $this->kolkataTimezone))->format('Y-m-d H:i:s'),
+                'updated_at' => (new DateTime('now', $this->kolkataTimezone))->format('Y-m-d H:i:s'),
                 'updated_by' => $created_by
             ];
 
-            $builder->where('user_ref_code', $user_ref_code)
-                ->where('years_start_end_date', $year_start_end_date)
+            $this->db->table('tbl_leave_forms')
+                ->where('leave_form_code', $leave_form_code)
                 ->update($updateData);
+
+            $this->db->transComplete();
+
+            return $this->respond([
+                'status' => true,
+                'message' => "Leave $status successfully"
+            ]);
+
+        } catch (\Exception $e) {
+            $this->db->transRollback();
+            return $this->respond([
+                'status' => false,
+                'message' => 'Error processing leave approval',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $db->table('tbl_leave_forms')->where('leave_form_code', $leave_form_code)->update([
-            'status'            => $status,
-            'approver_ref_code' => $created_by,
-            'start_date'        => $start_date,
-            'end_date'          => $end_date,
-            'total_days'        => $isHalfDay ? 0.5 : $total_days,
-            'approval_date'     => $now,
-            'updated_at'        => $now,
-            'updated_by'        => $created_by
-        ]);
-
-        return $this->respond([
-            'status' => true,
-            'message' => $status === 'APPROVED'
-                ? "Leave approved. Remaining {$leave_type} leave: {$newBalance}"
-                : "Leave status updated to {$status} (no leave balance deducted)"
-        ]);
     }
 
-
+    /**
+     * Get All Leaves (Admin View)
+     */
     public function getallleave()
     {
         helper('jwtvalidate');
@@ -449,24 +872,30 @@ class LeaveController extends BaseController
         }
 
         try {
-            $db = \Config\Database::connect();
-
-            $builder = $db->table('tbl_leave_forms lf');
+            $builder = $this->db->table('tbl_leave_forms lf');
             $result = $builder
-                ->select('
-                lf.*, 
-                tl.user_name,
-                elr.CASUAL, elr.MARRIAGE, elr.MATERNITY, elr.PATERNITY, elr.SICK
-            ')
-                ->join('tbl_login tl', 'lf.user_ref_code = tl.user_code_ref', 'left')
-                ->join('tbl_emp_leaves_remains elr', 'lf.user_ref_code = elr.user_ref_code', 'left')
-                ->orderBy('lf.created_at', 'ASC')
+                ->select('lf.*, r.first_name, r.last_name, r.joining_date, r.role_ref_code')
+                ->join('tbl_register r', 'lf.user_ref_code = r.user_code', 'left')
+                ->orderBy('lf.created_at', 'DESC')
                 ->get()
                 ->getResult();
 
+            // Calculate earned leaves for each leave
             foreach ($result as &$leave) {
                 if (!empty($leave->attachment)) {
                     $leave->attachment = base_url('leave_attachments/' . $leave->attachment);
+                }
+
+                // Calculate probation status at leave date
+                if ($leave->joining_date) {
+                    $joiningDate = new DateTime($leave->joining_date . ' 00:00:00', $this->kolkataTimezone);
+                    $leaveDate = new DateTime($leave->start_date . ' 00:00:00', $this->kolkataTimezone);
+
+                    $probationEndDate = (clone $joiningDate)->add(new DateInterval('P6M'));
+                    $inProbationAtLeave = ($leaveDate < $probationEndDate) && ($leave->role_ref_code !== 'ADM_3w7');
+
+                    $leave->in_probation_at_leave = $inProbationAtLeave;
+                    $leave->employee_name = trim($leave->first_name . ' ' . $leave->last_name);
                 }
             }
 
@@ -483,17 +912,76 @@ class LeaveController extends BaseController
         }
     }
 
-    public function getleaveapplicationforhod()
+    /**
+     * Get Leaves for specific user
+     */
+    public function getallleaveforuser()
     {
         helper('jwtvalidate');
         $authHeader = $this->request->getHeaderLine('Authorization');
         $decodedToken = validatejwt($authHeader);
+
         if (!$decodedToken) {
             return $this->respond([
                 'status' => false,
                 'message' => 'Invalid or missing JWT'
             ], 401);
         }
+
+        $user_code = $decodedToken->user_id ?? null;
+        if (!$user_code) {
+            return $this->respond([
+                'status' => false,
+                'message' => 'User code missing in token'
+            ], 400);
+        }
+
+        try {
+            $result = $this->db->table('tbl_leave_forms lf')
+                ->select('lf.*, r.first_name, r.last_name, r.joining_date')
+                ->join('tbl_register r', 'lf.user_ref_code = r.user_code', 'left')
+                ->where('lf.user_ref_code', $user_code)
+                ->orderBy('lf.created_at', 'DESC')
+                ->get()
+                ->getResult();
+
+            foreach ($result as &$leave) {
+                if (!empty($leave->attachment)) {
+                    $leave->attachment = base_url('leave_attachments/' . $leave->attachment);
+                }
+
+                $leave->employee_name = trim($leave->first_name . ' ' . $leave->last_name);
+            }
+
+            return $this->respond([
+                'status' => true,
+                'message' => 'Leave requests fetched successfully.',
+                'data' => $result
+            ]);
+        } catch (\Exception $e) {
+            return $this->respond([
+                'status' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get Leave Applications for HOD
+     */
+    public function getleaveapplicationforhod()
+    {
+        helper('jwtvalidate');
+        $authHeader = $this->request->getHeaderLine('Authorization');
+        $decodedToken = validatejwt($authHeader);
+
+        if (!$decodedToken) {
+            return $this->respond([
+                'status' => false,
+                'message' => 'Invalid or missing JWT'
+            ], 401);
+        }
+
         $hodCode = $decodedToken->user_id ?? null;
         if (!$hodCode) {
             return $this->respond([
@@ -501,9 +989,10 @@ class LeaveController extends BaseController
                 'message' => 'User code not found in token'
             ], 400);
         }
-        $db = \Config\Database::connect();
-        $hod = $db->table('tbl_register')
-            ->select('user_code, first_name, last_name, hod_ref_code, Designations')
+
+        // Verify user is HOD
+        $hod = $this->db->table('tbl_register')
+            ->select('user_code, first_name, last_name')
             ->where('user_code', $hodCode)
             ->where('Designations', 'DESGCPL003')
             ->where('is_active', 'Y')
@@ -513,55 +1002,46 @@ class LeaveController extends BaseController
         if (!$hod) {
             return $this->respond([
                 'status' => false,
-                'message' => 'User is not an HOD or not found in DESGCPL003'
+                'message' => 'User is not an HOD'
             ]);
         }
-        $hodRefCode = $hod['user_code'];
-        $hodName = trim(($hod['first_name'] ?? '') . ' ' . ($hod['last_name'] ?? ''));
-        $teamLeads = $db->table('tbl_register')
+
+        // Get team members under this HOD
+        $teamMembers = $this->db->table('tbl_register')
             ->select('user_code')
-            ->where('hod_ref_code', $hodRefCode)
+            ->where('hod_ref_code', $hodCode)
             ->where('is_active', 'Y')
             ->get()
             ->getResultArray();
-        if (empty($teamLeads)) {
-            return $this->respond([
-                'status' => true,
-                'message' => 'No team leads found under this HOD',
-                'hod_name' => $hodName,
-                'data' => []
-            ]);
-        }
-        $teamLeadCodes = array_column($teamLeads, 'user_code');
-        $teamMembers = $db->table('tbl_register')
-            ->select('user_code')
-            ->whereIn('team_lead_ref_code', $teamLeadCodes)
-            ->where('is_active', 'Y')
-            ->get()
-            ->getResultArray();
-        $allUserCodes = array_merge($teamLeadCodes, array_column($teamMembers, 'user_code'));
-        if (empty($allUserCodes)) {
+
+        if (empty($teamMembers)) {
             return $this->respond([
                 'status' => true,
                 'message' => 'No team members found under this HOD',
-                'hod_name' => $hodName,
+                'hod_name' => trim(($hod['first_name'] ?? '') . ' ' . ($hod['last_name'] ?? '')),
                 'data' => []
             ]);
         }
-        $leaveBuilder = $db->table('tbl_leave_forms l');
-        $leaveBuilder->select('l.*, r.first_name, r.last_name, r.Designations');
+
+        $userCodes = array_column($teamMembers, 'user_code');
+
+        // Get leave applications
+        $leaveBuilder = $this->db->table('tbl_leave_forms l');
+        $leaveBuilder->select('l.*, r.first_name, r.last_name, r.joining_date');
         $leaveBuilder->join('tbl_register r', 'r.user_code = l.user_ref_code', 'left');
-        $leaveBuilder->whereIn('l.user_ref_code', $allUserCodes);
+        $leaveBuilder->whereIn('l.user_ref_code', $userCodes);
         $leaveBuilder->orderBy('l.created_at', 'DESC');
         $leaveApplications = $leaveBuilder->get()->getResultArray();
+
         if (empty($leaveApplications)) {
             return $this->respond([
                 'status' => true,
-                'message' => 'No leave applications found for this HOD’s team',
-                'hod_name' => $hodName,
+                'message' => 'No leave applications found',
+                'hod_name' => trim(($hod['first_name'] ?? '') . ' ' . ($hod['last_name'] ?? '')),
                 'data' => []
             ]);
         }
+
         foreach ($leaveApplications as &$leave) {
             $leave['employee_name'] = trim(($leave['first_name'] ?? '') . ' ' . ($leave['last_name'] ?? ''));
         }
@@ -569,66 +1049,67 @@ class LeaveController extends BaseController
         return $this->respond([
             'status' => true,
             'message' => 'Leave applications fetched successfully',
-            'hod_name' => $hodName,
+            'hod_name' => trim(($hod['first_name'] ?? '') . ' ' . ($hod['last_name'] ?? '')),
             'data' => $leaveApplications
         ]);
     }
 
-
-    public function getallleavebyusercodewithcount()
+    /**
+     * Get Today's Leave Employees
+     */
+    public function gettodayleaveemployee()
     {
         helper('jwtvalidate');
         $authHeader = $this->request->getHeaderLine('Authorization');
         $decodedToken = validatejwt($authHeader);
-        $input = $this->request->getJSON(true);
-        $user_ref_code       = $input['user_code'] ?? null;
+
         if (!$decodedToken) {
             return $this->respond([
                 'status' => false,
                 'message' => 'Invalid or missing JWT'
             ], 401);
         }
-        $db = \Config\Database::connect();
-        $builder = $db->table('tbl_leave_forms');
-        $result = $builder
-            ->where('start_date >=', date('Y-m-01'))
-            ->where('user_ref_code', $user_ref_code)
-            ->orderBy('created_at', 'DESC')
-            ->get()
-            ->getResult();
-        $today = date('Y-m-d');
-        $upcomingCount = 0;
 
-        foreach ($result as &$leave) {
-            if (!empty($leave->attachment)) {
-                $leave->attachment = base_url('leave_attachments/' . $leave->attachment);
+        // Use Kolkata timezone for today's date
+        $today = (new DateTime('now', $this->kolkataTimezone))->format('Y-m-d');
+
+        try {
+            $builder = $this->db->table('tbl_leave_forms lf');
+
+            $builder->select('lf.*, r.first_name, r.last_name')
+                ->join('tbl_register r', 'lf.user_ref_code = r.user_code', 'left')
+                ->where('lf.start_date <=', $today)
+                ->where('lf.end_date >=', $today)
+                ->where('lf.status', 'APPROVED')
+                ->orderBy('lf.created_at', 'DESC');
+
+            $result = $builder->get()->getResult();
+
+            foreach ($result as &$leave) {
+                if (!empty($leave->attachment)) {
+                    $leave->attachment = base_url('leave_attachments/' . $leave->attachment);
+                }
+
+                $leave->employee_name = trim($leave->first_name . ' ' . $leave->last_name);
             }
 
-            if (!empty($leave->start_date) && $leave->start_date >= $today) {
-                $upcomingCount++;
-            }
+            return $this->respond([
+                'status' => true,
+                'message' => 'Today\'s leave employees fetched successfully.',
+                'data' => $result
+            ]);
+        } catch (\Exception $e) {
+            return $this->respond([
+                'status' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
-
-        return $this->respond([
-            'status' => true,
-            'message' => 'Leave requests fetched successfully.',
-            'count_upcoming_leaves' => $upcomingCount,
-            'data' => $result
-        ]);
     }
 
-    public function leave_attachments($fileName)
-    {
-        $filePath = FCPATH . 'public/leave_attachments/' . $fileName;
-        if (file_exists($filePath)) {
-            return $this->response
-                ->setHeader('Content-Type', mime_content_type($filePath))
-                ->setBody(file_get_contents($filePath));
-        }
-
-        return $this->response->setStatusCode(404)->setBody('File not found');
-    }
-    public function getleavebyusercode()
+    /**
+     * Get Leave Summary for Dashboard
+     */
+    public function getLeaveSummary()
     {
         helper('jwtvalidate');
         $authHeader = $this->request->getHeaderLine('Authorization');
@@ -641,81 +1122,57 @@ class LeaveController extends BaseController
             ], 401);
         }
 
-        $request = $this->request->getJSON(true);
-        $user_ref_code = $request['user_ref_code'] ?? null;
+        $user_ref_code = $decodedToken->user_id;
 
-        if (empty($user_ref_code)) {
+        try {
+            // Get current date in Kolkata timezone
+            $currentDate = new DateTime('now', $this->kolkataTimezone);
+            $currentYear = $currentDate->format('Y');
+            $currentMonth = $currentDate->format('m');
+
+            // Get leave stats for current month
+            $monthStart = $currentYear . '-' . $currentMonth . '-01';
+            $monthEnd = $currentDate->format('Y-m-t');
+
+            $monthlyStats = $this->db->table('tbl_leave_forms')
+                ->select('leave_code, status, SUM(total_days) as total_days')
+                ->where('user_ref_code', $user_ref_code)
+                ->where('start_date >=', $monthStart)
+                ->where('start_date <=', $monthEnd)
+                ->groupBy('leave_code, status')
+                ->get()
+                ->getResultArray();
+
+            // Get upcoming leaves (next 30 days)
+            $next30Days = (clone $currentDate)->add(new DateInterval('P30D'))->format('Y-m-d');
+
+            $upcomingLeaves = $this->db->table('tbl_leave_forms')
+                ->select('*')
+                ->where('user_ref_code', $user_ref_code)
+                ->where('start_date >=', $currentDate->format('Y-m-d'))
+                ->where('start_date <=', $next30Days)
+                ->whereIn('status', ['APPROVED', 'AUTO_APPROVED', 'PENDING'])
+                ->orderBy('start_date', 'ASC')
+                ->get()
+                ->getResultArray();
+
+            return $this->respond([
+                'status' => true,
+                'data' => [
+                    'monthly_stats' => $monthlyStats,
+                    'upcoming_leaves' => $upcomingLeaves,
+                    'current_month' => $currentDate->format('F Y'),
+                    'timezone' => 'Asia/Kolkata'
+                ]
+            ]);
+
+        } catch (\Exception $e) {
             return $this->respond([
                 'status' => false,
-                'message' => 'user_ref_code is required'
-            ], 400);
+                'message' => 'Error fetching leave summary',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $currentMonth = date('m');
-        $currentYear = date('Y');
-
-        if ((int)$currentMonth < 4) {
-            $startYear = $currentYear - 1;
-            $endYear = $currentYear;
-        } else {
-            $startYear = $currentYear;
-            $endYear = $currentYear + 1;
-        }
-
-        $financialYear = "1-04-" . $startYear . "_to_31-03-" . $endYear;
-
-
-        $db = \Config\Database::connect();
-        $builder = $db->table('tbl_emp_leaves_remains');
-
-        $leaveData = $builder->where('user_ref_code', $user_ref_code)
-            ->where('years_start_end_date', $financialYear)
-            ->get()
-            ->getRowArray();
-
-        if (!$leaveData) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'No leave data found for this user in the current financial year.'
-            ], 404);
-        }
-
-        return $this->respond([
-            'status' => true,
-            'data' => $leaveData
-        ]);
-    }
-    public function gettodayattendance()
-    {
-        helper('jwtvalidate');
-        $authHeader = $this->request->getHeaderLine('Authorization');
-        $decodedToken = validatejwt($authHeader);
-        if (!$decodedToken) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Invalid or missing JWT'
-            ], 401);
-        }
-        $userCode = $decodedToken->user_id ?? null;
-        if (!$userCode) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'User not found in token'
-            ], 400);
-        }
-        $db = \Config\Database::connect();
-        $builder = $db->table('tbl_time');
-        $today = date('Y-m-d');
-        $builder->where('user_ref_code', $userCode);
-        $builder->where('DATE(today_date)', $today);
-        $query = $builder->get();
-        $data = $query->getResult();
-
-        return $this->respond([
-            'status' => true,
-            'message' => 'Today\'s attendance data fetched successfully',
-            'data' => $data
-        ]);
     }
 
     public function getuserattendance()
@@ -748,177 +1205,6 @@ class LeaveController extends BaseController
             'data' => $data
         ]);
     }
-    public function getuserattendanceforadmin()
-    {
-        helper('jwtvalidate');
-        $authHeader = $this->request->getHeaderLine('Authorization');
-        $decodedToken = validatejwt($authHeader);
-
-        if (!$decodedToken) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Invalid or missing JWT'
-            ], 401);
-        }
-
-        $request   = $this->request->getJSON(true);
-        $userCode  = $request['user_code'] ?? '';
-        $monthYear = $request['month_year'] ?? ''; // Format YYYY-MM
-
-        if (empty($userCode)) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'User code is required'
-            ], 400);
-        }
-
-        // Validate month_year
-        if (empty($monthYear) || !preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $monthYear)) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Invalid or missing month_year format. Use YYYY-MM'
-            ], 400);
-        }
-
-        // Build date range
-        list($year, $month) = explode('-', $monthYear);
-        $startDate = "{$year}-{$month}-01";
-        $endDate   = date("Y-m-t", strtotime($startDate)); // last day of month
-
-        // Fetch from DB
-        $db = \Config\Database::connect();
-        $builder = $db->table('tbl_time');
-        $builder->where('user_ref_code', $userCode);
-        $builder->where('today_date >=', $startDate);
-        $builder->where('today_date <=', $endDate);
-        $query = $builder->get();
-        $data  = $query->getResult();
-
-        return $this->respond([
-            'status'  => true,
-            'message' => 'Attendance data fetched successfully',
-            'data'    => $data
-        ]);
-    }
-
-    public function allotclientlist()
-    {
-        helper('jwtvalidate');
-        $authHeader = $this->request->getHeaderLine('Authorization');
-        $decodedToken = validatejwt($authHeader);
-        if (!$decodedToken) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Invalid or missing JWT'
-            ], 401);
-        }
-        $authHeader = $this->request->getHeaderLine('Authorization');
-        $request = $this->request->getJSON(true);
-        $userCode = $request['user_code'] ?? '';
-        if (!$userCode) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'User not found in token'
-            ], 400);
-        }
-        $db = \Config\Database::connect();
-        $builder = $db->table('tbl_time');
-        $builder->where('user_ref_code', $userCode);
-        $query = $builder->get();
-        $data = $query->getResult();
-
-        return $this->respond([
-            'status' => true,
-            'message' => 'attendance data fetched successfully',
-            'data' => $data
-        ]);
-    }
-
-    public function getdatewiseattendance()
-    {
-        helper('jwtvalidate');
-        $authHeader = $this->request->getHeaderLine('Authorization');
-        $decodedToken = validatejwt($authHeader);
-        if (!$decodedToken) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Invalid or missing JWT'
-            ], 401);
-        }
-
-        $request = $this->request->getJSON(true);
-        $today_date = $request['dates'] ?? null;
-
-        if (!$today_date) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'date not found in request'
-            ], 400);
-        }
-
-        try {
-            $db = \Config\Database::connect();
-            $builder = $db->table('tbl_time tt')
-                ->select('tt.*, tl.user_name') // Add user_name from tbl_login
-                ->join('tbl_login tl', 'tt.user_ref_code = tl.user_code_ref', 'left')
-                ->where('tt.today_date', $today_date);
-
-            $query = $builder->get();
-            $data = $query->getResult();
-
-            return $this->respond([
-                'status' => true,
-                'message' => 'attendance data fetched successfully',
-                'data' => $data
-            ]);
-        } catch (\Exception $e) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'An error occurred: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-
-    public function getdailytasklist()
-    {
-        helper('jwtvalidate');
-        $authHeader = $this->request->getHeaderLine('Authorization');
-        $decodedToken = validatejwt($authHeader);
-        if (!$decodedToken) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Invalid or missing JWT'
-            ], 401);
-        }
-        $request = $this->request->getJSON(true);
-        $userCode = $request['user_code'] ?? '';
-        $date     = $request['dates'] ?? '';
-        if (empty($date)) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Date is required'
-            ], 400);
-        }
-        $db = \Config\Database::connect();
-        $builder = $db->table('tbl_dailytask');
-
-        // Only active tasks
-        $builder->where('is_active', 'Y');
-        // Filter by date
-        $builder->where('task_date', $date);
-        // Filter by user if provided
-        if (!empty($userCode)) {
-            $builder->where('user_ref_code', $userCode);
-        }
-        $query = $builder->get();
-        $data  = $query->getResult();
-        return $this->respond([
-            'status'  => true,
-            'message' => 'Data fetched successfully',
-            'data'    => $data
-        ]);
-    }
 
     public function getMonthlyAttendance()
     {
@@ -946,7 +1232,7 @@ class LeaveController extends BaseController
 
         list($year, $month) = explode('-', $monthYear);
         $startDate = "{$year}-{$month}-01";
-        $endDate   = date("Y-m-t", strtotime($startDate));
+        $endDate = date("Y-m-t", strtotime($startDate));
 
         $db = \Config\Database::connect();
 
@@ -972,11 +1258,11 @@ class LeaveController extends BaseController
         // ✅ Build all days of month (holiday/working)
         $allDays = [];
         $current = strtotime($startDate);
-        $last    = strtotime($endDate);
+        $last = strtotime($endDate);
 
         while ($current <= $last) {
             $dateStr = date('Y-m-d', $current);
-            $dayNum  = date('j', $current);
+            $dayNum = date('j', $current);
             $dayName = date('l', $current);
             $isHoliday = false;
 
@@ -1008,7 +1294,7 @@ class LeaveController extends BaseController
         $attendanceMap = [];
         foreach ($attendanceQuery as $row) {
             $attendanceMap[$row->user_ref_code][$row->today_date] = [
-                'punch_in'  => $row->punch_in,
+                'punch_in' => $row->punch_in,
                 'punch_out' => $row->punch_out
             ];
         }
@@ -1016,25 +1302,25 @@ class LeaveController extends BaseController
         // ✅ Prepare final result
         $result = [];
         foreach ($employees as $emp) {
-            $totalDays   = count($allDays);
-            $holidayCnt  = count(array_filter($allDays, fn($v) => $v === 'holiday'));
+            $totalDays = count($allDays);
+            $holidayCnt = count(array_filter($allDays, fn($v) => $v === 'holiday'));
             $workingDays = $totalDays - $holidayCnt;
 
             $presentCnt = 0;
-            $dailyLogs  = [];
+            $dailyLogs = [];
 
             foreach ($allDays as $dateStr => $type) {
                 $dayLog = [
-                    'date'      => $dateStr,
-                    'status'    => $type,
-                    'punch_in'  => null,
+                    'date' => $dateStr,
+                    'status' => $type,
+                    'punch_in' => null,
                     'punch_out' => null
                 ];
 
                 if ($type === 'working' && isset($attendanceMap[$emp->user_ref_code][$dateStr])) {
                     $presentCnt++;
-                    $dayLog['status']    = 'present';
-                    $dayLog['punch_in']  = $attendanceMap[$emp->user_ref_code][$dateStr]['punch_in'];
+                    $dayLog['status'] = 'present';
+                    $dayLog['punch_in'] = $attendanceMap[$emp->user_ref_code][$dateStr]['punch_in'];
                     $dayLog['punch_out'] = $attendanceMap[$emp->user_ref_code][$dateStr]['punch_out'];
                 } elseif ($type === 'working') {
                     $dayLog['status'] = 'absent';
@@ -1047,20 +1333,20 @@ class LeaveController extends BaseController
 
             $result[] = [
                 'user_ref_code' => $emp->user_ref_code,
-                'user_name'     => $emp->user_name,
-                'total_days'    => $totalDays,
-                'holidays'      => $holidayCnt,
-                'working_days'  => $workingDays,
-                'present'       => $presentCnt,
-                'absent'        => $absentCnt,
+                'user_name' => $emp->user_name,
+                'total_days' => $totalDays,
+                'holidays' => $holidayCnt,
+                'working_days' => $workingDays,
+                'present' => $presentCnt,
+                'absent' => $absentCnt,
                 'attendance_log' => $dailyLogs   // ✅ includes punch_in & punch_out
             ];
         }
 
         return $this->respond([
-            'status'  => true,
+            'status' => true,
             'message' => 'Monthly attendance fetched successfully',
-            'data'    => $result
+            'data' => $result
         ]);
     }
 
@@ -1084,7 +1370,7 @@ class LeaveController extends BaseController
                 'message' => 'User not found in token'
             ], 400);
         }
-        $request   = $this->request->getJSON(true);
+        $request = $this->request->getJSON(true);
         $monthYear = $request['month_year'] ?? '';
         if (empty($monthYear) || !preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $monthYear)) {
             return $this->respond([
@@ -1094,111 +1380,18 @@ class LeaveController extends BaseController
         }
         list($year, $month) = explode('-', $monthYear);
         $startDate = "{$year}-{$month}-01";
-        $endDate   = date("Y-m-t", strtotime($startDate));
+        $endDate = date("Y-m-t", strtotime($startDate));
         $db = \Config\Database::connect();
         $builder = $db->table('tbl_time');
         $builder->where('user_ref_code', $userCode);
         $builder->where('today_date >=', $startDate);
         $builder->where('today_date <=', $endDate);
         $query = $builder->get();
-        $data  = $query->getResult();
+        $data = $query->getResult();
         return $this->respond([
-            'status'  => true,
+            'status' => true,
             'message' => 'Attendance data fetched successfully',
-            'data'    => $data
+            'data' => $data
         ]);
-    }
-    public function getallleaveforuser()
-    {
-        helper('jwtvalidate');
-        $authHeader = $this->request->getHeaderLine('Authorization');
-        $decodedToken = validatejwt($authHeader);
-        if (!$decodedToken) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Invalid or missing JWT'
-            ], 401);
-        }
-        $user_code = $decodedToken->user_id ?? null;
-        if (!$user_code) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'User code missing in token'
-            ], 400);
-        }
-        try {
-            $db = \Config\Database::connect();
-            $result = $db->table('tbl_leave_forms lf')
-                ->select('
-                lf.*, 
-                elr.CASUAL, 
-                elr.MARRIAGE, 
-                elr.MATERNITY, 
-                elr.PATERNITY, 
-                elr.SICK
-            ')
-                ->join('tbl_emp_leaves_remains elr', 'lf.user_ref_code = elr.user_ref_code', 'left')
-                ->where('lf.user_ref_code', $user_code)
-                ->orderBy('lf.created_at', 'DESC')
-                ->get()
-                ->getResult();
-            foreach ($result as &$leave) {
-                if (!empty($leave->attachment)) {
-                    $leave->attachment = base_url('leave_attachments/' . $leave->attachment);
-                }
-            }
-            return $this->respond([
-                'status' => true,
-                'message' => 'Leave requests fetched successfully.',
-                'data' => $result
-            ]);
-        } catch (\Exception $e) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Error: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-    public function gettodayleaveemployee()
-    {
-        helper('jwtvalidate');
-        $authHeader = $this->request->getHeaderLine('Authorization');
-        $decodedToken = validatejwt($authHeader);
-        if (!$decodedToken) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Invalid or missing JWT'
-            ], 401);
-        }
-
-        $today = date('Y-m-d');
-        try {
-            $db = \Config\Database::connect();
-            $builder = $db->table('tbl_leave_forms lf');
-            $builder->select('lf.*, tl.user_name');
-            $builder->join('tbl_login tl', 'lf.user_ref_code = tl.user_code_ref', 'left');
-            $builder->where('lf.start_date <=', $today);
-            $builder->where('lf.end_date >=', $today);
-            $builder->where('lf.status', 'APPROVED');
-            $builder->orderBy('lf.created_at', 'DESC');
-            $result = $builder->get()->getResult();
-
-            foreach ($result as &$leave) {
-                if (!empty($leave->attachment)) {
-                    $leave->attachment = base_url('leave_attachments/' . $leave->attachment);
-                }
-            }
-
-            return $this->respond([
-                'status' => true,
-                'message' => 'Today\'s leave employees fetched successfully.',
-                'data' => $result
-            ]);
-        } catch (\Exception $e) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Error: ' . $e->getMessage()
-            ], 500);
-        }
     }
 }

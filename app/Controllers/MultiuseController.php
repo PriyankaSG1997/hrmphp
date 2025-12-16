@@ -391,35 +391,37 @@ class MultiuseController extends BaseController
     }
 
 
-    public function get_accesslevels()
-    {
-        helper('jwtvalidate');
-        $authHeader = $this->request->getHeaderLine('Authorization');
-        if (!validatejwt($authHeader)) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Invalid or missing JWT'
-            ], 401);
-        }
-        $db = \Config\Database::connect();
-        try {
-            $accessLevels = $db->table('tbl_access_level')
-                ->where('is_active', 'Y')
-                ->get()
-                ->getResultArray();
-
-            return $this->respond([
-                'status' => true,
-                'data'   => $accessLevels
-            ], 200);
-        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
-            return $this->respond([
-                'status' => false,
-                'message' => 'Database error',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+   public function get_accesslevels()
+{
+    helper('jwtvalidate');
+    $authHeader = $this->request->getHeaderLine('Authorization');
+    if (!validatejwt($authHeader)) {
+        return $this->respond([
+            'status' => false,
+            'message' => 'Invalid or missing JWT'
+        ], 401);
     }
+
+    $db = \Config\Database::connect();
+    try {
+        $accessLevels = $db->table('tbl_access_level')
+            ->where('is_active', 'Y')
+            ->orderBy('name', 'ASC') // sort alphabetically
+            ->get()
+            ->getResultArray();
+
+        return $this->respond([
+            'status' => true,
+            'data'   => $accessLevels
+        ], 200);
+    } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+        return $this->respond([
+            'status' => false,
+            'message' => 'Database error',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 
     public function get_accesslevelsby_usercode()
     {

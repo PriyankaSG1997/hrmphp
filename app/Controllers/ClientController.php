@@ -200,44 +200,47 @@ class ClientController extends ResourceController
     }
 
 
-    public function getAllClients()
-    {
-        helper(['jwtvalidate_helper']);
-        $headers = $this->request->getServer('HTTP_AUTHORIZATION');
+public function getAllClients()
+{
+    helper(['jwtvalidate_helper']);
+    $headers = $this->request->getServer('HTTP_AUTHORIZATION');
 
-        if (!validatejwt($headers)) {
-            return $this->respond(['status' => false, 'message' => 'Unauthorized or Invalid Token'], 401);
-        }
-
-        $decoded = validatejwt($headers);
-        if (!$decoded) {
-            return $this->respond(['status' => false, 'message' => 'Invalid or expired token'], 401);
-        }
-
-        $request = $this->request->getJSON(true);
-        $client_code = $request['client_code'] ?? null;
-
-        try {
-            $builder = $this->db->table('tbl_client_mst');
-            $builder->where('is_active', 'Y');
-
-            if ($client_code) {
-                $data = $builder->where('client_code', $client_code)->get()->getRow();
-                if ($data) {
-                    return $this->respond(['status' => true, 'data' => $data]);
-                } else {
-                    return $this->respond(['status' => false, 'message' => 'Client not found.'], 404);
-                }
-            } else {
-                $data = $builder->get()->getResult();
-                return $this->respond(['status' => true, 'data' => $data]);
-            }
-        } catch (DatabaseException $e) {
-            return $this->respond(['status' => false, 'message' => 'Database error: ' . $e->getMessage()], 500);
-        } catch (\Exception $e) {
-            return $this->respond(['status' => false, 'message' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
-        }
+    if (!validatejwt($headers)) {
+        return $this->respond(['status' => false, 'message' => 'Unauthorized or Invalid Token'], 401);
     }
+
+    $decoded = validatejwt($headers);
+    if (!$decoded) {
+        return $this->respond(['status' => false, 'message' => 'Invalid or expired token'], 401);
+    }
+
+    $request = $this->request->getJSON(true);
+    $client_code = $request['client_code'] ?? null;
+
+    try {
+        $builder = $this->db->table('tbl_client_mst');
+        $builder->where('is_active', 'Y');
+        
+        // Add alphabetical ordering - adjust 'client_name' to your actual column name
+        $builder->orderBy('client_name', 'ASC'); // or use 'client_code' if that's more appropriate
+
+        if ($client_code) {
+            $data = $builder->where('client_code', $client_code)->get()->getRow();
+            if ($data) {
+                return $this->respond(['status' => true, 'data' => $data]);
+            } else {
+                return $this->respond(['status' => false, 'message' => 'Client not found.'], 404);
+            }
+        } else {
+            $data = $builder->get()->getResult();
+            return $this->respond(['status' => true, 'data' => $data]);
+        }
+    } catch (DatabaseException $e) {
+        return $this->respond(['status' => false, 'message' => 'Database error: ' . $e->getMessage()], 500);
+    } catch (\Exception $e) {
+        return $this->respond(['status' => false, 'message' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+    }
+}
 
     public function addInitialClientInteraction()
     {

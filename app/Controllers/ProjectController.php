@@ -66,7 +66,7 @@ public function addProject()
         'client_contact' => 'permit_empty|max_length[100]', // Still accept
         'start_date' => 'required|valid_date',
         'end_date' => 'required|valid_date',
-        'status' => 'permit_empty|in_list[Planning,In Progress,UAT,Completed]',
+        'status' => 'permit_empty|in_list[Planning,In Progress,UAT, On Hold, Completed]',
         'budget' => 'permit_empty|decimal',
         'team_lead' => 'required|max_length[50]',
         'company_code' => 'required|max_length[50]',
@@ -178,7 +178,7 @@ public function updateProject()
         'client_contact' => 'permit_empty|max_length[100]',
         'start_date' => 'permit_empty|valid_date',
         'end_date' => 'permit_empty|valid_date',
-        'status' => 'permit_empty|in_list[Planning,In Progress,UAT,Completed]',
+        'status' => 'permit_empty|in_list[Planning,In Progress,UAT, On Hold, Completed]',
         'budget' => 'permit_empty|decimal',
         'team_lead' => 'permit_empty|max_length[50]',
         'company_code' => 'permit_empty|max_length[50]',
@@ -342,7 +342,9 @@ public function getAllProjects()
             ->join('tbl_client_mst AS tc', 'tpm.client_code = tc.client_code', 'left')
             ->join('tbl_register AS tr', 'tpm.team_lead = tr.user_code', 'left')
             ->join('tbl_company AS tc2', 'tpm.company_code = tc2.company_code', 'left')
-            ->where('tpm.is_active', 'Y');
+            ->where('tpm.is_active', 'Y')
+            // Add alphabetical ordering by project name
+            ->orderBy('tpm.project_name', 'ASC'); // Adjust column name as needed
 
         if ($project_code) {
             $data = $builder->where('tpm.project_code', $project_code)->get()->getRow();
